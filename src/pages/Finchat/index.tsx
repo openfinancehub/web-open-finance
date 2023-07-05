@@ -183,8 +183,8 @@ const TableList: React.FC<unknown> = () => {
         <FooterToolbar
           extra={
             <div>
-              已选择
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>
+              已选择{' '}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
               项&nbsp;&nbsp;
             </div>
           }

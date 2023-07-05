@@ -1,10 +1,8 @@
 {
   "private": true,
-  "author": "chaya",
+  "author": "Chaya",
   "scripts": {
     "dev": "max dev",
-    "start:pre": "cross-env REACT_APP_ENV=pre UMI_ENV=pre max dev",
-    "start:prod": "cross-env REACT_APP_ENV=prod UMI_ENV=prod max dev",
     "build": "max build",
     "format": "prettier --cache --write .",
     "prepare": "husky install",
@@ -14,11 +12,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@ant-design/plots": "^1.2.5",
     "@ant-design/pro-components": "^2.4.4",
-    "@emotion/css": "^11.11.2",
-    "@umijs/max": "^4.0.71",
-    "antd": "^5.4.0",
-    "cross-env": "^7.0.3"
+    "@umijs/max": "^4.0.72",
+    "antd": "^5.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.33",

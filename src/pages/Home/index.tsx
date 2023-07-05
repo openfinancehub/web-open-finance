@@ -5,7 +5,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import styles from './index.less';
 
-const Welcome: React.FC = () => {
+const Home: React.FC = () => {
   const { name } = useModel('global');
   return (
     <>
@@ -21,4 +21,4 @@ const Welcome: React.FC = () => {
   );
 };
 
-export default Welcome;
+export default Home;
