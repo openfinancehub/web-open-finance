@@ -1,17 +1,12 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Access, useAccess } from '@umijs/max';
-import { Button } from 'antd';
+import MyEditor from './components/MyEditor';
 
-const ContentPage: React.FC = () => {
-  const access = useAccess();
+const InfoPage: React.FC = () => {
   return (
-    <PageContainer
-      ghost
-     
-    >
-      我是发布内容
+    <PageContainer ghost>
+      <MyEditor />
     </PageContainer>
   );
 };
 
-export default ContentPage;
+export default InfoPage;

@@ -1,44 +1,38 @@
-import { useState, useEffect } from 'react';
 import { PageContainer } from '@ant-design/pro-components';
-import { Column } from '@ant-design/plots';
-
+import { Tabs, TabsProps } from 'antd';
+import Factor from './components/Factor'
+import Strategy from './components/Strategy'
+import Subscribe from './components/Subscribe'
 const HomePage: React.FC = () => {
-  const [data, setData] = useState([]);
-
-  const asyncFetch = () => {
-    fetch('https://gw.alipayobjects.com/os/antfincdn/mor%26R5yBI9/stack-group-column.json')
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => {
-        console.log('fetch data failed', error);
-      });
-  };
-
-  useEffect(() => {
-    asyncFetch();
-  }, []);
-
-  const config = {
-    data,
-    xField: 'product_type',
-    yField: 'order_amt',
-    isGroup: true,
-    isStack: true,
-    seriesField: 'product_sub_type',
-    groupField: 'sex',
-    tooltip: {
-      formatter: (datum) => ({
-        name: `${datum.product_sub_type} ${datum.sex === '男' ? '👦' : '👧'}`,
-        value: datum.order_amt,
-      }),
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: `推荐因子`,
+      children: <Factor></Factor>,
     },
+    {
+      key: '2',
+      label: `策略生成器`,
+      children: <Strategy></Strategy>,
+    },
+    {
+      key: '3',
+      label: `已订阅`,
+      children: <Subscribe></Subscribe>,
+    },
+  ];
+  const onChange = (key: string) => {
+    console.log(key);
   };
-
   return (
-    <PageContainer ghost>
-     <Column {...config} />
+    <PageContainer
+      ghost
+      header={{
+        title: '',
+      }}
+    >
+      <Tabs defaultActiveKey="1" items={items} onChange={onChange}></Tabs>
     </PageContainer>
   );
 };
-
 export default HomePage;
