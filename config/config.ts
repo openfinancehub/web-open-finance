@@ -10,10 +10,22 @@ export default defineConfig({
   layout: {
     title: 'Open Finance',
   },
+  locale: {
+    // default zh-CN
+    default: 'zh-CN',
+    antd: true,
+  },
   routes: [
     {
+      name: '登录页',
+      path: '/login',
+      component: './Login',
+      layout: false,
+      hideInMenu:true
+    },
+    {
       path: '/',
-      redirect: '/home',
+      redirect: '/login',
     },
     {
       name: 'Factors',
