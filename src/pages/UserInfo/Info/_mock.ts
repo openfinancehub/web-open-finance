@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Request, Response } from 'express';
-import type { ListItemDataType } from './data.d';
+import type { ListItemDataType } from './data';
 
 const titles = [
   'Alipay',
@@ -10,7 +10,7 @@ const titles = [
   'Bootstrap',
   'React',
   'Vue',
-  'Webpack',
+  'Webpack'
 ];
 const avatars = [
   'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', // Alipay
@@ -20,21 +20,21 @@ const avatars = [
   'https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png', // Bootstrap
   'https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png', // React
   'https://gw.alipayobjects.com/zos/rmsportal/ComBAopevLwENQdKWiIn.png', // Vue
-  'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png', // Webpack
+  'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png' // Webpack
 ];
 
 const covers = [
   'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
   'https://gw.alipayobjects.com/zos/rmsportal/iZBVOIhGJiAnhplqjvZW.png',
   'https://gw.alipayobjects.com/zos/rmsportal/iXjVmWVHbCJAyqvDxdtx.png',
-  'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png',
+  'https://gw.alipayobjects.com/zos/rmsportal/gLaIAoVWTtLbBWZNYEMg.png'
 ];
 const desc = [
   '那是一种内在的东西， 他们到达不了，也无法触及的',
   '希望是一个好东西，也许是最好的，好东西是不会消亡的',
   '生命就像一盒巧克力，结果往往出人意料',
   '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
-  '那时候我只会想自己想要什么，从不想自己拥有什么',
+  '那时候我只会想自己想要什么，从不想自己拥有什么'
 ];
 
 const user = [
@@ -47,13 +47,14 @@ const user = [
   '鱼酱',
   '乐哥',
   '谭小仪',
-  '仲尼',
+  '仲尼'
 ];
 
 // 当前用户信息
 const currentUseDetail = {
   name: 'Serati Ma',
-  avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+  avatar:
+    'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
   userid: '00000001',
   email: 'antdesign@alipay.com',
   signature: '海纳百川，有容乃大',
@@ -62,28 +63,28 @@ const currentUseDetail = {
   tags: [
     {
       key: '0',
-      label: '很有想法的',
+      label: '很有想法的'
     },
     {
       key: '1',
-      label: '专注设计',
+      label: '专注设计'
     },
     {
       key: '2',
-      label: '辣~',
+      label: '辣~'
     },
     {
       key: '3',
-      label: '大长腿',
+      label: '大长腿'
     },
     {
       key: '4',
-      label: '川妹子',
+      label: '川妹子'
     },
     {
       key: '5',
-      label: '海纳百川',
-    },
+      label: '海纳百川'
+    }
   ],
   notice: [
     {
@@ -94,7 +95,7 @@ const currentUseDetail = {
       updatedAt: new Date(),
       member: '科学搬砖组',
       href: '',
-      memberLink: '',
+      memberLink: ''
     },
     {
       id: 'xxx2',
@@ -104,7 +105,7 @@ const currentUseDetail = {
       updatedAt: new Date('2017-07-24'),
       member: '全组都是吴彦祖',
       href: '',
-      memberLink: '',
+      memberLink: ''
     },
     {
       id: 'xxx3',
@@ -114,7 +115,7 @@ const currentUseDetail = {
       updatedAt: new Date(),
       member: '中二少女团',
       href: '',
-      memberLink: '',
+      memberLink: ''
     },
     {
       id: 'xxx4',
@@ -124,7 +125,7 @@ const currentUseDetail = {
       updatedAt: new Date('2017-07-23'),
       member: '程序员日常',
       href: '',
-      memberLink: '',
+      memberLink: ''
     },
     {
       id: 'xxx5',
@@ -134,7 +135,7 @@ const currentUseDetail = {
       updatedAt: new Date('2017-07-23'),
       member: '高逼格设计天团',
       href: '',
-      memberLink: '',
+      memberLink: ''
     },
     {
       id: 'xxx6',
@@ -144,8 +145,8 @@ const currentUseDetail = {
       updatedAt: new Date('2017-07-23'),
       member: '骗你来学计算机',
       href: '',
-      memberLink: '',
-    },
+      memberLink: ''
+    }
   ],
   notifyCount: 12,
   unreadCount: 11,
@@ -153,15 +154,15 @@ const currentUseDetail = {
   geographic: {
     province: {
       label: '浙江省',
-      key: '330000',
+      key: '330000'
     },
     city: {
       label: '杭州市',
-      key: '330100',
-    },
+      key: '330100'
+    }
   },
   address: '西湖区工专路 77 号',
-  phone: '0752-268888888',
+  phone: '0752-268888888'
 };
 
 function fakeList(count: number): ListItemDataType[] {
@@ -172,7 +173,10 @@ function fakeList(count: number): ListItemDataType[] {
       owner: user[i % 10],
       title: titles[i % 8],
       avatar: avatars[i % 8],
-      cover: parseInt(`${i / 4}`, 10) % 2 === 0 ? covers[i % 4] : covers[3 - (i % 4)],
+      cover:
+        parseInt(`${i / 4}`, 10) % 2 === 0
+          ? covers[i % 4]
+          : covers[3 - (i % 4)],
       status: ['active', 'exception', 'normal'][i % 3] as
         | 'normal'
         | 'exception'
@@ -181,8 +185,12 @@ function fakeList(count: number): ListItemDataType[] {
       percent: Math.ceil(Math.random() * 50) + 50,
       logo: avatars[i % 8],
       href: 'https://ant.design',
-      updatedAt: new Date(new Date().getTime() - 1000 * 60 * 60 * 2 * i).getTime(),
-      createdAt: new Date(new Date().getTime() - 1000 * 60 * 60 * 2 * i).getTime(),
+      updatedAt: new Date(
+        new Date().getTime() - 1000 * 60 * 60 * 2 * i
+      ).getTime(),
+      createdAt: new Date(
+        new Date().getTime() - 1000 * 60 * 60 * 2 * i
+      ).getTime(),
       subDescription: desc[i % 5],
       description:
         '在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。',
@@ -195,21 +203,24 @@ function fakeList(count: number): ListItemDataType[] {
         '段落示意：蚂蚁金服设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态，提供跨越设计与开发的体验解决方案。蚂蚁金服设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态，提供跨越设计与开发的体验解决方案。',
       members: [
         {
-          avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ZiESqWwCXBRQoaPONSJe.png',
+          avatar:
+            'https://gw.alipayobjects.com/zos/rmsportal/ZiESqWwCXBRQoaPONSJe.png',
           name: '曲丽丽',
-          id: 'member1',
+          id: 'member1'
         },
         {
-          avatar: 'https://gw.alipayobjects.com/zos/rmsportal/tBOxZPlITHqwlGjsJWaF.png',
+          avatar:
+            'https://gw.alipayobjects.com/zos/rmsportal/tBOxZPlITHqwlGjsJWaF.png',
           name: '王昭君',
-          id: 'member2',
+          id: 'member2'
         },
         {
-          avatar: 'https://gw.alipayobjects.com/zos/rmsportal/sBxjgqiuHMGRkIjqlQCd.png',
+          avatar:
+            'https://gw.alipayobjects.com/zos/rmsportal/sBxjgqiuHMGRkIjqlQCd.png',
           name: '董娜娜',
-          id: 'member3',
-        },
-      ],
+          id: 'member3'
+        }
+      ]
     });
   }
 
@@ -224,20 +235,20 @@ function getFakeList(req: Request, res: Response) {
   const result = fakeList(count);
   return res.json({
     data: {
-      list: result,
-    },
+      list: result
+    }
   });
 }
 
 // 获取用户信息
 function getCurrentUser(req: Request, res: Response) {
   return res.json({
-    data: currentUseDetail,
+    data: currentUseDetail
   });
 }
 
 export default {
   'GET  /api/fake_list_Detail': getFakeList,
   // 支持值为 Object 和 Array
-  'GET  /api/currentUserDetail': getCurrentUser,
+  'GET  /api/currentUserDetail': getCurrentUser
 };

@@ -1,15 +1,19 @@
-import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@ant-design/icons';
-import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
-import React, { useState, useRef } from 'react';
+import {
+  ClusterOutlined,
+  ContactsOutlined,
+  HomeOutlined,
+  PlusOutlined
+} from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
-import { Link, useRequest } from 'umi';
+import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
+import React, { useRef, useState } from 'react';
 import type { RouteChildrenProps } from 'react-router';
-import Projects from './components/Projects';
-import Articles from './components/Articles';
-import Applications from './components/Applications';
-import type { CurrentUser, TagType, tabKeyType } from './data.d';
-import { queryCurrent } from './service';
+import { Link } from 'umi';
 import styles from './Center.less';
+import Applications from './components/Applications';
+import Articles from './components/Articles';
+import Projects from './components/Projects';
+import type { CurrentUser, TagType, tabKeyType } from './data';
 
 const operationTabList = [
   {
@@ -18,7 +22,7 @@ const operationTabList = [
       <span>
         文章 <span style={{ fontSize: 14 }}>(8)</span>
       </span>
-    ),
+    )
   },
   {
     key: 'applications',
@@ -26,7 +30,7 @@ const operationTabList = [
       <span>
         应用 <span style={{ fontSize: 14 }}>(8)</span>
       </span>
-    ),
+    )
   },
   {
     key: 'projects',
@@ -34,8 +38,8 @@ const operationTabList = [
       <span>
         项目 <span style={{ fontSize: 14 }}>(8)</span>
       </span>
-    ),
-  },
+    )
+  }
 ];
 
 const TagList: React.FC<{ tags: CurrentUser['tags'] }> = ({ tags }) => {
@@ -58,8 +62,14 @@ const TagList: React.FC<{ tags: CurrentUser['tags'] }> = ({ tags }) => {
 
   const handleInputConfirm = () => {
     let tempsTags = [...newTags];
-    if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
-      tempsTags = [...tempsTags, { key: `new-${tempsTags.length}`, label: inputValue }];
+    if (
+      inputValue &&
+      tempsTags.filter(tag => tag.label === inputValue).length === 0
+    ) {
+      tempsTags = [
+        ...tempsTags,
+        { key: `new-${tempsTags.length}`, label: inputValue }
+      ];
     }
     setNewTags(tempsTags);
     setInputVisible(false);
@@ -69,7 +79,7 @@ const TagList: React.FC<{ tags: CurrentUser['tags'] }> = ({ tags }) => {
   return (
     <div className={styles.tags}>
       <div className={styles.tagsTitle}>标签</div>
-      {(tags || []).concat(newTags).map((item) => (
+      {(tags || []).concat(newTags).map(item => (
         <Tag key={item.key}>{item.label}</Tag>
       ))}
       {inputVisible && (
@@ -97,132 +107,135 @@ const Center: React.FC<RouteChildrenProps> = () => {
   const [tabKey, setTabKey] = useState<tabKeyType>('articles');
 
   //  获取用户信息
-  const { data: currentUser, loading } =
-  {
+  const { data: currentUser, loading } = {
     loading: false,
     data: {
-      "name": "Serati Ma",
-      "avatar": "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png",
-      "userid": "00000001",
-      "email": "antdesign@alipay.com",
-      "signature": "海纳百川，有容乃大",
-      "title": "交互专家",
-      "group": "蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED",
-      "tags": [
+      name: 'Serati Ma',
+      avatar:
+        'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+      userid: '00000001',
+      email: 'antdesign@alipay.com',
+      signature: '海纳百川，有容乃大',
+      title: '交互专家',
+      group: '蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED',
+      tags: [
         {
-          "key": "0",
-          "label": "很有想法的"
+          key: '0',
+          label: '很有想法的'
         },
         {
-          "key": "1",
-          "label": "专注设计"
+          key: '1',
+          label: '专注设计'
         },
         {
-          "key": "2",
-          "label": "辣~"
+          key: '2',
+          label: '辣~'
         },
         {
-          "key": "3",
-          "label": "大长腿"
+          key: '3',
+          label: '大长腿'
         },
         {
-          "key": "4",
-          "label": "川妹子"
+          key: '4',
+          label: '川妹子'
         },
         {
-          "key": "5",
-          "label": "海纳百川"
+          key: '5',
+          label: '海纳百川'
         }
       ],
-      "notice": [
+      notice: [
         {
-          "id": "xxx1",
-          "title": "Alipay",
-          "logo": "https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png",
-          "description": "那是一种内在的东西，他们到达不了，也无法触及的",
-          "updatedAt": "2023-07-08T10:00:55.125Z",
-          "member": "科学搬砖组",
-          "href": "",
-          "memberLink": ""
+          id: 'xxx1',
+          title: 'Alipay',
+          logo: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+          description: '那是一种内在的东西，他们到达不了，也无法触及的',
+          updatedAt: '2023-07-08T10:00:55.125Z',
+          member: '科学搬砖组',
+          href: '',
+          memberLink: ''
         },
         {
-          "id": "xxx2",
-          "title": "Angular",
-          "logo": "https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png",
-          "description": "希望是一个好东西，也许是最好的，好东西是不会消亡的",
-          "updatedAt": "2017-07-24T00:00:00.000Z",
-          "member": "全组都是吴彦祖",
-          "href": "",
-          "memberLink": ""
+          id: 'xxx2',
+          title: 'Angular',
+          logo: 'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png',
+          description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
+          updatedAt: '2017-07-24T00:00:00.000Z',
+          member: '全组都是吴彦祖',
+          href: '',
+          memberLink: ''
         },
         {
-          "id": "xxx3",
-          "title": "Ant Design",
-          "logo": "https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png",
-          "description": "城镇中有那么多的酒馆，她却偏偏走进了我的酒馆",
-          "updatedAt": "2023-07-08T10:00:55.125Z",
-          "member": "中二少女团",
-          "href": "",
-          "memberLink": ""
+          id: 'xxx3',
+          title: 'Ant Design',
+          logo: 'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',
+          description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
+          updatedAt: '2023-07-08T10:00:55.125Z',
+          member: '中二少女团',
+          href: '',
+          memberLink: ''
         },
         {
-          "id": "xxx4",
-          "title": "Ant Design Pro",
-          "logo": "https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png",
-          "description": "那时候我只会想自己想要什么，从不想自己拥有什么",
-          "updatedAt": "2017-07-23T00:00:00.000Z",
-          "member": "程序员日常",
-          "href": "",
-          "memberLink": ""
+          id: 'xxx4',
+          title: 'Ant Design Pro',
+          logo: 'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png',
+          description: '那时候我只会想自己想要什么，从不想自己拥有什么',
+          updatedAt: '2017-07-23T00:00:00.000Z',
+          member: '程序员日常',
+          href: '',
+          memberLink: ''
         },
         {
-          "id": "xxx5",
-          "title": "Bootstrap",
-          "logo": "https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png",
-          "description": "凛冬将至",
-          "updatedAt": "2017-07-23T00:00:00.000Z",
-          "member": "高逼格设计天团",
-          "href": "",
-          "memberLink": ""
+          id: 'xxx5',
+          title: 'Bootstrap',
+          logo: 'https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png',
+          description: '凛冬将至',
+          updatedAt: '2017-07-23T00:00:00.000Z',
+          member: '高逼格设计天团',
+          href: '',
+          memberLink: ''
         },
         {
-          "id": "xxx6",
-          "title": "React",
-          "logo": "https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png",
-          "description": "生命就像一盒巧克力，结果往往出人意料",
-          "updatedAt": "2017-07-23T00:00:00.000Z",
-          "member": "骗你来学计算机",
-          "href": "",
-          "memberLink": ""
+          id: 'xxx6',
+          title: 'React',
+          logo: 'https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png',
+          description: '生命就像一盒巧克力，结果往往出人意料',
+          updatedAt: '2017-07-23T00:00:00.000Z',
+          member: '骗你来学计算机',
+          href: '',
+          memberLink: ''
         }
       ],
-      "notifyCount": 12,
-      "unreadCount": 11,
-      "country": "China",
-      "geographic": {
-        "province": {
-          "label": "浙江省",
-          "key": "330000"
+      notifyCount: 12,
+      unreadCount: 11,
+      country: 'China',
+      geographic: {
+        province: {
+          label: '浙江省',
+          key: '330000'
         },
-        "city": {
-          "label": "杭州市",
-          "key": "330100"
+        city: {
+          label: '杭州市',
+          key: '330100'
         }
       },
-      "address": "西湖区工专路 77 号",
-      "phone": "0752-268888888"
+      address: '西湖区工专路 77 号',
+      phone: '0752-268888888'
     }
   };
 
-
   //  渲染用户信息
-  const renderUserInfo = ({ title, group, geographic }: Partial<CurrentUser>) => {
+  const renderUserInfo = ({
+    title,
+    group,
+    geographic
+  }: Partial<CurrentUser>) => {
     return (
       <div className={styles.detail}>
         <p>
           <ContactsOutlined
             style={{
-              marginRight: 8,
+              marginRight: 8
             }}
           />
           {title}
@@ -230,7 +243,7 @@ const Center: React.FC<RouteChildrenProps> = () => {
         <p>
           <ClusterOutlined
             style={{
-              marginRight: 8,
+              marginRight: 8
             }}
           />
           {group}
@@ -238,7 +251,7 @@ const Center: React.FC<RouteChildrenProps> = () => {
         <p>
           <HomeOutlined
             style={{
-              marginRight: 8,
+              marginRight: 8
             }}
           />
           {(geographic || { province: { label: '' } }).province.label}
@@ -246,8 +259,8 @@ const Center: React.FC<RouteChildrenProps> = () => {
             (
               geographic || {
                 city: {
-                  label: '',
-                },
+                  label: ''
+                }
               }
             ).city.label
           }
@@ -290,7 +303,7 @@ const Center: React.FC<RouteChildrenProps> = () => {
                   <div className={styles.teamTitle}>团队</div>
                   <Row gutter={36}>
                     {currentUser.notice &&
-                      currentUser.notice.map((item) => (
+                      currentUser.notice.map(item => (
                         <Col key={item.id} lg={24} xl={12}>
                           <Link to={item.href}>
                             <Avatar size="small" src={item.logo} />

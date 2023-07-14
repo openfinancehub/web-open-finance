@@ -6,7 +6,7 @@ const useUser = () => {
   const [name, setName] = useState<string>(DEFAULT_NAME);
   return {
     name,
-    setName,
+    setName
   };
 };
 

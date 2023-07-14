@@ -1,5 +1,4 @@
 import { defineConfig } from '@umijs/max';
-import routes from './routes';
 
 export default defineConfig({
   antd: {},
@@ -8,12 +7,12 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {
-    title: 'Open Finance',
+    title: 'Open Finance'
   },
   locale: {
     // default zh-CN
     default: 'zh-CN',
-    antd: true,
+    antd: true
   },
   routes: [
     {
@@ -21,16 +20,16 @@ export default defineConfig({
       path: '/login',
       component: './Login',
       layout: false,
-      hideInMenu:true
+      hideInMenu: true
     },
     {
       path: '/',
-      redirect: '/login',
+      redirect: '/login'
     },
     {
       name: 'Factors',
       path: '/home',
-      component: './Home',
+      component: './Home'
     },
     {
       name: 'Quant',
@@ -43,7 +42,7 @@ export default defineConfig({
             {
               path: '/quant/model/analyze',
               name: '风险分析',
-              component: './Analyze',
+              component: './Analyze'
             }
           ]
         }
@@ -52,7 +51,7 @@ export default defineConfig({
     {
       name: ' FinChat',
       path: '/finchat',
-      component: './Finchat',
+      component: './Finchat'
     },
     {
       name: 'Users',
@@ -71,6 +70,5 @@ export default defineConfig({
       ]
     }
   ],
-  npmClient: 'yarn',
+  npmClient: 'yarn'
 });
-

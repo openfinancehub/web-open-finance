@@ -1,7 +1,7 @@
 import { Avatar, Tooltip } from 'antd';
 
-import React from 'react';
 import classNames from 'classnames';
+import React from 'react';
 import styles from './index.less';
 
 export declare type SizeType = number | 'small' | 'default' | 'large';
@@ -20,17 +20,24 @@ export type AvatarListProps = {
   maxLength?: number;
   excessItemsStyle?: React.CSSProperties;
   style?: React.CSSProperties;
-  children: React.ReactElement<AvatarItemProps> | React.ReactElement<AvatarItemProps>[];
+  children:
+    | React.ReactElement<AvatarItemProps>
+    | React.ReactElement<AvatarItemProps>[];
 };
 
 const avatarSizeToClassName = (size?: SizeType | 'mini') =>
   classNames(styles.avatarItem, {
     [styles.avatarItemLarge]: size === 'large',
     [styles.avatarItemSmall]: size === 'small',
-    [styles.avatarItemMini]: size === 'mini',
+    [styles.avatarItemMini]: size === 'mini'
   });
 
-const Item: React.FC<AvatarItemProps> = ({ src, size, tips, onClick = () => {} }) => {
+const Item: React.FC<AvatarItemProps> = ({
+  src,
+  size,
+  tips,
+  onClick = () => {}
+}) => {
   const cls = avatarSizeToClassName(size);
 
   return (
@@ -55,11 +62,13 @@ const AvatarList: React.FC<AvatarListProps> & { Item: typeof Item } = ({
 }) => {
   const numOfChildren = React.Children.count(children);
   const numToShow = maxLength >= numOfChildren ? numOfChildren : maxLength;
-  const childrenArray = React.Children.toArray(children) as React.ReactElement<AvatarItemProps>[];
-  const childrenWithProps = childrenArray.slice(0, numToShow).map((child) =>
+  const childrenArray = React.Children.toArray(
+    children
+  ) as React.ReactElement<AvatarItemProps>[];
+  const childrenWithProps = childrenArray.slice(0, numToShow).map(child =>
     React.cloneElement(child, {
-      size,
-    }),
+      size
+    })
   );
 
   if (numToShow < numOfChildren) {
@@ -67,8 +76,10 @@ const AvatarList: React.FC<AvatarListProps> & { Item: typeof Item } = ({
 
     childrenWithProps.push(
       <li key="exceed" className={cls}>
-        <Avatar size={size} style={excessItemsStyle}>{`+${numOfChildren - maxLength}`}</Avatar>
-      </li>,
+        <Avatar size={size} style={excessItemsStyle}>{`+${
+          numOfChildren - maxLength
+        }`}</Avatar>
+      </li>
     );
   }
 

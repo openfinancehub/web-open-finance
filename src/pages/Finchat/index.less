@@ -1,0 +1,75 @@
+.wrapFinchat {
+  width: 100%;
+  height: calc(100vh - 104px);
+  display: flex;
+  border: 1px solid #ccc;
+  .left {
+    width: 250px;
+    height: 100%;
+    background: rgba(32, 33, 35, 1);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    :global(.ant-radio-group) {
+      margin: 12px 0;
+    }
+    #scrollableDiv {
+      flex: 1;
+    }
+  }
+  .right {
+    flex: 1;
+    position: relative;
+
+    .content {
+      .user {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 24px 0 0;
+      }
+      :global(.ant-card) {
+        width: 70% !important;
+        border-radius: 4px;
+      }
+      :global(.ant-card-body) {
+        padding: 12px;
+        font-size: 14px;
+      }
+      .tag {
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+      }
+    }
+    .wrapTxt {
+      .top {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 85px;
+      }
+      .bottom {
+        display: flex;
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        width: 70%;
+        transform: translateX(-50%);
+        :global(.ant-input-affix-wrapper) {
+          height: 44px;
+          border-radius: 4px;
+        }
+        :global(.ant-btn) {
+          height: 44px;
+          margin: 0 0 0 12px;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}
