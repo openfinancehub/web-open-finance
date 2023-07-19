@@ -1,48 +1,60 @@
-import { AndroidOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  AndroidOutlined,
+  AudioOutlined,
+  PlusOutlined,
+  UserOutlined
+} from '@ant-design/icons';
 import { Button, Card, Input, Radio } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import io, { Socket } from 'socket.io-client';
+import { HomeServices } from '@/services';
 import { ChatList, CompanyList } from './components';
-
 import styles from './index.less';
+import useWebSocket from './useWebsocket';
+
+const { Search } = Input;
+
+const suffix = (
+  <AudioOutlined
+    style={{
+      fontSize: 16,
+      color: '#1677ff'
+    }}
+  />
+);
 
 const Finchat = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
-  const [messages, setMessages] = useState<any[]>([]);
   const [activeKey, setActiveKey] = useState<string>('a');
+  // ws://121.37.5.77:5004
+  const { message, sendWebSocketMessage } = useWebSocket('ws://xxxxxx');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  useEffect(() => {
-    const newSocket = io('');
-    setSocket(newSocket);
+  const fetchModels = async () => {
+    try {
+      const res = await HomeServices.fetchModels({ data: 0 });
+    } catch (error) {}
+  };
 
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on('message', (message: string) => {
-        setMessages(prevMessages => [...prevMessages, message]);
-      });
-    }
-  }, [socket]);
+  const onSearch = (value: string) => console.log(value);
 
   const handleSendMessage = () => {
-    // if (message && socket) {
-    //   socket.emit('message', message);
-    //   // setMessages([...messages, { content: inputValue, sender: 'user' }]);
-    //   setInputValue('');
-    // }
-    setMessages([...messages, { content: inputValue, sender: 'user' }]);
+    sendWebSocketMessage(inputValue);
     setInputValue('');
   };
+
+  //  const handleSendMessage = () => {
+  //    if (inputValue && socket) {
+  //      socket.emit('message', inputValue);
+  //      // setMessages([...messages, { content: inputValue, sender: 'user' }]);
+  //      setInputValue('');
+  //    }
+  //    setMessages([...messages, { content: inputValue, sender: 'user' }]);
+  //    setInputValue('');
+  //  };
 
   const handleChange = (e: any) => {
     setActiveKey(e.target.value);
@@ -61,13 +73,19 @@ const Finchat = () => {
           buttonStyle="solid"
           onChange={handleChange}>
           <Radio.Button value="a">Companies</Radio.Button>
-          <Radio.Button value="b">Chats</Radio.Button>
+          <Radio.Button value="b">Roles</Radio.Button>
         </Radio.Group>
+        <Search
+          placeholder="Search by name or ticker"
+          allowClear
+          onSearch={onSearch}
+          style={{ width: '80%', margin: '0 0 12px 0' }}
+        />
         {activeKey === 'a' ? <CompanyList /> : <ChatList />}
       </div>
       <div className={styles.right}>
         <div className={styles.content}>
-          {messages.map((item, index) => {
+          {message.map((item, index) => {
             if (item.sender === 'user') {
               return (
                 <div className={styles.user} key={index}>

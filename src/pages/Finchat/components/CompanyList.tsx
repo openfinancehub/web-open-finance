@@ -1,6 +1,6 @@
-import { Avatar, Divider, List, Skeleton } from 'antd';
-import React, { useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import React, { useState } from 'react';
+
+import styles from './index.less';
 
 interface DataType {
   gender: string;
@@ -21,61 +21,37 @@ interface DataType {
 const CompanyList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DataType[]>([]);
-
-  const loadMoreData = () => {
-    if (loading) {
-      return;
+  const list = [
+    {
+      src: 'https://www.stratosphere.io/assets/images/search/logos/AAPL.svg',
+      name: 'Apple Inc.'
+    },
+    {
+      src: 'https://www.stratosphere.io/assets/images/search/logos/2222.SR.svg',
+      name: 'Saudi Arabian Oil Company'
+    },
+    {
+      src: 'https://www.stratosphere.io/assets/images/search/logos/MSFT.svg',
+      name: 'Microsoft Corporation'
+    },
+    {
+      src: 'https://www.stratosphere.io/assets/images/search/logos/AMZN.svg',
+      name: 'Amazon.com, Inc.'
+    },
+    {
+      src: 'https://www.stratosphere.io/assets/images/search/logos/TSLA.svg',
+      name: 'Tesla, Inc.'
     }
-    setLoading(true);
-    fetch(
-      'https://randomuser.me/api/?results=10&inc=name,gender,email,nat,picture&noinfo'
-    )
-      .then(res => res.json())
-      .then(body => {
-        setData([...data, ...body.results]);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    loadMoreData();
-  }, []);
+  ];
 
   return (
-    <div
-      id="scrollableDiv"
-      style={{
-        background: '#fff',
-        height: '80%',
-        width: '80%',
-        overflow: 'auto',
-        // padding: '0 16px',
-        border: '1px solid rgba(140, 140, 140, 0.35)'
-      }}
-    >
-      <InfiniteScroll
-        dataLength={data.length}
-        next={loadMoreData}
-        hasMore={data.length < 50}
-        loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-        endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
-        scrollableTarget="scrollableDiv"
-      >
-        <List
-          dataSource={data}
-          renderItem={item => (
-            <List.Item key={item.email}>
-              <List.Item.Meta
-                avatar={<Avatar src={item.picture.large} />}
-                title={<a href="https://ant.design">{item.name.last}</a>}
-              />
-            </List.Item>
-          )}
-        />
-      </InfiniteScroll>
+    <div className={styles.wrapList}>
+      {[...list, ...list, ...list, ...list, ...list].map((item, index) => (
+        <p key={item.name + index}>
+          <img src={item.src} />
+          {item.name}
+        </p>
+      ))}
     </div>
   );
 };

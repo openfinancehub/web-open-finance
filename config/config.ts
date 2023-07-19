@@ -1,4 +1,5 @@
 import { defineConfig } from '@umijs/max';
+import { resolve } from 'path';
 
 export default defineConfig({
   antd: {},
@@ -6,8 +7,21 @@ export default defineConfig({
   model: {},
   initialState: {},
   request: {},
+  theme: {
+    '@border-radius-base': '8px'
+  },
+  alias: {
+    '@': resolve(__dirname, '../src')
+  },
   layout: {
     title: 'Open Finance'
+  },
+  proxy: {
+    '/api': {
+      target: 'http://121.37.5.77:5003',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '/api' }
+    }
   },
   locale: {
     // default zh-CN
