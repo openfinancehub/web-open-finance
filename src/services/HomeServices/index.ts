@@ -1,6 +1,3 @@
-/*
- * @LastEditors: sharp
- */
 import { ApiUrl } from '../apiConfig';
 import { REQUEST } from '../AxionsInstance';
 

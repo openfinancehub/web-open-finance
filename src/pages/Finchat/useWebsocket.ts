@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useModel } from 'umi';
 
 type WebSocketHook = {
   message: any[];
-  sendWebSocketMessage: (message: string) => void;
+  clearMessage: () => void;
+  sendWebSocketMessage: (message: string, info: any) => void;
 };
 
 const useWebSocket = (url: string): WebSocketHook => {
+  const {
+    initialState: { currentUser }
+  } = useModel('@@initialState');
+  console.log(currentUser);
+
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<any[]>([]);
 
@@ -17,9 +24,14 @@ const useWebSocket = (url: string): WebSocketHook => {
     };
 
     newSocket.onmessage = event => {
+      console.log(event, 99);
       const response = JSON.parse(event.data || '{}');
       const content = response.output?.answer;
-      setMessage(pre => [...pre, { sender: 'bot', content }]);
+      // const tempList = [...message];
+      setMessage(pre => {
+        const tempList = [...pre].map(item => ({ ...item, flag: false }));
+        return [...tempList, { sender: 'bot', content }];
+      });
     };
 
     newSocket.onerror = error => {
@@ -38,19 +50,38 @@ const useWebSocket = (url: string): WebSocketHook => {
     };
   }, [url]);
 
-  const sendWebSocketMessage = (message: string) => {
-    setMessage(pre => [...pre, { sender: 'user', content: message }]);
+  const clearMessage = () => {
+    setMessage([]);
+  };
+
+  const sendWebSocketMessage = (message: string, info: any) => {
+    setMessage(pre => [
+      ...pre,
+      { sender: 'user', content: message, flag: true }
+    ]);
 
     if (socket && socket.readyState === WebSocket.OPEN) {
       const data = {
-        header: { user: 'admin', token: 'yes' },
-        data: { name: 'test', role: 'test-buffett', input: message }
+        header: {
+          // currentUser.username
+          user: 'admin',
+          token: 'yes',
+          req_id: currentUser.id,
+          req_src: currentUser.avatarUrl
+        },
+        data: {
+          role: info.role,
+          input: message,
+          company: info.company,
+          task: info.task,
+          session_id: '1234123'
+        }
       };
       socket.send(JSON.stringify(data));
     }
   };
 
-  return { message, sendWebSocketMessage };
+  return { message, sendWebSocketMessage, clearMessage };
 };
 
 export default useWebSocket;

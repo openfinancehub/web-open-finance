@@ -1,27 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import styles from './index.less';
-
-interface DataType {
-  gender: string;
-  name: {
-    title: string;
-    first: string;
-    last: string;
-  };
-  email: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
-  nat: string;
+interface InternalProps {
+  list: any[];
+  handleProps: (item: any) => void;
 }
 
-const CompanyList: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<DataType[]>([]);
-  const list = [
+const CompanyList: React.FC<InternalProps> = ({ list, handleProps }) => {
+  const tempList = [
     {
       src: 'https://www.stratosphere.io/assets/images/search/logos/AAPL.svg',
       name: 'Apple Inc.'
@@ -44,12 +30,17 @@ const CompanyList: React.FC = () => {
     }
   ];
 
+  const handleChooseCompany = item => {
+    console.log(item, 'item');
+    handleProps(item);
+  };
+
   return (
     <div className={styles.wrapList}>
-      {[...list, ...list, ...list, ...list, ...list].map((item, index) => (
-        <p key={item.name + index}>
-          <img src={item.src} />
-          {item.name}
+      {list.map((item, index) => (
+        <p key={item.company + index} onClick={() => handleChooseCompany(item)}>
+          <img src={item.src ? item.src : tempList[index % 5]?.src} />
+          {item.company}
         </p>
       ))}
     </div>
