@@ -68,7 +68,7 @@ const Factor: React.FC<MyComponentProps> = () => {
     const getstock_kline = (stock_id) => {
         const data = {
             stock_id: stock_id,
-            days: 2,
+            days: 1,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('quant/getstock_kline', {

@@ -25,9 +25,9 @@ export default defineConfig({
       pathRewrite: { '^/api': '/api' }
     },
     '/quant': {
-      'target': 'http://139.159.205.40:8808/',
-      'changeOrigin': true,
-      'pathRewrite': { '^/api': '/quant' },
+      target: 'http://139.159.205.40:8808/',
+      changeOrigin: true,
+      pathRewrite: { '^/quant': '/quant' },
     }
   },
   locale: {
