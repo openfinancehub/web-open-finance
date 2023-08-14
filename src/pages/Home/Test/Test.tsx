@@ -32,7 +32,7 @@ const transformData = (inputData: { [x: string]: any[]; }) => {
 
 const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeGraph>,
   containerRef: React.RefObject<HTMLDivElement>,
-  handleTriggerEvent) => {
+  handleTriggerEvent: { (): Promise<void>; (): void; }) => {
   try {
     const dataJson = await categoryJson();
     const transformedData = transformData(dataJson.data);
@@ -66,10 +66,17 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
         size: 26,
       },
       layout: {
-        type: 'dendrogram',
+        type: 'compactBox',
         direction: 'LR',
-        nodeSep: 20,
+        nodeSep: 30,
         rankSep: 100,
+        getWidth: (d) => {
+          if (d.children) {
+            console.log(d)
+            return d.children.length * 20; // 为非叶节点生成 0 到 500 之间的随机值
+          }
+          return  100; // 为叶节点同样生成 0 到 500 之间的随机值
+        },
         radial: true,
       },
     });

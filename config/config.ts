@@ -1,5 +1,6 @@
 import { defineConfig } from '@umijs/max';
 import { resolve } from 'path';
+import defaultSettings from './defaultSettings';
 
 export default defineConfig({
   antd: {},
@@ -8,30 +9,31 @@ export default defineConfig({
   initialState: {},
   request: {},
   theme: {
-    '@border-radius-base': '8px',
+    '@border-radius-base': '8px'
   },
   alias: {
-    '@': resolve(__dirname, '../src'),
+    '@': resolve(__dirname, '../src')
   },
   layout: {
     title: 'Open Finance',
+    ...defaultSettings
   },
   proxy: {
     '/api': {
       target: 'http://121.37.5.77:5003',
       changeOrigin: true,
-      pathRewrite: { '^/api': '/api' },
+      pathRewrite: { '^/api': '/api' }
     },
     '/quant': {
       target: 'http://139.159.205.40:8808/',
       changeOrigin: true,
-      pathRewrite: { '^/api': '/quant' },
-    },
+      pathRewrite: { '^/quant': '/quant' },
+    }
   },
   locale: {
     // default zh-CN
     default: 'zh-CN',
-    antd: true,
+    antd: true
   },
   routes: [
     {
@@ -39,16 +41,16 @@ export default defineConfig({
       path: '/login',
       component: './Login',
       layout: false,
-      hideInMenu: true,
+      hideInMenu: true
     },
     {
       path: '/',
-      redirect: '/login',
+      redirect: '/login'
     },
     {
       name: 'Factors',
       path: '/home',
-      component: './Home',
+      component: './Home'
     },
     {
       name: 'Quant',
@@ -71,7 +73,7 @@ export default defineConfig({
     {
       name: ' FinChat',
       path: '/finchat',
-      component: './Finchat',
+      component: './Finchat'
     },
     {
       path: '/home/model/item',
@@ -91,14 +93,14 @@ export default defineConfig({
         {
           path: 'user/info',
           name: '个人信息',
-          component: './UserInfo/Info',
+          component: './UserInfo/Info'
         },
         {
           path: 'user/content',
           name: '发布内容',
-          component: './UserInfo/Content',
-        },
-      ],
+          component: './UserInfo/Content'
+        }
+      ]
     },
     {
       path: '/analyze/factordelite',
@@ -109,7 +111,7 @@ export default defineConfig({
       path: '/analyze/strategy',
       component: './Analyze/components/Delite/Strategy.tsx',
       exact: true,
-    },
+    }
   ],
-  npmClient: 'yarn',
+  npmClient: 'yarn'
 });

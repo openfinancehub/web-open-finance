@@ -1,4 +1,4 @@
-# Web Open Finance （金融平权web端）
+# Web Open Finance （金融平权 web 端）
 
 该项目由 `@umijs/max` 模板项目，更多功能参考 [Umi Max 简介](https://umijs.org/docs/max/introduce) 提供技术支持
 
@@ -49,7 +49,7 @@
 
 ### 技术栈
 
-[`React`](https://github.com/facebook/react)[UmiJs](https://umijs.org/zh-CN/docs) [`Typescript`](https://github.com/Microsoft/TypeScript) [`React Router`](https://github.com/ReactTraining/react-router) [`Redux`](https://github.com/reduxjs/redux) [`Ant Design`](https://github.com/ant-design/ant-design)[`Pro Component`](https://procomponents.ant.design/docs)[`Ant Design Pro`](https://pro.ant.design/zh-CN/) [`Jest`](https://github.com/facebook/jest) [`ECharts`](https://github.com/apache/incubator-echarts) [`Webpack`](https://github.com/webpack/webpack) [`Babel`](https://github.com/babel/babel) [`enzyme`](https://github.com/airbnb/enzyme) 
+[`React`](https://github.com/facebook/react)[UmiJs](https://umijs.org/zh-CN/docs) [`Typescript`](https://github.com/Microsoft/TypeScript) [`React Router`](https://github.com/ReactTraining/react-router) [`Redux`](https://github.com/reduxjs/redux) [`Ant Design`](https://github.com/ant-design/ant-design)[`Pro Component`](https://procomponents.ant.design/docs)[`Ant Design Pro`](https://pro.ant.design/zh-CN/) [`Jest`](https://github.com/facebook/jest) [`ECharts`](https://github.com/apache/incubator-echarts) [`Webpack`](https://github.com/webpack/webpack) [`Babel`](https://github.com/babel/babel) [`enzyme`](https://github.com/airbnb/enzyme)
 
 ### React Typescript 编写规范
 

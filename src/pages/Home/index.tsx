@@ -20,8 +20,8 @@ const Home: React.FC = () => {
     <>
       <ProCard split="vertical">
         <ProCard title="" colSpan="30%" >
-          {/* <FactorItem onFilterFinance={handleFilterFinance} /> */}
-          {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <FactorItem onFilterFinance={handleFilterFinance} />}
+          <FactorItem onFilterFinance={handleFilterFinance} />
+          {/* {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <FactorItem onFilterFinance={handleFilterFinance} />} */}
         </ProCard>
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
@@ -35,8 +35,8 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container'>
-              {/* {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <Models data={financeData} />} */}
-              <Models data={financeData} />
+              {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <Models data={financeData} />}
+              {/* <Models data={financeData} /> */}
             </div>
           </ProCard>
         </ProCard>

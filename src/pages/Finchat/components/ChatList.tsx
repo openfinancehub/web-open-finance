@@ -1,28 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import styles from './index.less';
 
-interface DataType {
-  gender: string;
-  name: {
-    title: string;
-    first: string;
-    last: string;
-  };
-  email: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
-  nat: string;
+interface InternalProps {
+  list: any[];
+  handleProps: (item: any) => void;
 }
 
-const ChatList: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<DataType[]>([]);
-
-  const list = [
+const ChatList: React.FC<InternalProps> = ({ list, handleProps }) => {
+  const tempList = [
     {
       src: 'https://randomuser.me/api/portraits/women/95.jpg',
       name: 'Van Dort'
@@ -45,12 +31,17 @@ const ChatList: React.FC = () => {
     }
   ];
 
+  const handleChooseRole = (item: any) => {
+    console.log(item, 999);
+    handleProps(item);
+  };
+
   return (
     <div className={styles.wrapList}>
-      {[...list, ...list, ...list, ...list, ...list].map((item, index) => (
-        <p key={item.name + index}>
-          <img src={item.src} />
-          <span className={styles.personName}>{item.name}</span>
+      {list.map((item, index) => (
+        <p key={item.role + index} onClick={() => handleChooseRole(item)}>
+          <img src={item.src ? item.src : tempList[index % 5]?.src} />
+          <span className={styles.personName}>{item.role}</span>
         </p>
       ))}
     </div>
