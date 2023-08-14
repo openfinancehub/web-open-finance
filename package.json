@@ -14,11 +14,11 @@
     "@ant-design/icons": "^5.0.1",
     "@ant-design/plots": "^1.2.5",
     "@ant-design/pro-components": "^2.4.4",
+    "@antv/g6": "^4.8.21",
     "@umijs/max": "^4.0.72",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-react": "^1.0.6",
     "antd": "^4.19.0",
-    "axios": "^1.4.0",
     "numeral": "^2.0.6",
     "react-infinite-scroll-component": "^6.1.0",
     "socket.io-client": "^4.7.1"

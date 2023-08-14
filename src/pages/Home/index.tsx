@@ -1,16 +1,44 @@
 import { ProCard } from '@ant-design/pro-components';
-import { useModel } from '@umijs/max';
-
+import FactorItem from './components/FinanceModels/FactorItem'
+import Models from './components/FinanceModels/Models'
+import TestIndex from './Test/Test'
+import React, { useState } from 'react';
+import HeaderTitle from './components/FinanceModels/HeaderTitle'
 const Home: React.FC = () => {
-  const { name } = useModel('global');
+  const [isActivePage, setActivePage] = useState(false);
+  const [filteredModels, setFilteredModels] = useState([]);
+  const [financeData, setFinanceData] = useState([]);
+
+  const handleFilterFinance = (newData: React.SetStateAction<never[]>) => {
+    setFinanceData(newData);
+    setFilteredModels(newData);
+  };
+  const handleModelsChange = (filteredModels: any) => {
+    setFinanceData(filteredModels);
+  };
   return (
     <>
       <ProCard split="vertical">
-        <ProCard title="左侧详情" colSpan="30%">
-          左侧内容
+        <ProCard title="" colSpan="30%" >
+          {/* <FactorItem onFilterFinance={handleFilterFinance} /> */}
+          {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <FactorItem onFilterFinance={handleFilterFinance} />}
         </ProCard>
-        <ProCard title="左右分栏子卡片带标题" headerBordered>
-          <div style={{ height: 360 }}>右侧内容</div>
+        <ProCard title="" split="horizontal" headerBordered>
+          <ProCard title="" headerBordered>
+            <HeaderTitle
+              models={financeData}
+              onModelsChange={handleModelsChange}
+              originalData={filteredModels}
+              isActivePage={isActivePage}
+              setActivePage={setActivePage}
+            />
+          </ProCard>
+          <ProCard title="" headerBordered>
+            <div id='container'>
+              {/* {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <Models data={financeData} />} */}
+              <Models data={financeData} />
+            </div>
+          </ProCard>
         </ProCard>
       </ProCard>
     </>

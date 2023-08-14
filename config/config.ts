@@ -1,4 +1,5 @@
 import { defineConfig } from '@umijs/max';
+import { resolve } from 'path';
 
 export default defineConfig({
   antd: {},
@@ -6,25 +7,48 @@ export default defineConfig({
   model: {},
   initialState: {},
   request: {},
+  theme: {
+    '@border-radius-base': '8px'
+  },
+  alias: {
+    '@': resolve(__dirname, '../src')
+  },
+  layout: {
+    title: 'Open Finance'
+  },
   proxy: {
+    '/api': {
+      target: 'http://121.37.5.77:5003',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '/api' }
+    },
     '/quant': {
       'target': 'http://139.159.205.40:8808/',
       'changeOrigin': true,
       'pathRewrite': { '^/api': '/quant' },
     }
   },
-  layout: {
-    title: 'Open Finance',
+  locale: {
+    // default zh-CN
+    default: 'zh-CN',
+    antd: true
   },
   routes: [
     {
+      name: '登录页',
+      path: '/login',
+      component: './Login',
+      layout: false,
+      hideInMenu: true
+    },
+    {
       path: '/',
-      redirect: '/home',
+      redirect: '/login'
     },
     {
       name: 'Factors',
       path: '/home',
-      component: './Home',
+      component: './Home'
     },
     {
       name: 'Quant',
@@ -38,7 +62,7 @@ export default defineConfig({
       //       {
       //         path: '/quant/model/analyze',
       //         name: '风险分析',
-      //         component: './Analyze',
+      //         component: './Analyze'
       //       }
       //     ]
       //   }
@@ -47,7 +71,19 @@ export default defineConfig({
     {
       name: ' FinChat',
       path: '/finchat',
-      component: './Finchat',
+      component: './Finchat'
+    },
+    {
+      path: '/home/model/item',
+      name: 'modelItem',
+      component: './Home/components/ModelsItems/',
+      exact: true,
+    },
+    {
+      path: '/home/test',
+      name: 'test',
+      component: './Home/Test',
+      exact: true,
     },
     {
       name: 'Users',
@@ -76,6 +112,5 @@ export default defineConfig({
       exact: true,
     }
   ],
-  npmClient: 'yarn',
+  npmClient: 'yarn'
 });
-

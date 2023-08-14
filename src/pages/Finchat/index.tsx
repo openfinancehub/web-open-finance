@@ -14,14 +14,14 @@ import useWebSocket from './useWebsocket';
 
 const { Search } = Input;
 
-const suffix = (
-  <AudioOutlined
-    style={{
-      fontSize: 16,
-      color: '#1677ff'
-    }}
-  />
-);
+// const suffix = (
+//   <AudioOutlined
+//     style={{
+//       fontSize: 16,
+//       color: '#1677ff'
+//     }}
+//   />
+// );
 
 const Finchat = () => {
   const [inputValue, setInputValue] = useState<string>('');
