@@ -1,5 +1,6 @@
 import { defineConfig } from '@umijs/max';
 import { resolve } from 'path';
+import defaultSettings from './defaultSettings';
 
 export default defineConfig({
   antd: {},
@@ -14,11 +15,12 @@ export default defineConfig({
     '@': resolve(__dirname, '../src')
   },
   layout: {
-    title: 'Open Finance'
+    title: 'Open Finance',
+    ...defaultSettings
   },
   proxy: {
     '/api': {
-      target: 'http://121.37.5.77:5003',
+      target: 'http://121.37.5.77:5005',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
     }

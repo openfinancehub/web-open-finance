@@ -15,11 +15,11 @@ module.exports = {
   // 在jsx中把'>' 是否单独放一行
   jsxBracketSameLine: true,
   // 使用默认的折行标准
-  proseWrap: 'preserve',
+  // proseWrap: 'preserve',
   // 根据显示样式决定 html 要不要折行
   htmlWhitespaceSensitivity: 'css',
   // 换行符使用 crlf/lf/auto
-  endOfLine: 'auto',
+  // endOfLine: 'auto',
   overrides: [{ files: '.prettierrc', options: { parser: 'json' } }],
   plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-packagejson']
 };
