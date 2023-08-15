@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ProCard } from '@ant-design/pro-components';
+import { ProCard,ProFormCascader } from '@ant-design/pro-components';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Space, Dropdown, Popover, Select, MenuProps } from 'antd';
+import { Button, Space, Dropdown, Popover, Select, MenuProps,Cascader  } from 'antd';
 const { Option } = Select;
 import { Stock } from '@ant-design/plots';
 import { Link, request } from 'umi';
@@ -61,7 +61,26 @@ const Factor: React.FC<MyComponentProps> = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            setQuantData(res.data)
+            var long = res.data.long
+            var short = res.data.short
+            long.forEach((item)=>{
+                item.struct.children.forEach((obj)=>{
+                    obj.value = obj.label
+                    obj.children.forEach((obj2)=>{
+                        obj2.value = obj2.label
+                    })
+                })
+            })
+            short.forEach((item)=>{
+                item.struct.children.forEach((obj)=>{
+                    obj.value = obj.label
+                    obj.children.forEach((obj2)=>{
+                        obj2.value = obj2.lable
+                    })
+                })
+            })
+            console.log(long)
+            setQuantData({long,short})
         }).catch(err => { console.log(err) })
     };
     // 某只股票近N天的K线数据的接口
@@ -178,7 +197,7 @@ const Factor: React.FC<MyComponentProps> = () => {
         console.log(value)
         setTwoEstimate(estimate[value][1])
     }
-    
+
     return (
         <ProCard gutter={16} ghost wrap>
             <ProCard
@@ -211,7 +230,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                                 <div key={item.name}>
                                     <Space>
                                         <Button type="primary" size={size}>{item.name}</Button>
-                                        <Select
+                                        {/* <Select
                                             onChange={(value) => { handleProvinceChange(item.measures, value) }}
                                             defaultValue={item.measures[0].desc}
                                             style={{ width: 120 }}
@@ -230,7 +249,15 @@ const Factor: React.FC<MyComponentProps> = () => {
                                             defaultValue={cities[0]}
                                             options={cities.map((city) => ({ label: city, value: city }))}
                                         />
-                                        <Button type="primary" size={size}>{twoestimate}</Button>
+                                        <Button type="primary" size={size}>{twoestimate}</Button> */}
+                                        {/* <ProFormCascader
+                                            width={'200px'}
+                                            name="areaList"
+                                            request={async (item) => [
+                                               item.struct.children
+                                            ]}
+                                        /> */}
+                                        <Cascader style={{width:'100%'}} options={item.struct.children} size={size} fieldNames={{label:'value',value:'label'}} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
                                         <Popover content={<div style={{ width: "500px" }} >{item.desc}</div>} title="描述">
@@ -251,7 +278,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                                 <div key={item.name}>
                                     <Space>
                                         <Button type="primary" size={size}>{item.name}</Button>
-                                        <Select
+                                        {/* <Select
                                             onChange={(value) => { handleProvinceChange(item.measures, value) }}
                                             defaultValue={item.measures[0].desc}
                                             style={{ width: 120 }}
@@ -270,7 +297,8 @@ const Factor: React.FC<MyComponentProps> = () => {
                                             defaultValue={cities[0]}
                                             options={cities.map((city) => ({ label: city, value: city }))}
                                         />
-                                        <Button type="primary" size={size}>{twoestimate}</Button>
+                                        <Button type="primary" size={size}>{twoestimate}</Button> */}
+                                        <Cascader style={{width:'100%'}} options={item.struct.children} size={size} fieldNames={{label:'value',value:'label'}} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
                                         <Popover content={<div style={{ width: "500px" }} >{item.desc}</div>} title="描述">
