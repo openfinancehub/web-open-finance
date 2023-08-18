@@ -30,7 +30,7 @@ const Factor: React.FC<MyComponentProps> = () => {
     const data = {
       key: '8140ad230f687daede75a08855e8ae5ff40c3ba8'
     };
-    request('http://139.159.205.40:8808/quant/sotcklist', {
+    request('quant/sotcklist', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ const Factor: React.FC<MyComponentProps> = () => {
       categories: 'factor',
       key: '8140ad230f687daede75a08855e8ae5ff40c3ba8'
     };
-    request('http://139.159.205.40:8808/quant/stockanalysis', {
+    request('quant/stockanalysis', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -74,10 +74,10 @@ const Factor: React.FC<MyComponentProps> = () => {
   const getstock_kline = stock_id => {
     const data = {
       stock_id: stock_id,
-      days: 2,
+      days: 1,
       key: '8140ad230f687daede75a08855e8ae5ff40c3ba8'
     };
-    request('http://139.159.205.40:8808/quant/getstock_kline', {
+    request('quant/getstock_kline', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -100,7 +100,7 @@ const Factor: React.FC<MyComponentProps> = () => {
       days: '1',
       key: '8140ad230f687daede75a08855e8ae5ff40c3ba8'
     };
-    request('http://139.159.205.40:8808/quant/historyfactor', {
+    request('quant/historyfactor', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
