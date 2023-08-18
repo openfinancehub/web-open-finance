@@ -26,7 +26,8 @@ const useWebSocket = (url: string): WebSocketHook => {
     newSocket.onmessage = event => {
       console.log(event, 99);
       const response = JSON.parse(event.data || '{}');
-      const content = response.output?.answer;
+      let content = response.output?.answer;
+      content = content.replace(/\n/g, '<br>');
       // const tempList = [...message];
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
@@ -72,7 +73,10 @@ const useWebSocket = (url: string): WebSocketHook => {
         data: {
           role: info.role,
           input: message,
-          company: info.company,
+          company:
+            info.company?.length > 1
+              ? info.company.map((i: any) => i.company)
+              : info.company[0]?.company,
           task: info.task,
           session_id: '1234123'
         }

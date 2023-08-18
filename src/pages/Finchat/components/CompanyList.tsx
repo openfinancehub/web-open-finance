@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styles from './index.less';
 interface InternalProps {
@@ -7,6 +7,7 @@ interface InternalProps {
 }
 
 const CompanyList: React.FC<InternalProps> = ({ list, handleProps }) => {
+  const [selectedList, setSelectedList] = useState<any[]>([]);
   const tempList = [
     {
       src: 'https://www.stratosphere.io/assets/images/search/logos/AAPL.svg',
@@ -30,15 +31,29 @@ const CompanyList: React.FC<InternalProps> = ({ list, handleProps }) => {
     }
   ];
 
-  const handleChooseCompany = item => {
-    console.log(item, 'item');
-    handleProps(item);
+  const handleChooseCompany = (item: any) => {
+    const tempList = [...selectedList];
+    const index = tempList.findIndex((i: any) => i.company === item.company);
+    if (index !== -1) {
+      tempList.splice(index, 1);
+    } else {
+      tempList.push(item);
+    }
+    setSelectedList(tempList);
+    handleProps(tempList);
   };
 
   return (
     <div className={styles.wrapList}>
       {list.map((item, index) => (
-        <p key={item.company + index} onClick={() => handleChooseCompany(item)}>
+        <p
+          key={item.company + index}
+          className={
+            selectedList.some(i => i.company === item.company)
+              ? styles.active
+              : ''
+          }
+          onClick={() => handleChooseCompany(item)}>
           <img src={item.src ? item.src : tempList[index % 5]?.src} />
           {item.company}
         </p>

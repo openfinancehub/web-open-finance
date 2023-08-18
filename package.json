@@ -19,6 +19,7 @@
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-react": "^1.0.6",
     "antd": "^4.19.0",
+    "lodash": "^4.17.21",
     "numeral": "^2.0.6",
     "react-infinite-scroll-component": "^6.1.0",
     "socket.io-client": "^4.7.1"
