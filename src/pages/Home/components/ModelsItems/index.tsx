@@ -1,7 +1,7 @@
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Button, Dropdown, Input } from 'antd';
 import { Route } from 'antd/lib/breadcrumb/Breadcrumb';
-import FinanceItem from './components/FinanceItem'
+import FinanceItem from './FinanceItem'
 // import FirstLeftItem from './components/FirstLeftItem'
 
 interface BreadcrumbProps {
@@ -28,7 +28,7 @@ export default () => (
           routes: [
             {
               path: 'home',
-              breadcrumbName: 'Open Finance'
+              breadcrumbName: 'Open Finance',
             },
             {
               path: 'some/path1',
@@ -38,33 +38,7 @@ export default () => (
         },
       }}
       tabBarExtraContent=""
-      tabList={[
-        {
-          tab: 'Text-to-Image',
-          key: 'base',
-          closable: false,
-        },
-        {
-          tab: 'Diffusers',
-          key: 'info1',
-        },
-        {
-          tab: 'stable-diffusion',
-          key: 'info2',
-        },
-        {
-          tab: 'arxiv:2307.01952',
-          key: 'info3',
-        },
-        {
-          tab: 'arxiv:230952',
-          key: 'info4',
-        },
-        {
-          tab: 'other',
-          key: 'info5',
-        },
-      ]}
+      tabList={[]}
       tabProps={{
         type: 'editable-card',
         hideAdd: true,
