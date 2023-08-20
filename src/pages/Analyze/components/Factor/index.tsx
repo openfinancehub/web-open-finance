@@ -68,6 +68,9 @@ const Factor: React.FC<MyComponentProps> = () => {
                     obj.value = obj.label
                     obj.children.forEach((obj2)=>{
                         obj2.value = obj2.label
+                        obj2.children.forEach((obj3)=>{
+                            obj3.value = (obj3.value*100).toFixed(2) + '%'
+                        })
                     })
                 })
             })
@@ -75,11 +78,14 @@ const Factor: React.FC<MyComponentProps> = () => {
                 item.struct.children.forEach((obj)=>{
                     obj.value = obj.label
                     obj.children.forEach((obj2)=>{
-                        obj2.value = obj2.lable
+                        obj2.value = obj2.label
+                        obj2.children.forEach((obj3)=>{
+                            obj3.value = (obj3.value*100).toFixed(2) + '%'
+                        })
                     })
                 })
             })
-            console.log(long)
+            console.log(short)
             setQuantData({long,short})
         }).catch(err => { console.log(err) })
     };
@@ -87,7 +93,7 @@ const Factor: React.FC<MyComponentProps> = () => {
     const getstock_kline = (stock_id) => {
         const data = {
             stock_id: stock_id,
-            days: 1,
+            days: 2,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('quant/getstock_kline', {
@@ -172,7 +178,16 @@ const Factor: React.FC<MyComponentProps> = () => {
         当前涨跌幅: ['mean', 'quantile_10', 'quantile_50', 'quantile_90', 'sigma'],
         平均涨幅: ['mean', 'quantile_10', 'quantile_50', 'quantile_90', 'ceshi'],
     });
-
+    // 对数据进行百分化处理
+    function formatOptionLabel(value, label) {
+        console.log(value,label)
+        // 对数值进行保留两位小数处理
+        if (!isNaN(parseFloat(value))) {
+            console.log(value,label)
+        //   return `${label} (${parseFloat(value).toFixed(2)})`;
+        }
+        // return label;
+      }
     // 暂存评估取值数据 
     const [estimate, setEstimate] = useState({})
     const [twoestimate, setTwoEstimate] = useState(0)
@@ -257,7 +272,10 @@ const Factor: React.FC<MyComponentProps> = () => {
                                                item.struct.children
                                             ]}
                                         /> */}
-                                        <Cascader style={{width:'100%'}} options={item.struct.children} size={size} fieldNames={{label:'value',value:'label'}} placeholder="预估数值" />
+                                        <Cascader style={{width:'100%'}} options={item.struct.children} size={size} 
+                                        fieldNames={{label:'value',value:'label'}} 
+                                        placeholder="预估数值" 
+                                        />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
                                         <Popover content={<div style={{ width: "500px" }} >{item.desc}</div>} title="描述">
