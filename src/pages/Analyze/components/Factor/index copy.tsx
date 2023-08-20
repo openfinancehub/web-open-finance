@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ProCard, ProFormCascader } from '@ant-design/pro-components';
+import { ProCard,ProFormCascader } from '@ant-design/pro-components';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Space, Dropdown, Popover, Select, MenuProps, Cascader } from 'antd';
+import { Button, Space, Dropdown, Popover, Select, MenuProps,Cascader  } from 'antd';
 const { Option } = Select;
-import { Chart, Stock, Line, Mix } from '@ant-design/plots';
+import { Chart,Stock,Line } from '@ant-design/plots';
 import { Link, request } from 'umi';
 // import Demo from './demo.tsx'
 import './style.css'
@@ -24,8 +24,6 @@ const Factor: React.FC<MyComponentProps> = () => {
         long: [],
         short: []
     })
-    // history 的数据
-    const [historyData,setHistoryData] = useState([])
     const [selectedButton, setSelectedButton] = useState('平安银行');
     // 获取当前支持的股票信息
     const sotckList = () => {
@@ -65,30 +63,30 @@ const Factor: React.FC<MyComponentProps> = () => {
         }).then((res) => {
             var long = res.data.long
             var short = res.data.short
-            long.forEach((item) => {
-                item.struct.children.forEach((obj) => {
+            long.forEach((item)=>{
+                item.struct.children.forEach((obj)=>{
                     obj.value = obj.label
-                    obj.children.forEach((obj2) => {
+                    obj.children.forEach((obj2)=>{
                         obj2.value = obj2.label
-                        obj2.children.forEach((obj3) => {
-                            obj3.value = (obj3.value * 100).toFixed(2) + '%'
+                        obj2.children.forEach((obj3)=>{
+                            obj3.value = (obj3.value*100).toFixed(2) + '%'
                         })
                     })
                 })
             })
-            short.forEach((item) => {
-                item.struct.children.forEach((obj) => {
+            short.forEach((item)=>{
+                item.struct.children.forEach((obj)=>{
                     obj.value = obj.label
-                    obj.children.forEach((obj2) => {
+                    obj.children.forEach((obj2)=>{
                         obj2.value = obj2.label
-                        obj2.children.forEach((obj3) => {
-                            obj3.value = (obj3.value * 100).toFixed(2) + '%'
+                        obj2.children.forEach((obj3)=>{
+                            obj3.value = (obj3.value*100).toFixed(2) + '%'
                         })
                     })
                 })
             })
             console.log(short)
-            setQuantData({ long, short })
+            setQuantData({long,short})
         }).catch(err => { console.log(err) })
     };
     // 某只股票近N天的K线数据的接口
@@ -114,7 +112,7 @@ const Factor: React.FC<MyComponentProps> = () => {
     const historyfactor = () => {
         const data = {
             stock_id: '000001',
-            days: "2",
+            days: "1",
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('quant/historyfactor', {
@@ -125,11 +123,6 @@ const Factor: React.FC<MyComponentProps> = () => {
             data: JSON.stringify(data)
         }).then((res) => {
             console.log(res)
-            let sendData = []
-            res.data[60].time.forEach((item,index)=>{
-                sendData.push({time:item,value:res.data[60].factors.OBV.bins[index]})
-            })
-            setHistoryData(sendData)
         }).catch(err => { console.log(err) })
     };
 
@@ -137,7 +130,8 @@ const Factor: React.FC<MyComponentProps> = () => {
         sotckList()
         stockanalysis('000001.SZ')
         getstock_kline('000001')
-        historyfactor()
+        // historyfactor()
+        asyncFetch()
     }, [])
 
     // 点击切换股票数据
@@ -148,115 +142,62 @@ const Factor: React.FC<MyComponentProps> = () => {
     };
 
     // 图表实例
-    /*    const chart = new Chart({
-           container:dom,
-           autoFit:true
-       }) */
+ /*    const chart = new Chart({
+        container:dom,
+        autoFit:true
+    }) */
     // 蜡烛图
     const config = {
-        tooltip: {
-            shared: true,
+        data: factorData,
+        xField: 'time',
+        yField: ['open', 'close', 'high', 'low'],
+        slider: {},
+        meta: {
+            volume: {
+                alias: '成交量',
+            },
+            open: {
+                alias: '开盘价',
+            },
+            close: {
+                alias: '收盘价',
+            },
+            high: {
+                alias: '最高价',
+            },
+            low: {
+                alias: '最低价',
+            },
         },
-        syncViewPadding: true,
-        plots: [
-            {
-                type: 'stock',
-                options: {
-                    data: factorData,
-                    xField: 'time',
-                    yField: ['open', 'close', 'high', 'low'],
-                    slider: {},
-                    meta: {
-                        volume: {
-                            alias: '成交量',
-                        },
-                        open: {
-                            alias: '开盘价',
-                        },
-                        close: {
-                            alias: '收盘价',
-                        },
-                        high: {
-                            alias: '最高价',
-                        },
-                        low: {
-                            alias: '最低价',
-                        },
-                    },
-                    tooltip: {
-                        fields: ['open', 'close', 'high', 'low', 'volume'],
-                    },
-                },
-            },
-            {
-                type: 'line',
-                options: {
-                    data: [
-                        {
-                            date: '2015-02',
-                            value: 0.029,
-                        },
-                        {
-                            date: '2015-08',
-                            value: 0.029,
-                        },
-                        {
-                            date: '2016-01',
-                            value: 0.094,
-                        },
-                        {
-                            date: '2017-02',
-                            value: 0.148,
-                        },
-                        {
-                            date: '2018-01',
-                            value: 0.055,
-                        },
-                        {
-                            date: '2018-08',
-                            value: 0.045,
-                        },
-                    ],
-                    xField: 'date',
-                    yField: 'value',
-                    xAxis: false,
-                    // slider: {},
-                    yAxis: {
-                        line: null,
-                        grid: null,
-                        position: 'right',
-                        max: 0.16,
-                        tickCount: 8,
-                    },
-                    meta: {
-                        date: {
-                            sync: 'date',
-                        },
-                        value: {
-                            alias: '递增',
-                            formatter: (v) => `${(v * 100).toFixed(1)}%`,
-                        },
-                    },
-                    smooth: true,
-                    label: {
-                        callback: (value) => {
-                            return {
-                                offsetY: value === 0.148 ? 36 : value === 0.055 ? 0 : 20,
-                                style: {
-                                    fill: '#1AAF8B',
-                                    fontWeight: 700,
-                                    stroke: '#fff',
-                                    lineWidth: 1,
-                                },
-                            };
-                        },
-                    },
-                    color: '#1AAF8B',
-                },
-            },
-        ],
+        tooltip: {
+            fields: ['open', 'close', 'high', 'low', 'volume'],
+        },
     };
-
+    // 模拟折线数据
+    const [data, setData] = useState([]);
+    const asyncFetch = () => {
+        fetch('https://gw.alipayobjects.com/os/bmw-prod/1d565782-dde4-4bb6-8946-ea6a38ccf184.json')
+          .then((response) => response.json())
+          .then((json) => setData(json))
+          .catch((error) => {
+            console.log('fetch data failed', error);
+          });
+      };
+    // 折线图
+    const configLine = {
+        data,
+        padding: 'auto',
+        xField: 'Date',
+        yField: 'scales',
+        xAxis: {
+          tickCount: 5,
+        },
+        slider: {
+          start: 0.1,
+          end: 0.5,
+        },
+      };    
+      
     // 因子取值
     const [cityData, setcityData] = useState({
         最大涨幅: ['mean', 'quantile_10', 'quantile_50', 'quantile_90', 'sigma'],
@@ -265,14 +206,14 @@ const Factor: React.FC<MyComponentProps> = () => {
     });
     // 对数据进行百分化处理
     function formatOptionLabel(value, label) {
-        console.log(value, label)
+        console.log(value,label)
         // 对数值进行保留两位小数处理
         if (!isNaN(parseFloat(value))) {
-            console.log(value, label)
-            //   return `${label} (${parseFloat(value).toFixed(2)})`;
+            console.log(value,label)
+        //   return `${label} (${parseFloat(value).toFixed(2)})`;
         }
         // return label;
-    }
+      }
 
     return (
         <ProCard gutter={16} ghost wrap>
@@ -295,9 +236,8 @@ const Factor: React.FC<MyComponentProps> = () => {
                 </div>
             </ProCard>
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
-                <ProCard style={{ height: 460 }} bordered>
-                    <Mix {...config}></Mix>
-                    {/* <Stock {...config} /> */}
+                <ProCard style={{ height: 560 }} bordered>
+                    <Stock {...config} />
                     {/* <Line {...configLine} /> */}
                 </ProCard>
                 <ProCard title="看涨因子" type="inner" bordered direction="column">
@@ -334,9 +274,9 @@ const Factor: React.FC<MyComponentProps> = () => {
                                                item.struct.children
                                             ]}
                                         /> */}
-                                        <Cascader style={{ width: '100%' }} options={item.struct.children} size={size}
-                                            fieldNames={{ label: 'value', value: 'label' }}
-                                            placeholder="预估数值"
+                                        <Cascader style={{width:'100%'}} options={item.struct.children} size={size} 
+                                        fieldNames={{label:'value',value:'label'}} 
+                                        placeholder="预估数值" 
                                         />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
@@ -378,7 +318,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                                             options={cities.map((city) => ({ label: city, value: city }))}
                                         />
                                         <Button type="primary" size={size}>{twoestimate}</Button> */}
-                                        <Cascader style={{ width: '100%' }} options={item.struct.children} size={size} fieldNames={{ label: 'value', value: 'label' }} placeholder="预估数值" />
+                                        <Cascader style={{width:'100%'}} options={item.struct.children} size={size} fieldNames={{label:'value',value:'label'}} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
                                         <Popover content={<div style={{ width: "500px" }} >{item.desc}</div>} title="描述">
