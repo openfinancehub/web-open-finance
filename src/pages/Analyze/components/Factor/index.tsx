@@ -5,7 +5,6 @@ import { Button, Space, Dropdown, Popover, Select, MenuProps, Cascader } from 'a
 const { Option } = Select;
 import { Chart, Stock, Line, Mix } from '@ant-design/plots';
 import { Link, request } from 'umi';
-// import Demo from './demo.tsx'
 import './style.css'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -16,6 +15,10 @@ interface MyComponentProps {
 const Factor: React.FC<MyComponentProps> = () => {
     // 按钮的全局样式
     const size = 'large'
+    // 初始因子的折线键值
+    let firstFactor = ''
+    // 响应式的因子键值
+    const [inFactor,setInFactor] = useState(null)
     // 股票种类的数据
     const [sotckListData, setsotckList] = useState([])
     // 因子取值的数据
@@ -24,9 +27,11 @@ const Factor: React.FC<MyComponentProps> = () => {
         long: [],
         short: []
     })
-    // history 的数据
-    const [historyData,setHistoryData] = useState([])
-    const [selectedButton, setSelectedButton] = useState('平安银行');
+    // history 的所有数据
+    const [historyData,setHistoryData] = useState({})
+    // 单个因子的折线数据
+    const [factorLiData,setFactorLiData] = useState([])
+    const [selectedButton, setSelectedButton] = useState('平安银行')
     // 获取当前支持的股票信息
     const sotckList = () => {
         const data = {
@@ -63,6 +68,9 @@ const Factor: React.FC<MyComponentProps> = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
+            firstFactor = res.data.long[0].name
+
+            setInFactor(res.data.long[0].names)
             var long = res.data.long
             var short = res.data.short
             long.forEach((item) => {
@@ -95,7 +103,7 @@ const Factor: React.FC<MyComponentProps> = () => {
     const getstock_kline = (stock_id) => {
         const data = {
             stock_id: stock_id,
-            days: 2,
+            days: 1,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('quant/getstock_kline', {
@@ -105,16 +113,15 @@ const Factor: React.FC<MyComponentProps> = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(res.data)
             setFactorData(res.data)
         }).catch(err => { console.log(err) })
     };
 
     // 某只股票近N天的因子取值的接口
-    const historyfactor = () => {
+    const historyfactor = (stock_id) => {
         const data = {
-            stock_id: '000001',
-            days: "2",
+            stock_id: stock_id,
+            days: "1",
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('quant/historyfactor', {
@@ -124,35 +131,49 @@ const Factor: React.FC<MyComponentProps> = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(res)
-            let sendData = []
-            res.data[60].time.forEach((item,index)=>{
-                sendData.push({time:item,value:res.data[60].factors.OBV.bins[index]})
+            let keysFactor = Object.keys(res.data[60].factors)
+            let successData = {}
+            keysFactor.forEach((i)=>{
+                let sendData:number[] = []
+                res.data[60].time.forEach((j,index) => {
+                    sendData.push({time:j,value:res.data[60].factors[i].bins[index]})
+                    successData = {...successData,[i]:sendData}
+                });
             })
-            setHistoryData(sendData)
-        }).catch(err => { console.log(err) })
+            setHistoryData(successData)
+            setFactorLiData(successData[firstFactor])
+        }).catch(err => { 
+            console.log(err)
+         })
     };
 
     useEffect(() => {
         sotckList()
         stockanalysis('000001.SZ')
         getstock_kline('000001')
-        historyfactor()
+        historyfactor('000001')
     }, [])
 
     // 点击切换股票数据
     const handleButtonChange = (buttonStr: React.SetStateAction<string>, butttonId: React.SetStateAction<string>, buttonNum: any) => {
         getstock_kline(butttonId)
         setSelectedButton(buttonStr);
+        historyfactor(butttonId)
         stockanalysis(butttonId + '.' + buttonNum)
     };
 
-    // 图表实例
-    /*    const chart = new Chart({
-           container:dom,
-           autoFit:true
-       }) */
-    // 蜡烛图
+    /**
+     * 点击切换因子的方法
+     * 用来处理改变折线的数据
+     */
+    const handleValue = (event) =>{
+        let text = event.target.textContent
+        // console.log(event.target.textContent)
+        setFactorLiData(historyData[text])
+        setInFactor(text)
+    }
+    // 组合图
+    console.log(historyData)
     const config = {
         tooltip: {
             shared: true,
@@ -164,23 +185,36 @@ const Factor: React.FC<MyComponentProps> = () => {
                 options: {
                     data: factorData,
                     xField: 'time',
-                    yField: ['open', 'close', 'high', 'low'],
-                    slider: {},
+                    yField: ['open', 'close', 'high', 'low','volume'],
+
+                    // 移除交互
+                    interactions: [{ type: 'tooltip', enable: false }],
+
+                    slider: {
+                        start: 0.1,
+                        end: 0.5,
+                    },
                     meta: {
+                     
                         volume: {
                             alias: '成交量',
+                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
                         },
                         open: {
                             alias: '开盘价',
+                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
                         },
                         close: {
                             alias: '收盘价',
+                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
                         },
                         high: {
                             alias: '最高价',
+                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
                         },
                         low: {
                             alias: '最低价',
+                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
                         },
                     },
                     tooltip: {
@@ -191,89 +225,49 @@ const Factor: React.FC<MyComponentProps> = () => {
             {
                 type: 'line',
                 options: {
-                    data: [
-                        {
-                            date: '2015-02',
-                            value: 0.029,
-                        },
-                        {
-                            date: '2015-08',
-                            value: 0.029,
-                        },
-                        {
-                            date: '2016-01',
-                            value: 0.094,
-                        },
-                        {
-                            date: '2017-02',
-                            value: 0.148,
-                        },
-                        {
-                            date: '2018-01',
-                            value: 0.055,
-                        },
-                        {
-                            date: '2018-08',
-                            value: 0.045,
-                        },
-                    ],
-                    xField: 'date',
+                    data:factorLiData,
+                    xField: 'time',
                     yField: 'value',
                     xAxis: false,
-                    // slider: {},
                     yAxis: {
                         line: null,
-                        grid: null,
+                        // grid: null,
                         position: 'right',
-                        max: 0.16,
-                        tickCount: 8,
+                        // max: 0.16,
+                        // tickCount: 8,
                     },
                     meta: {
                         date: {
                             sync: 'date',
                         },
                         value: {
-                            alias: '递增',
-                            formatter: (v) => `${(v * 100).toFixed(1)}%`,
+                            alias: inFactor||'OBV',
+                            // formatter: (v) => `${(v * 100).toFixed(1)}%`, 
+                            formatter: (v) => `${v}`, 
                         },
                     },
                     smooth: true,
-                    label: {
-                        callback: (value) => {
-                            return {
-                                offsetY: value === 0.148 ? 36 : value === 0.055 ? 0 : 20,
-                                style: {
-                                    fill: '#1AAF8B',
-                                    fontWeight: 700,
-                                    stroke: '#fff',
-                                    lineWidth: 1,
-                                },
-                            };
-                        },
-                    },
-                    color: '#1AAF8B',
+                    // label: {
+                    //     callback: (value) => {
+                    //         return {
+                    //             offsetY: value === 0.148 ? 36 : value === 0.055 ? 0 : 20,
+                    //             style: {
+                    //                 fill: '#1AAF8B',
+                    //                 fontWeight: 700,
+                    //                 stroke: '#fff',
+                    //                 lineWidth: 1,
+                    //             },
+                    //         };
+                    //     },
+                    // },
+                    color: '#000',
                 },
             },
         ],
     };
 
-    // 因子取值
-    const [cityData, setcityData] = useState({
-        最大涨幅: ['mean', 'quantile_10', 'quantile_50', 'quantile_90', 'sigma'],
-        当前涨跌幅: ['mean', 'quantile_10', 'quantile_50', 'quantile_90', 'sigma'],
-        平均涨幅: ['mean', 'quantile_10', 'quantile_50', 'quantile_90', 'ceshi'],
-    });
-    // 对数据进行百分化处理
-    function formatOptionLabel(value, label) {
-        console.log(value, label)
-        // 对数值进行保留两位小数处理
-        if (!isNaN(parseFloat(value))) {
-            console.log(value, label)
-            //   return `${label} (${parseFloat(value).toFixed(2)})`;
-        }
-        // return label;
-    }
-
+    // 模拟数据
+    
     return (
         <ProCard gutter={16} ghost wrap>
             <ProCard
@@ -298,7 +292,6 @@ const Factor: React.FC<MyComponentProps> = () => {
                 <ProCard style={{ height: 460 }} bordered>
                     <Mix {...config}></Mix>
                     {/* <Stock {...config} /> */}
-                    {/* <Line {...configLine} /> */}
                 </ProCard>
                 <ProCard title="看涨因子" type="inner" bordered direction="column">
                     {
@@ -306,34 +299,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                             return (
                                 <div key={item.name}>
                                     <Space>
-                                        <Button type="primary" size={size}>{item.name}</Button>
-                                        {/* <Select
-                                            onChange={(value) => { handleProvinceChange(item.measures, value) }}
-                                            defaultValue={item.measures[0].desc}
-                                            style={{ width: 120 }}
-                                        >
-                                            {
-                                                item.measures.map((province) => {
-                                                    return (
-                                                        <Option key={province.desc} value={province.desc}>{province.desc}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                        <Select
-                                            style={{ width: 120 }}
-                                            onChange={onSecondCityChange}
-                                            defaultValue={cities[0]}
-                                            options={cities.map((city) => ({ label: city, value: city }))}
-                                        />
-                                        <Button type="primary" size={size}>{twoestimate}</Button> */}
-                                        {/* <ProFormCascader
-                                            width={'200px'}
-                                            name="areaList"
-                                            request={async (item) => [
-                                               item.struct.children
-                                            ]}
-                                        /> */}
+                                        <Button type="primary" size={size} onClick={handleValue}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size}
                                             fieldNames={{ label: 'value', value: 'label' }}
                                             placeholder="预估数值"
@@ -357,27 +323,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                             return (
                                 <div key={item.name}>
                                     <Space>
-                                        <Button type="primary" size={size}>{item.name}</Button>
-                                        {/* <Select
-                                            onChange={(value) => { handleProvinceChange(item.measures, value) }}
-                                            defaultValue={item.measures[0].desc}
-                                            style={{ width: 120 }}
-                                        >
-                                            {
-                                                item.measures.map((province) => {
-                                                    return (
-                                                        <Option key={province.desc} value={province.desc}>{province.desc}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                        <Select
-                                            style={{ width: 120 }}
-                                            onChange={onSecondCityChange}
-                                            defaultValue={cities[0]}
-                                            options={cities.map((city) => ({ label: city, value: city }))}
-                                        />
-                                        <Button type="primary" size={size}>{twoestimate}</Button> */}
+                                        <Button type="primary" size={size} onClick={handleValue}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size} fieldNames={{ label: 'value', value: 'label' }} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
