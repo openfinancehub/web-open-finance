@@ -14,7 +14,8 @@ interface CustomizeConfig extends AxiosRequestConfig {
 
 // axios config options
 const options: CustomizeConfig = {
-  baseURL: '/api',
+  // http://121.37.5.77:5005/api
+  baseURL: 'http://121.37.5.77:5005/api',
   timeout: 1000 * 60 * 5,
   retry: 0,
   retryDelay: 1000,
@@ -63,7 +64,7 @@ const axiosRequest = async ({
       if (typeof resp === 'string') {
         return resp;
       }
-      if (resp.status !== 0) {
+      if (resp.ret_code !== 0) {
         return Promise.reject(resp);
       }
       return Promise.resolve(resp);
@@ -82,16 +83,20 @@ const axiosRequest = async ({
 };
 
 export const REQUEST = ({
+  baseURL = 'http://121.37.5.77:5005/api',
   method = 'GET',
   url,
   data,
   params,
   responseType,
   headers = {
-    'Content-Type': 'application/json'
+    // 'multipart/form-data'  application/json
+    'Content-Type': 'application/json',
+    user: 'admin'
   }
 }: any) => {
   return axiosRequest({
+    baseURL,
     method,
     url,
     data,

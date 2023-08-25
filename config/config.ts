@@ -1,5 +1,6 @@
 import { defineConfig } from '@umijs/max';
 import { resolve } from 'path';
+import defaultSettings from './defaultSettings';
 
 export default defineConfig({
   antd: {},
@@ -14,18 +15,19 @@ export default defineConfig({
     '@': resolve(__dirname, '../src')
   },
   layout: {
-    title: 'Open Finance'
+    title: 'Open Finance',
+    ...defaultSettings
   },
   proxy: {
     '/api': {
-      target: 'http://121.37.5.77:5003',
+      target: 'https://finance-api.tocmcc.cn/',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
     },
     '/quant': {
       target: 'http://139.159.205.40:8808/',
       changeOrigin: true,
-      pathRewrite: { '^/quant': '/quant' },
+      pathRewrite: { '^/api': '/quant' }
     }
   },
   locale: {
@@ -53,7 +55,7 @@ export default defineConfig({
     {
       name: 'Quant',
       path: '/analyze',
-      component: './Analyze',
+      component: './Analyze'
       // routes: [
       //   {
       //     name: '风险模型数据应用',
@@ -77,14 +79,14 @@ export default defineConfig({
       path: '/home/model/item',
       name: 'modelItem',
       component: './Home/components/ModelsItems/',
-      exact: true,
+      exact: true
     },
-    {
-      path: '/home/test',
-      name: 'test',
-      component: './Home/Test',
-      exact: true,
-    },
+    // {
+    //   path: '/home/test',
+    //   name: 'test',
+    //   component: './Home/Test',
+    //   exact: true,
+    // },
     {
       name: 'Users',
       path: '/user',
@@ -104,12 +106,12 @@ export default defineConfig({
     {
       path: '/analyze/factordelite',
       component: './Analyze/components/Delite/FactorDelite.tsx',
-      exact: true,
+      exact: true
     },
     {
       path: '/analyze/strategy',
       component: './Analyze/components/Delite/Strategy.tsx',
-      exact: true,
+      exact: true
     }
   ],
   npmClient: 'yarn'
