@@ -189,32 +189,36 @@ const Factor: React.FC<MyComponentProps> = () => {
 
                     // 移除交互
                     interactions: [{ type: 'tooltip', enable: false }],
-
-                    slider: {
-                        start: 0.1,
-                        end: 0.5,
-                    },
+                    // xAxis: {
+                    //     type: 'time',
+                    //     tickCount: 10,
+                    //     tickFormatter: 'YYYY-MM-DD HH:mm:ss',
+                    //   },
+                    // slider: {
+                    //     start: 0.1,
+                    //     end: 0.5,
+                    // },
                     meta: {
                      
                         volume: {
                             alias: '成交量',
-                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
+                            formatter: (v) => `${(v)}`,
                         },
                         open: {
                             alias: '开盘价',
-                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
+                            formatter: (v) => `${(v)}`,
                         },
                         close: {
                             alias: '收盘价',
-                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
+                            formatter: (v) => `${(v)}`,
                         },
                         high: {
                             alias: '最高价',
-                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
+                            formatter: (v) => `${(v)}`,
                         },
                         low: {
                             alias: '最低价',
-                            formatter: (v) => `${(v * 100).toFixed(2)}%`,
+                            formatter: (v) => `${(v)}`,
                         },
                     },
                     tooltip: {
@@ -229,6 +233,11 @@ const Factor: React.FC<MyComponentProps> = () => {
                     xField: 'time',
                     yField: 'value',
                     xAxis: false,
+                    // xAxis: {
+                    //     type: 'time',
+                    //     tickCount: 10,
+                    //     tickFormatter: 'YYYY-MM-DD HH:mm:ss',
+                    //   },
                     yAxis: {
                         line: null,
                         // grid: null,
@@ -289,8 +298,11 @@ const Factor: React.FC<MyComponentProps> = () => {
                 </div>
             </ProCard>
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
-                <ProCard style={{ height: 460 }} bordered>
+                <ProCard style={{ height: 460 }}className={'allBox'}  bordered>
+                    <div className={'chartScoll'}>
                     <Mix {...config}></Mix>
+                    </div>
+                   
                     {/* <Stock {...config} /> */}
                 </ProCard>
                 <ProCard title="看涨因子" type="inner" bordered direction="column">
