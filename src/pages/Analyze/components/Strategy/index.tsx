@@ -206,6 +206,33 @@ const Strategy: React.FC<MyComponentProps> = () => {
       }
     ]
   };
+  const [windowdata,setWindowdata] = useState(1)
+  const [backData,setbackData] = useState(1)
+  const [intervalData,setIntervalData] = useState(1)
+  const [shopData,setShopData] = useState(1)
+  const windowChange = (value:number)=>{
+    console.log('测试窗口',value);
+    setWindowdata(value)
+  }
+  const backOrder = (value:number)=>{
+    console.log('回滚次数',value);
+    setbackData(value)
+  }
+  const intervalTime = (value:number)=>{
+    console.log('间隔时长',value)
+    setIntervalData(value)
+  }
+  const shopOrder = (value:number)=>{
+    console.log('买入次数',value);
+    setShopData(value)
+  }
+
+  /**
+   * 点击测试触发的事件
+   */
+  const demoBtn = ()=>{
+    console.log(windowdata,backData,intervalData,shopData);
+  }
 
   return (
     <ProCard gutter={16} ghost wrap>
@@ -295,29 +322,37 @@ const Strategy: React.FC<MyComponentProps> = () => {
             <div className="numberSele">
               <InputNumber
                 size={size}
+                min={0}
                 addonBefore="测试窗口"
                 addonAfter="分钟"
-                defaultValue={100}
+                defaultValue={1}
+                onChange={windowChange}
               />
               <InputNumber
                 size={size}
+                min={0}
                 addonBefore="回滚次数"
                 addonAfter="次"
-                defaultValue={100}
+                defaultValue={1}
+                onChange={backOrder}
               />
             </div>
             <div className="numberSele">
               <InputNumber
                 size={size}
+                min={0}
                 addonBefore="间隔时长"
                 addonAfter="分钟"
-                defaultValue={100}
+                defaultValue={1}
+                onChange={intervalTime}
               />
               <InputNumber
                 size={size}
+                min={0}
                 addonBefore="买入次数"
                 addonAfter="次"
-                defaultValue={100}
+                defaultValue={1}
+                onChange={shopOrder}
               />
             </div>
             <Button
@@ -326,7 +361,9 @@ const Strategy: React.FC<MyComponentProps> = () => {
                 background: 'rgb(1,108,102)',
                 color: '#fff',
                 marginBottom: 20
-              }}>
+              }}
+              onClick={demoBtn}
+              >
               测试
             </Button>
 
