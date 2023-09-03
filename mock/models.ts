@@ -73,5 +73,14 @@ export default {
       data: ModelsItem,
       errorCode: 0
     });
+  },
+  'POST /api/updateModelCode': (req: any, res: any) => {
+    res.json({
+      success: true,
+      data: ModelsItem,
+      errorCode: 0
+    });
   }
 };
+
+
