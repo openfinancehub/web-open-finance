@@ -10,15 +10,14 @@ const FileUploadDownloadPage = () => {
   const handleUpload = (info: { fileList: any; }) => {
     let fileList = [...info.fileList];
 
-    // 1. 限制上传文件的数量
-    // Only to show two recent uploaded files, and old ones will be replaced by the new
+    // 1. 限制上传文件的数量，只显示最新上传的两个文件
     fileList = fileList.slice(-2);
 
-    // 2. 从相应中读取并显示文件链接
+    // 2. 从响应中读取并显示文件链接
     fileList = fileList.map(file => {
       if (file.response) {
         // Component will show file.url as link
-        file.url = file.response.url;
+        file.url = file.response.data.url;
       }
       return file;
     });
@@ -31,7 +30,7 @@ const FileUploadDownloadPage = () => {
       <h2>文件上传和下载界面</h2>
       <Dragger
         name="file"
-        action="/upload"
+        action="/api/upload"
         onChange={handleUpload}
         fileList={fileList}
       >

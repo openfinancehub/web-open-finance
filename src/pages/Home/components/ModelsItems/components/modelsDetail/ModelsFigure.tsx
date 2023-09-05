@@ -1,39 +1,159 @@
-import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
-import { Area } from '@ant-design/plots';
+import React, { useEffect, useState } from 'react';
+import { DecompositionTreeGraph } from '@ant-design/graphs';
+import styles from './style.less';
+import { ModelsDetail, updateModelCode, getModelData } from '../../../../service';
+type TreeGraphData = import('@antv/g6-core/lib/types').TreeGraphData;
 
-const DemoArea = () => {
-  const [data, setData] = useState([]);
+interface IDataValue {
+  title: string,
+  items: Array<{ text: string, value?: string, icon?: string }>,
+}
 
-  useEffect(() => {
-    asyncFetch();
-  }, []);
+interface IChildren {
+  id: string,
+  value: IDataValue,
+  children?: Array<IChildren>,
+}
 
-  const asyncFetch = () => {
-    fetch('https://gw.alipayobjects.com/os/bmw-prod/1d565782-dde4-4bb6-8946-ea6a38ccf184.json')
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => {
-        console.log('fetch data failed', error);
-      });
-  };
-  const config = {
-    data,
-    xField: 'Date',
-    yField: 'scales',
-    xAxis: {
-      range: [0, 1],
-      tickCount: 5,
-    },
-    areaStyle: () => {
-      return {
-        fill: 'l(270) 0:#ffffff 0.5:#7ec2f3 1:#1890ff',
-      };
-    },
-  };
+interface IData {
+  id: string,
+  value: IDataValue,
+  children?: Array<IChildren>,
+}
 
-  return <Area {...config} />;
+const defaultData = {
+  id: 'A0',
+  value: {
+    title: '',
+    items: [
+      {
+        text: '',
+      },
+    ],
+  },
+  children: [],
 };
 
-// ReactDOM.render(<DemoArea />, document.getElementById('container'));
-export default DemoArea;
+const convertDataToTreeGraphData = (data: IData): TreeGraphData => {
+  const treeGraphData: TreeGraphData = {
+    id: data.id,
+    label: data.value.title, // 使用 title 作为 label
+    children: data.children?.map((child) => convertDataToTreeGraphData(child)),
+  };
+
+  return treeGraphData;
+};
+
+const DemoDecompositionTreeGraph = () => {
+  const [data, setData] = useState<TreeGraphData>(defaultData);
+
+  useEffect(() => {
+    // 在组件加载时从后端获取数据
+    getModelData()
+      .then((response) => {
+        if (response !== undefined) {
+          setData(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  const stroke = '#EA2F97';
+
+  const nodeStyle = (arg: { value: { percent: number; }; }) => ({
+    fill: '#fff',
+    radius: 2,
+    stroke: arg.value.percent > 0.3 ? stroke : '#1f8fff',
+  });
+
+  const percentStyle = (arg: { value: { percent: number; }; }) => ({
+    radius: [0, 0, 0, 2],
+    fill: arg.value.percent > 0.3 ? stroke : '#1f8fff',
+  });
+
+  const markerStyle = (arg: { value: { percent: number; }; }) => ({
+    stroke: arg.value.percent > 0.3 ? stroke : '#1f8fff',
+  });
+
+  return (
+    <div className={styles['decomposition-tree-graph-container']}>
+      <DecompositionTreeGraph
+        data={data}
+        nodeCfg={{
+          size: [140, 25],
+          percent: {
+            position: 'bottom',
+            size: 4,
+            style: percentStyle,
+          },
+          items: {
+            containerStyle: {
+              fill: '#fff',
+            },
+            padding: 6,
+            style: (cfg: any, group: any, type: string) => {
+              const styles = {
+                icon: {
+                  width: 12,
+                  height: 12,
+                },
+                value: {
+                  fill: '#f00',
+                },
+                text: {
+                  fill: '#aaa',
+                },
+              };
+              return styles[type];
+            },
+          },
+          nodeStateStyles: {
+            hover: {
+              lineWidth: 2,
+            },
+          },
+          title: {
+            containerStyle: {
+              fill: 'transparent',
+            },
+            style: {
+              fill: '#000',
+              fontSize: 12,
+            },
+          },
+          style: nodeStyle,
+        }}
+        edgeCfg={{
+          label: {
+            style: {
+              fill: '#aaa',
+              fontSize: 12,
+              fillOpacity: 1,
+            },
+          },
+          style: (edge) => ({
+            stroke: '#518AD3',
+            strokeOpacity: 0.5,
+          }),
+          endArrow: {
+            fill: '#518AD3',
+          },
+          edgeStateStyles: {
+            hover: {
+              strokeOpacity: 1,
+            },
+          },
+        }}
+        markerCfg={(cfg) => ({
+          position: 'right',
+          show: cfg.children?.length,
+          style: markerStyle,
+        })}
+        behaviors={['drag-canvas', 'zoom-canvas', 'drag-node']}
+      />
+    </div>
+  );
+};
+
+export default DemoDecompositionTreeGraph;

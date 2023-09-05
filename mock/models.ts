@@ -58,29 +58,146 @@ const ModelsItem = {
   text: '这是一点解释说明的文本'
 }
 
+const data = {
+  id: 'A0',
+  value: {
+    title: 'Get financial analysis',
+    items: [
+      {
+        text: '3031万',
+        value: '80%',
+      },
+    ],
+    percent: 0.8,
+  },
+  children: [
+    {
+      id: 'A1',
+      value: {
+        title: '降本增收项目1',
+        percent: 0.7,
+        items: [
+          {
+            text: '1152万',
+          },
+          {
+            text: '占比',
+            value: '70%',
+          },
+        ],
+      },
+      children: [
+        {
+          id: 'A11',
+          value: {
+            title: '降本增收项目1-1',
+            items: [
+              {
+                text: '1152万',
+              },
+              {
+                text: '占比',
+                value: '30%',
+              },
+            ],
+          },
+        },
+        {
+          id: 'A12',
+          value: {
+            title: '降本增收项目1-2',
+            items: [
+              {
+                text: '1152万',
+              },
+              {
+                text: '占比',
+                value: '30%',
+              },
+            ],
+          },
+        },
+        {
+          id: 'A13',
+          value: {
+            title: '降本增收项目1-3',
+            items: [
+              {
+                text: '1152万',
+              },
+              {
+                text: '占比',
+                value: '30%',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: 'A2',
+      value: {
+        title: '降本增收项目2',
+        percent: 0.3,
+        items: [
+          {
+            text: '595万',
+          },
+          {
+            text: '占比',
+            value: '30%',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+          },
+        ],
+      },
+    },
+  ],
+};
+
 
 export default {
   'GET /api/queryModelList': (req: any, res: any) => {
     res.json({
-      success: true,
+      msg: "成功",
       data: { list: models },
-      errorCode: 0
+      ret_code: 0,
+      extra: {}
     });
   },
   'POST /api/queryModel': (req: any, res: any) => {
     res.json({
-      success: true,
+      msg: "成功",
       data: ModelsItem,
-      errorCode: 0
+      ret_code: 0,
+      extra: {}
     });
   },
   'POST /api/updateModelCode': (req: any, res: any) => {
     res.json({
-      success: true,
+      msg: "成功",
       data: ModelsItem,
-      errorCode: 0
+      ret_code: 0,
+      extra: {}
     });
-  }
+  },
+  'POST /api/modelData': (req: any, res: any) => {
+    res.json({
+      msg: "成功",
+      data: data,
+      ret_code: 0,
+      extra: {}
+    });
+  },
+  'POST /api/upload': (req: any, res: any) => {
+    res.json({
+      msg: "文件上传成功",
+      data: { url: '/12/34' },
+      // "url": "https://example.com/uploads/filename.pdf", 
+      ret_code: 0,
+      extra: {}
+    });
+  },
+
 };
 
 

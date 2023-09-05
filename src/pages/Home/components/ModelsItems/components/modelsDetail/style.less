@@ -1,13 +1,99 @@
-.codeStyle {
-    display: flex;
-    flex-wrap: wrap;
-    color: rgb(255, 255, 255);
-    background-color: black;
-}
-
-.codeText {
-    display: flex;
-    flex-wrap: wrap;
-    color: rgb(77, 208, 129);
-    background-color: black;
-}
+/* Node Styles */
+.node {
+    &-custom-node {
+      fill: #fff;
+      radius: 2;
+      stroke: #1f8fff;
+      
+      &.highlighted {
+        fill: #EA2F97;
+      }
+    }
+  
+    &-percent-label {
+      position: bottom;
+      size: 4;
+      radius: 0 0 0 2;
+      
+      &.highlighted {
+        fill: #EA2F97;
+      }
+    }
+  
+    &-items {
+      containerStyle {
+        fill: #fff;
+      }
+      padding: 6;
+  
+      &-icon {
+        width: 12px;
+        height: 12px;
+      }
+  
+      &-value {
+        fill: #f00;
+      }
+  
+      &-text {
+        fill: #aaa;
+      }
+    }
+  
+    &:hover {
+      .node-custom-node {
+        stroke-width: 2;
+      }
+    }
+  
+    &-title {
+      containerStyle {
+        fill: transparent;
+      }
+      font-size: 12px;
+      fill: #000;
+    }
+  }
+  
+  /* Edge Styles */
+  .edge {
+    &-custom-edge {
+      stroke: #518AD3;
+      stroke-opacity: 0.5;
+  
+      &:hover {
+        stroke-opacity: 1;
+      }
+    }
+  
+    &-label {
+      font-size: 12px;
+      fill: #aaa;
+      fill-opacity: 1;
+    }
+  
+    &-end-arrow {
+      fill: #518AD3;
+    }
+  }
+  
+  /* Marker Styles */
+  .marker {
+    &-custom-marker {
+      position: right;
+      
+      &.highlighted {
+        stroke: #EA2F97;
+      }
+    }
+  }
+  
+  /* Container Styles */
+  .decomposition-tree-graph-container {
+    width: 100%;
+    height: 400px;
+    border: 1px solid #ccc;
+  
+    /* Add more container styles as needed */
+  }
+  

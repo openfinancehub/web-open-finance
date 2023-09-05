@@ -104,3 +104,17 @@
 // };
 
 // export default DemoRadialTreeGraph;
+
+    // const [data, setData] = useState(null);
+
+    // useEffect(() => {
+    //   // 在组件加载时从后端获取数据
+    //   getModelData()
+    //     .then((response) => {
+    //       // 将获取的数据设置到 data 状态中
+    //       setData(response.data);
+    //     })
+    //     .catch((error) => {
+    //       console.error('Error fetching data:', error);
+    //     });
+    // }, []);

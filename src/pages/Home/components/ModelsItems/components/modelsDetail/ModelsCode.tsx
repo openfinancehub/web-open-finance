@@ -15,11 +15,11 @@ function ModelsCode() {
     console.log(idValue);
 
     const [isEditing, setIsEditing] = useState(false);
-    const [loadings, setLoadings] = useState<boolean[]>([false, false]); // 0 for submit, 1 for toggle
+    const [loadings, setLoadings] = useState<boolean[]>([false, false]); 
 
     const [modelCode, setModelCode] = useState('');
     const [modelText, setModelText] = useState('');
-
+    //请求后端获取代码数据
     const handleTriggerEvent = async () => {
         const dataJson = await ModelsDetail(idValue);
         setModelCode(dataJson.data.code);
@@ -72,44 +72,42 @@ function ModelsCode() {
     }, []);
 
     return (
-        <div>
-            <ProCard split="horizontal">
-                <ProCard>
-                    <Space wrap>
-                        <Button type="primary" loading={loadings[1]} onClick={handleEditToggle}>
-                            {isEditing ? '保存' : '编辑'}
-                        </Button>
-                        <Button type="primary" loading={loadings[0]} onClick={handleSubmit}>
-                            提交
-                        </Button>
-                    </Space>
-                    <CodeMirror
-                        value={modelCode}
-                        options={{
-                            mode: 'python',
-                            theme: 'material',
-                            lineNumbers: true,
-                        }}
-                        onBeforeChange={(editor, data, value) => {
-                            if (isEditing) setModelCode(value);
-                        }}
-                    />
-                </ProCard>
-                <ProCard title="" headerBordered>
-                    <CodeMirror
-                        value={modelText}
-                        options={{
-                            mode: 'txt',
-                            theme: 'material',
-                            lineNumbers: true,
-                        }}
-                        onBeforeChange={(editor, data, value) => {
-                            setModelText(value);
-                        }}
-                    />
-                </ProCard>
+        <ProCard split="horizontal">
+            <ProCard>
+                <Space wrap>
+                    <Button type="primary" loading={loadings[1]} onClick={handleEditToggle}>
+                        {isEditing ? '保存' : '编辑'}
+                    </Button>
+                    <Button type="primary" loading={loadings[0]} onClick={handleSubmit}>
+                        提交
+                    </Button>
+                </Space>
+                <CodeMirror
+                    value={modelCode}
+                    options={{
+                        mode: 'python',
+                        theme: 'material',
+                        lineNumbers: true,
+                    }}
+                    onBeforeChange={(editor, data, value) => {
+                        if (isEditing) setModelCode(value);
+                    }}
+                />
             </ProCard>
-        </div>
+            <ProCard title="" headerBordered>
+                <CodeMirror
+                    value={modelText}
+                    options={{
+                        mode: 'txt',
+                        theme: 'material',
+                        lineNumbers: true,
+                    }}
+                    onBeforeChange={(editor, data, value) => {
+                        setModelText(value);
+                    }}
+                />
+            </ProCard>
+        </ProCard>
     );
 }
 

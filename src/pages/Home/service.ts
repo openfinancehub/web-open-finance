@@ -24,6 +24,20 @@ export const modelsJson = async (header: header, data: dataString) => {
   }
 };
 
+
+// let header = {
+//   req_id: '1234',
+//   req_src: 'source',
+//   user: 'user',
+//   token: 'token',
+// };
+// let dataStr = {
+//   ip: '127.0.0.1',
+//   factor: '',
+//   time: '',
+//   extra: 'extra',
+// };
+
 export const categoryJson = async () => {
   try {
     const response = await fetch('/api/category', {
@@ -47,11 +61,27 @@ export const categoryJson = async () => {
 
 export const ModelsDetail = async (id: string) => {
   try {
+    let header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
+    let dataStr = {
+      id: id,
+      code: '',
+      time: '',
+      extra: 'extra',
+    };
     const response = await fetch('/api/queryModel', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        header: header,
+        data: dataStr
+      }),
     });
     const json = await response.json()
     return {
@@ -67,6 +97,12 @@ export const ModelsDetail = async (id: string) => {
 
 export const updateModelCode = async (id: string, code: string) => {
   try {
+    let dataStr = {
+      id: '127.0.0.1',
+      code: '',
+      time: '',
+      extra: 'extra',
+    };
     const response = await fetch('/api/updateModelCode', {
       method: 'POST',
       headers: {
@@ -84,5 +120,53 @@ export const updateModelCode = async (id: string, code: string) => {
   } catch (error) {
     console.error('An error occurred:', error);
     return { data: [], total: 0, success: false };
+  }
+};
+
+export const getModelData = async () => {
+  try {
+
+    const response = await fetch('/api/modelData', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify({
+      // data: { id, code }
+      // }),
+    });
+    const json = await response.json()
+    console.log(json)
+    return {
+      data: json.data,
+      success: true,
+    };
+  } catch (error) {
+    console.error('An error occurred:', error);
+    // return { data: [], total: 0, success: false };
+  }
+};
+
+export const upload = async () => {
+  try {
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify({
+      // data: { id, code }
+      // }),
+    });
+    const json = await response.json()
+    console.log(json)
+    return {
+      data: json.data,
+      success: true,
+    };
+  } catch (error) {
+    console.error('An error occurred:', error);
+    // return { data: [], total: 0, success: false };
   }
 };

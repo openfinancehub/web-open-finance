@@ -5,6 +5,7 @@ import FirstLeftItem from './components/FirstLeftItem';
 import ModelsCode from './components/modelsDetail/ModelsCode';
 import ModelsFiles from './components/modelsDetail/ModelsFiles';
 import ModelsFigure from './components/modelsDetail/ModelsFigure';
+import Test from './components/modelsDetail/Test';
 
 function FinanceItem() {
   const [tab, setTab] = useState('tab1');
@@ -23,8 +24,8 @@ function FinanceItem() {
         }}
       >
         <ProCard.TabPane key="tab1" tab="Model card">
+          {/* 内容一 */}
           <ProCard colSpan='60%' >
-            {/* 内容一 */}
             <ModelsCode />
           </ProCard>
           <ProCard>
@@ -38,6 +39,9 @@ function FinanceItem() {
         <ProCard.TabPane key="tab3" tab="Community">
           {/* 内容三 */}
           <ModelsFigure />
+        </ProCard.TabPane>
+        <ProCard.TabPane key="tab4" tab="Test">
+          <Test />
         </ProCard.TabPane>
       </ProCard>
     </div>
