@@ -6,7 +6,7 @@ const models = [
 
 
 const ModelsItem = {
-  id: 0,
+  id: "0",
   code: `import numpy as np
 
   class Polynomial:
@@ -58,7 +58,7 @@ const ModelsItem = {
   text: '这是一点解释说明的文本'
 }
 
-const data = {
+const modelData = {
   id: 'A0',
   value: {
     title: 'Get financial analysis',
@@ -183,7 +183,7 @@ export default {
   'POST /api/modelData': (req: any, res: any) => {
     res.json({
       msg: "成功",
-      data: data,
+      data: modelData,
       ret_code: 0,
       extra: {}
     });

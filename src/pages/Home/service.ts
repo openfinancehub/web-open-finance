@@ -1,5 +1,5 @@
 import { ModelsItem, header, dataString } from './data';
-
+// 首页models信息
 export const modelsJson = async (header: header, data: dataString) => {
   try {
     const response = await fetch('/api/models', {
@@ -19,25 +19,11 @@ export const modelsJson = async (header: header, data: dataString) => {
       success: true,
     };
   } catch (error) {
-    console.error('An error occurred:', error);
+    console.error('error', error);
     return { data: [], total: 0, success: false };
   }
 };
-
-
-// let header = {
-//   req_id: '1234',
-//   req_src: 'source',
-//   user: 'user',
-//   token: 'token',
-// };
-// let dataStr = {
-//   ip: '127.0.0.1',
-//   factor: '',
-//   time: '',
-//   extra: 'extra',
-// };
-
+// 首页因子信息
 export const categoryJson = async () => {
   try {
     const response = await fetch('/api/category', {
@@ -59,7 +45,7 @@ export const categoryJson = async () => {
 };
 
 
-export const ModelsDetail = async (id: string) => {
+export const ModelsDetail = async (factor: string) => {
   try {
     let header = {
       req_id: '1234',
@@ -68,8 +54,8 @@ export const ModelsDetail = async (id: string) => {
       token: 'token',
     };
     let dataStr = {
-      id: id,
-      code: '',
+      ip: '127.0.0.1',
+      factor: factor,
       time: '',
       extra: 'extra',
     };
@@ -86,20 +72,34 @@ export const ModelsDetail = async (id: string) => {
     const json = await response.json()
     return {
       data: json.data,
-      // total: json.category.length,
-      success: true,
+      ret_code: json.ret_code,
+      msg: json.msg,
+      extra: json.extra
     };
   } catch (error) {
     console.error('An error occurred:', error);
-    return { data: [], total: 0, success: false };
+    return {
+      data: null,
+      ret_code: -1,
+      msg: 'error',
+      extra: '',
+    };
   }
 };
-
-export const updateModelCode = async (id: string, code: string) => {
+//更新代码
+export const updateModelCode = async (factor: string, code: string, text: string) => {
   try {
+    let header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
     let dataStr = {
-      id: '127.0.0.1',
-      code: '',
+      ip: '127.0.0.1',
+      factor: factor,
+      code: code,
+      text: text,
       time: '',
       extra: 'extra',
     };
@@ -109,64 +109,87 @@ export const updateModelCode = async (id: string, code: string) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        data: { id, code }
+        header: header,
+        data: dataStr
       }),
     });
     const json = await response.json()
     return {
       data: json.data,
-      success: true,
+      ret_code: json.ret_code,
+      msg: json.msg,
+      extra: json.extra
     };
   } catch (error) {
-    console.error('An error occurred:', error);
-    return { data: [], total: 0, success: false };
+    console.error('error:', error);
+    return {
+      data: null,
+      ret_code: -1,
+      msg: 'error',
+      extra: '',
+    };
   }
 };
 
-export const getModelData = async () => {
+export const getModelData = async (factor: string) => {
   try {
-
+    let header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
+    let dataStr = {
+      ip: '127.0.0.1',
+      factor: factor,
+      time: '',
+      extra: 'extra',
+    };
     const response = await fetch('/api/modelData', {
-      method: 'POST',
+      method: 'POSt',
       headers: {
         'Content-Type': 'application/json',
       },
-      // body: JSON.stringify({
-      // data: { id, code }
-      // }),
+      body: JSON.stringify({
+        header: header,
+        data: dataStr
+      }),
     });
     const json = await response.json()
     console.log(json)
     return {
       data: json.data,
-      success: true,
+      ret_code: json.ret_code,
+      msg: json.msg,
+      extra: json.extra
     };
   } catch (error) {
-    console.error('An error occurred:', error);
-    // return { data: [], total: 0, success: false };
+    console.error('error:', error);
+    return {
+      data: null,
+      ret_code: -1,
+      msg: 'error',
+      extra: '',
+    };
   }
 };
 
-export const upload = async () => {
+export const uploadFileService = async (formData: FormData) => {
   try {
-
+    console.log("获取到的请求data", formData);
     const response = await fetch('/api/upload', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // body: JSON.stringify({
-      // data: { id, code }
-      // }),
+      body: formData, // 直接将 FormData 作为请求体
     });
-    const json = await response.json()
-    console.log(json)
+
+    const json = await response.json();
+    console.log("后端返回的", json.data);
     return {
       data: json.data,
       success: true,
     };
   } catch (error) {
-    console.error('An error occurred:', error);
-    // return { data: [], total: 0, success: false };
+    console.error('上传文件时出错:', error);
+    throw error;
   }
 };

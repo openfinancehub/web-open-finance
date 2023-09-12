@@ -3,6 +3,7 @@ import { DecompositionTreeGraph } from '@ant-design/graphs';
 import styles from './style.less';
 import { ModelsDetail, updateModelCode, getModelData } from '../../../../service';
 type TreeGraphData = import('@antv/g6-core/lib/types').TreeGraphData;
+import { useLocation } from 'react-router-dom';
 
 interface IDataValue {
   title: string,
@@ -47,11 +48,15 @@ const convertDataToTreeGraphData = (data: IData): TreeGraphData => {
 const DemoDecompositionTreeGraph = () => {
   const [data, setData] = useState<TreeGraphData>(defaultData);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const idValue = searchParams.get('id')!;
+
   useEffect(() => {
     // 在组件加载时从后端获取数据
-    getModelData()
+    getModelData(idValue)
       .then((response) => {
-        if (response !== undefined) {
+        if (response.ret_code == 0) {
           setData(response.data);
         }
       })
@@ -147,7 +152,7 @@ const DemoDecompositionTreeGraph = () => {
         }}
         markerCfg={(cfg) => ({
           position: 'right',
-          show: cfg.children?.length,
+          show: cfg.children?.length ?? 0, 
           style: markerStyle,
         })}
         behaviors={['drag-canvas', 'zoom-canvas', 'drag-node']}

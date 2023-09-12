@@ -4,6 +4,7 @@ import { ModelsDetail, updateModelCode } from '../../../../service';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Button, message, Space } from 'antd';
+import styles from './style.less';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/python/python';
@@ -15,7 +16,7 @@ function ModelsCode() {
     console.log(idValue);
 
     const [isEditing, setIsEditing] = useState(false);
-    const [loadings, setLoadings] = useState<boolean[]>([false, false]); 
+    const [loadings, setLoadings] = useState<boolean[]>([false, false]);
 
     const [modelCode, setModelCode] = useState('');
     const [modelText, setModelText] = useState('');
@@ -40,8 +41,10 @@ function ModelsCode() {
                 newLoadings[0] = false;
                 return newLoadings;
             });
-            const response = await updateModelCode(idValue, modelCode);
-            if (response.success) {
+            const response = await updateModelCode(idValue, modelCode, modelText);
+            if (response.ret_code == 0) {
+                // console.log(response.data.code)
+                setModelCode(response.data.code)
                 message.success('提交成功');
             } else {
                 message.error('提交失败');
@@ -74,7 +77,7 @@ function ModelsCode() {
     return (
         <ProCard split="horizontal">
             <ProCard>
-                <Space wrap>
+                <Space wrap className={styles.butStyle}>
                     <Button type="primary" loading={loadings[1]} onClick={handleEditToggle}>
                         {isEditing ? '保存' : '编辑'}
                     </Button>

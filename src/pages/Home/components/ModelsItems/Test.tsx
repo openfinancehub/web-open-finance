@@ -18,11 +18,11 @@ export default () => (
         breadcrumb: {
           routes: [
             {
-              path: '',
+              path: 'home',
               breadcrumbName: 'Open Finance',
             },
             {
-              path: '',
+              path: 'some/path1',
               breadcrumbName: 'Model'
             },
           ],
@@ -30,11 +30,11 @@ export default () => (
       }}
       tabBarExtraContent=""
       tabList={[]}
-      // tabProps={{
-      //   type: 'editable-card',
-      //   hideAdd: true,
-      //   onEdit: (e, action) => console.log(e, action),
-      // }}
+      tabProps={{
+        type: 'editable-card',
+        hideAdd: true,
+        onEdit: (e, action) => console.log(e, action),
+      }}
     >
       <ProCard split="vertical">
         <ProCard title="" >

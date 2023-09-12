@@ -1,12 +1,39 @@
 import React, { useState } from 'react';
-import { Upload, Button, message, UploadFile} from 'antd';
+import { Upload, message, UploadFile } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-
+import { uploadFileService } from '../../../../service';
 const { Dragger } = Upload;
-
 
 const FileUploadDownloadPage = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const customRequest = async (options: any) => {
+    // 构造你需要的请求参数
+    const formData = new FormData();
+    formData.append('file', options.file);
+    console.log(formData)
+    try {
+      // 手动发送 POST 请求
+      // const response = await uploadFileService(formData)
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      console.log(response)
+      if (response.ok) {
+        const responseData = await response.json();
+        // 处理成功响应
+        options.onSuccess(responseData, options.file);
+      } else {
+        // 处理失败响应
+        options.onError(new Error('上传失败'), null);
+      }
+    } catch (error) {
+      // 处理请求错误
+      options.onError(error, null);
+    }
+  };
+
   const handleUpload = (info: { fileList: any; }) => {
     let fileList = [...info.fileList];
 
@@ -18,11 +45,14 @@ const FileUploadDownloadPage = () => {
       if (file.response) {
         // Component will show file.url as link
         file.url = file.response.data.url;
+        file.status = 'done'; // 设置状态为 'done'
+      } else {
+        file.status = 'error'; // 设置状态为 'error'
       }
       return file;
     });
 
-    setFileList(fileList); 
+    setFileList(fileList); // 更新 fileList 状态
   };
 
   return (
@@ -30,7 +60,8 @@ const FileUploadDownloadPage = () => {
       <h2>文件上传和下载界面</h2>
       <Dragger
         name="file"
-        action="/api/upload"
+        // action={null} // 设置 action 为 null
+        customRequest={customRequest}
         onChange={handleUpload}
         fileList={fileList}
       >
