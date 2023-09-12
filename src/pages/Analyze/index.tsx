@@ -26,6 +26,7 @@ const HomePage: React.FC = () => {
   };
   return (
     <PageContainer
+    
       ghost
       header={{
         title: '',

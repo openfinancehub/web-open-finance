@@ -99,6 +99,7 @@ const Factor: React.FC<MyComponentProps> = () => {
             setQuantData({ long, short })
         }).catch(err => { console.log(err) })
     };
+    
     // 某只股票近N天的K线数据的接口
     const getstock_kline = (stock_id) => {
         const data = {
@@ -168,12 +169,21 @@ const Factor: React.FC<MyComponentProps> = () => {
      */
     const handleValue = (event) =>{
         let text = event.target.textContent
-        // console.log(event.target.textContent)
         setFactorLiData(historyData[text])
         setInFactor(text)
     }
-    // 组合图
-    console.log(historyData)
+
+    /**
+     * 这个方法用于处理描述的文本段落
+     */
+    const handleDescContent = (event:string)=>{
+
+        console.log(event);
+        const paragraphs = event.split("。");
+        return paragraphs;
+
+    }
+
     const config = {
         tooltip: {
             shared: true,
@@ -274,8 +284,6 @@ const Factor: React.FC<MyComponentProps> = () => {
             },
         ],
     };
-
-    // 模拟数据
     
     return (
         <ProCard gutter={16} ghost wrap>
@@ -298,12 +306,10 @@ const Factor: React.FC<MyComponentProps> = () => {
                 </div>
             </ProCard>
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
-                <ProCard style={{ height: 460 }}className={'allBox'}  bordered>
+                <ProCard style={{ height: 460 }} className={'allBox'}  bordered>
                     <div className={'chartScoll'}>
                     <Mix {...config}></Mix>
                     </div>
-                   
-                    {/* <Stock {...config} /> */}
                 </ProCard>
                 <ProCard title="看涨因子" type="inner" bordered direction="column">
                     {
@@ -318,7 +324,13 @@ const Factor: React.FC<MyComponentProps> = () => {
                                         />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
-                                        <Popover content={<div style={{ width: "500px" }} >{item.desc}</div>} title="描述">
+                                        <Popover content={<div style={{ width: "500px" }} >{
+                                        handleDescContent(item.desc).map((item,index)=>{
+                                            return (
+                                                <p style={{textIndent:'2em'}} key={index}>{item}</p>
+                                            )
+                                        })
+                                        }</div>} title="描述">
                                             <Button size={size} type="primary" shape="circle" icon={<QuestionCircleOutlined />} />
                                         </Popover>
                                     </Space>
@@ -339,7 +351,13 @@ const Factor: React.FC<MyComponentProps> = () => {
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size} fieldNames={{ label: 'value', value: 'label' }} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
-                                        <Popover content={<div style={{ width: "500px" }} >{item.desc}</div>} title="描述">
+                                        <Popover content={<div style={{ width: "500px" }} >{
+                                               handleDescContent(item.desc).map((item,index)=>{
+                                                return (
+                                                    <p style={{textIndent:'2em'}} key={index}>{item}</p>
+                                                )
+                                            })
+                                        }</div>} title="描述">
                                             <Button size={size} type="primary" shape="circle" icon={<QuestionCircleOutlined />} />
                                         </Popover>
                                     </Space>
@@ -352,5 +370,6 @@ const Factor: React.FC<MyComponentProps> = () => {
             </ProCard>
         </ProCard>
     )
+
 }
 export default Factor;

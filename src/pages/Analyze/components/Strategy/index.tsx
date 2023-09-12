@@ -10,6 +10,8 @@ import './style.css';
 interface MyComponentProps {
   // Define any props required by the component
 }
+
+
 const Strategy: React.FC<MyComponentProps> = () => {
   const size = 'large';
   const [sotckListData, setsotckList] = useState([]);
@@ -377,4 +379,5 @@ const Strategy: React.FC<MyComponentProps> = () => {
     </ProCard>
   );
 };
+
 export default Strategy;
