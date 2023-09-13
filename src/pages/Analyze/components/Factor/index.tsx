@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ProCard, ProFormCascader } from '@ant-design/pro-components';
+import { ProCard } from '@ant-design/pro-components';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Space, Dropdown, Popover, Select, MenuProps, Cascader } from 'antd';
+import { Button, Space , Popover, Select, Cascader } from 'antd';
 const { Option } = Select;
-import { Chart, Stock, Line, Mix } from '@ant-design/plots';
+import { Stock, Line, Mix } from '@ant-design/plots';
 import { Link, request } from 'umi';
 import './style.css'
 
@@ -17,8 +17,12 @@ const Factor: React.FC<MyComponentProps> = () => {
     const size = 'large'
     // 初始因子的折线键值
     let firstFactor = ''
+    // 响应式的折线颜色
+    const [lineColor,setlineColor] = useState('#000')
+
     // 响应式的因子键值
-    const [inFactor,setInFactor] = useState(null)
+    const [inFactor,setInFactor] = useState('')
+    // 
     // 股票种类的数据
     const [sotckListData, setsotckList] = useState([])
     // 因子取值的数据
@@ -78,9 +82,15 @@ const Factor: React.FC<MyComponentProps> = () => {
                     obj.value = obj.label
                     obj.children.forEach((obj2) => {
                         obj2.value = obj2.label
-                        obj2.children.forEach((obj3) => {
-                            obj3.value = (obj3.value * 100).toFixed(2) + '%'
-                        })
+                        if(obj2.value ==='sigma'){
+                            obj2.children.forEach((obj3,index) => {
+                                obj3.value = `取值${index+1}:`+ obj3.value
+                            })
+                        }else{
+                            obj2.children.forEach((obj3,index) => {
+                                obj3.value = `取值${index+1}:`+(obj3.value * 100).toFixed(2) + '%'
+                            })
+                        }
                     })
                 })
             })
@@ -89,17 +99,22 @@ const Factor: React.FC<MyComponentProps> = () => {
                     obj.value = obj.label
                     obj.children.forEach((obj2) => {
                         obj2.value = obj2.label
-                        obj2.children.forEach((obj3) => {
-                            obj3.value = (obj3.value * 100).toFixed(2) + '%'
-                        })
+                        if(obj2.value ==='sigma'){
+                            obj2.children.forEach((obj3,index) => {
+                                obj3.value = `取值${index+1}:`+ obj3.value
+                            })
+                        }else{
+                            obj2.children.forEach((obj3,index) => {
+                                obj3.value = `取值${index+1}:`+(obj3.value * 100).toFixed(2) + '%'
+                            })
+                        }
                     })
                 })
             })
-            console.log(short)
             setQuantData({ long, short })
         }).catch(err => { console.log(err) })
     };
-    
+
     // 某只股票近N天的K线数据的接口
     const getstock_kline = (stock_id) => {
         const data = {
@@ -167,10 +182,21 @@ const Factor: React.FC<MyComponentProps> = () => {
      * 点击切换因子的方法
      * 用来处理改变折线的数据
      */
-    const handleValue = (event) =>{
+    const handleValue = (event,index) =>{
+
+        console.log(event,index);
+        switch (index) {
+            case 0:
+                setlineColor('#000')
+                break;
+            case 1:
+                setlineColor('#6585ba')
+                break;
+        }
         let text = event.target.textContent
         setFactorLiData(historyData[text])
         setInFactor(text)
+
     }
 
     /**
@@ -178,17 +204,31 @@ const Factor: React.FC<MyComponentProps> = () => {
      */
     const handleDescContent = (event:string)=>{
 
-        console.log(event);
         const paragraphs = event.split("。");
         return paragraphs;
 
     }
 
     const config = {
+        xAxis:{
+            tickCount:8
+        },
         tooltip: {
             shared: true,
+            formatter:(datum:string) =>{
+                console.log(datum,'11111');
+            },
         },
         syncViewPadding: true,
+        // xAxis:{
+        //     type: 'time',
+        //     tickCount: 10,
+        //     tickFormatter: 'YYYY-MM-DD HH:mm:ss',
+        //     tickFormatter: (value) => {
+        //         const date = new Date(value);
+        //         return date.getSeconds().toString().padStart(2, '0');
+        //       },
+        // },
         plots: [
             {
                 type: 'stock',
@@ -196,20 +236,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                     data: factorData,
                     xField: 'time',
                     yField: ['open', 'close', 'high', 'low','volume'],
-
-                    // 移除交互
-                    interactions: [{ type: 'tooltip', enable: false }],
-                    // xAxis: {
-                    //     type: 'time',
-                    //     tickCount: 10,
-                    //     tickFormatter: 'YYYY-MM-DD HH:mm:ss',
-                    //   },
-                    // slider: {
-                    //     start: 0.1,
-                    //     end: 0.5,
-                    // },
                     meta: {
-                     
                         volume: {
                             alias: '成交量',
                             formatter: (v) => `${(v)}`,
@@ -230,10 +257,37 @@ const Factor: React.FC<MyComponentProps> = () => {
                             alias: '最低价',
                             formatter: (v) => `${(v)}`,
                         },
+                        time:{
+                              formatter:(v) => {
+                                const date = new Date(v);
+                                const year = date.getFullYear();
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const hours = String(date.getHours()).padStart(2, '0');
+                                const minutes = String(date.getMinutes()).padStart(2, '0');
+                                const seconds = String(date.getSeconds()).padStart(2, '0');
+                                const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                return `${(formattedTime)}`
+                              }
+                        }
+                      
                     },
-                    tooltip: {
-                        fields: ['open', 'close', 'high', 'low', 'volume'],
-                    },
+                    // 移除交互
+                    interactions: [{ type: 'tooltip', enable: false }],
+                    // xAxis: {
+                    //     type: 'time',
+                    //     tickCount: 10,
+                    //     tickFormatter: 'YYYY-MM-DD HH:mm',
+                    //   },
+                    // slider: {
+                    //     start: 0.1,
+                    //     end: 0.5,
+                    // },
+                    // tooltip: {
+                    //     // formatter:'YYYY-MM-DD HH:mm:ss',
+                    //     fields: ['time','open', 'close', 'high', 'low', 'volume',],
+                    // },
+                  
                 },
             },
             {
@@ -279,7 +333,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                     //         };
                     //     },
                     // },
-                    color: '#000',
+                    color: lineColor,
                 },
             },
         ],
@@ -308,16 +362,16 @@ const Factor: React.FC<MyComponentProps> = () => {
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
                 <ProCard style={{ height: 460 }} className={'allBox'}  bordered>
                     <div className={'chartScoll'}>
-                    <Mix {...config}></Mix>
+                    <Mix {...config} ></Mix>
                     </div>
                 </ProCard>
                 <ProCard title="看涨因子" type="inner" bordered direction="column">
                     {
-                        quantData.long.map((item) => {
+                        quantData.long.map((item,index) => {
                             return (
                                 <div key={item.name}>
                                     <Space>
-                                        <Button type="primary" size={size} onClick={handleValue}>{item.name}</Button>
+                                        <Button type={inFactor === item.name ? 'primary' : 'default'}  size={size} onClick={(event)=>{handleValue(event,index)}}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size}
                                             fieldNames={{ label: 'value', value: 'label' }}
                                             placeholder="预估数值"
@@ -343,11 +397,11 @@ const Factor: React.FC<MyComponentProps> = () => {
                 </ProCard>
                 <ProCard title="看跌因子" type="inner" bordered>
                     {
-                        quantData.short.map((item) => {
+                        quantData.short.map((item,index) => {
                             return (
                                 <div key={item.name}>
                                     <Space>
-                                        <Button type="primary" size={size} onClick={handleValue}>{item.name}</Button>
+                                        <Button type={inFactor === item.name ? 'primary' : 'default'} size={size} onClick={(event)=>{handleValue(event,index)}}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size} fieldNames={{ label: 'value', value: 'label' }} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
