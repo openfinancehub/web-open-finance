@@ -75,8 +75,7 @@ const Factor: React.FC<MyComponentProps> = () => {
             data: JSON.stringify(data)
         }).then((res) => {
             firstFactor = res.data.long[0].name
-
-            setInFactor(res.data.long[0].names)
+            setInFactor(res.data.long[0].name)
             var long = res.data.long
             var short = res.data.short
             long.forEach((item) => {
