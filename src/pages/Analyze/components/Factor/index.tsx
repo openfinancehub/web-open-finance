@@ -36,12 +36,13 @@ const Factor: React.FC<MyComponentProps> = () => {
     // 单个因子的折线数据
     const [factorLiData,setFactorLiData] = useState([])
     const [selectedButton, setSelectedButton] = useState('平安银行')
+
     // 获取当前支持的股票信息
     const sotckList = () => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('quant/sotcklist', {
+        request('http://139.159.205.40:8808/quant/sotcklist', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -57,6 +58,7 @@ const Factor: React.FC<MyComponentProps> = () => {
 
         })
     }
+
     // 某支股票推荐因子接口
     const stockanalysis = (stock_id: string) => {
         const data = {
@@ -65,7 +67,7 @@ const Factor: React.FC<MyComponentProps> = () => {
             categories: "factor",
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('quant/stockanalysis', {
+        request('http://139.159.205.40:8808/quant/stockanalysis', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -122,7 +124,7 @@ const Factor: React.FC<MyComponentProps> = () => {
             days: 1,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('quant/getstock_kline', {
+        request('http://139.159.205.40:8808/quant/getstock_kline', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,7 +142,7 @@ const Factor: React.FC<MyComponentProps> = () => {
             days: "1",
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('quant/historyfactor', {
+        request('http://139.159.205.40:8808/quant/historyfactor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -426,4 +428,5 @@ const Factor: React.FC<MyComponentProps> = () => {
     )
 
 }
+
 export default Factor;
