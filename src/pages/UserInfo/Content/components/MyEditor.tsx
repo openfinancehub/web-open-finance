@@ -7,9 +7,9 @@ import { Button, Row } from 'antd';
 import { useEffect, useState } from 'react';
 
 function MyEditor() {
-  const defaultList = JSON.parse(sessionStorage.getItem('content') || '{[]}');
+  const defaultList = JSON.parse(sessionStorage.getItem('content'));
   let str = '';
-  defaultList.forEach((item: { sender: any; content: any }) => {
+  (defaultList || []).forEach((item: { sender: any; content: any }) => {
     str += `<p><span style="color:rgb(225, 60, 57);">${item.sender}:  </span>${item.content}</p>`;
   });
 

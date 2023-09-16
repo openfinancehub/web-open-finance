@@ -1,22 +1,22 @@
-import { ModelsItem, header, dataString } from './data';
-// 首页models信息
+import { ModelsItem, dataString, header } from './data';
+
 export const modelsJson = async (header: header, data: dataString) => {
   try {
-    const response = await fetch('/api/models', {
+    const response = await fetch('http://121.37.5.77:5003/api/models', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         header: header,
-        data: data,
-      }),
+        data: data
+      })
     });
-    const json = await response.json() as { models: ModelsItem[] };
+    const json = (await response.json()) as { models: ModelsItem[] };
     return {
       data: json.models,
       total: json.models.length,
-      success: true,
+      success: true
     };
   } catch (error) {
     console.error('error', error);
@@ -26,17 +26,17 @@ export const modelsJson = async (header: header, data: dataString) => {
 // 首页因子信息
 export const categoryJson = async () => {
   try {
-    const response = await fetch('/api/category', {
+    const response = await fetch('http://121.37.5.77:5003/api/category', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
-    const json = await response.json()
+    const json = await response.json();
     return {
       data: json.category,
       total: json.category.length,
-      success: true,
+      success: true
     };
   } catch (error) {
     console.error('An error occurred:', error);

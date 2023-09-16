@@ -1,16 +1,16 @@
+import { FinchatServices } from '@/services';
 import {
   AndroidOutlined,
-  AudioOutlined,
   CopyTwoTone,
   PlusOutlined,
   UserOutlined
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
-import { Button, Card, Input, Popover, Radio } from 'antd';
-import React, { useEffect, useState } from 'react';
-
-import { FinchatServices } from '@/services';
+import { Button, Card, Input, message as Message, Popover, Radio } from 'antd';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
 import { ChatList, CompanyList, TaskList } from './components';
+
 import styles from './index.less';
 import useWebSocket from './useWebsocket';
 
@@ -36,13 +36,21 @@ const Finchat = () => {
   const [roleList, setRoleList] = useState<any[]>([]);
   const [taskList, setTaskList] = useState<any[]>([]);
   const [stockList, setStockList] = useState<any[]>([]);
-  const [selectedCom, setSelectedCom] = useState<any>(null);
+  const [selectedCom, setSelectedCom] = useState<any[]>([]);
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
   // ws://121.37.5.77:5004
   const { message, sendWebSocketMessage, clearMessage } = useWebSocket(
     'ws://121.37.5.77:5004'
   );
+
+  const commonHeader = {
+    user: currentUser.username,
+    req_id: currentUser.id,
+    req_src: currentUser.avatarUrl,
+    token: currentUser.token
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -53,12 +61,7 @@ const Finchat = () => {
       // const jsonStr = JSON.stringify({ user: 'admin' });
       // const encodedData = encodeURIComponent(jsonStr);
       const res = await FinchatServices.fetchSidebar({
-        header: {
-          user: currentUser.username,
-          req_id: currentUser.id,
-          req_src: currentUser.avatarUrl,
-          token: currentUser.token
-        }
+        header: commonHeader
       });
       const {
         history_list = [],
@@ -68,6 +71,7 @@ const Finchat = () => {
       } = res.output || {};
       setHistoryList(history_list);
       setRoleList(role_list);
+      setInitCompanyList(stock_list);
       setStockList(stock_list);
       setTaskList(task_list);
       console.log(res, 'res');
@@ -80,12 +84,37 @@ const Finchat = () => {
     fetchSidebar();
   }, []);
 
-  const onSearch = (value: string) => console.log(value);
+  const onSearch = async (value: string) => {
+    try {
+      if (!value) {
+        setStockList(initCompanyList);
+        return;
+      }
+      const res = await FinchatServices.queryCompany({
+        header: commonHeader,
+        data: { query: value }
+      });
+      const list = res.output?.result || [];
+      setStockList(list);
+    } catch (error: any) {
+      Message.error(error?.msg);
+    }
+  };
+
+  const onChange = _.debounce((e: any) => {
+    const str = e.target.value;
+    if (!str) {
+      setStockList(initCompanyList);
+      return;
+    }
+    const list = stockList.filter(i => i.company.indexOf(str) !== -1);
+    setStockList(list);
+  }, 1000);
 
   const handleSendMessage = () => {
     if (!inputValue) return;
     sendWebSocketMessage(inputValue, {
-      ...selectedCom,
+      company: selectedCom,
       ...selectedRole,
       task: selectedTask
     });
@@ -115,9 +144,11 @@ const Finchat = () => {
     clearMessage();
   };
 
-  const handleCompany = (item: any) => {
-    setSelectedCom(item);
-    setActiveKey('c');
+  const handleCompany = (list: any[]) => {
+    if (selectedTask !== 'compare') {
+      setActiveKey('c');
+    }
+    setSelectedCom(list);
   };
 
   const handleTask = item => {
@@ -151,12 +182,15 @@ const Finchat = () => {
           <Radio.Button value="b">Companies</Radio.Button>
           <Radio.Button value="c">Roles</Radio.Button>
         </Radio.Group>
-        <Search
-          placeholder="Search by name or ticker"
-          allowClear
-          onSearch={onSearch}
-          style={{ width: '80%', margin: '0 0 12px 0' }}
-        />
+        {activeKey === 'b' && (
+          <Search
+            placeholder="Search by name or ticker"
+            allowClear
+            onSearch={onSearch}
+            onChange={onChange}
+            style={{ width: '80%', margin: '0 0 12px 0' }}
+          />
+        )}
         {activeKey === 'a' && (
           <TaskList list={taskList} handleProps={handleTask} />
         )}
@@ -183,7 +217,9 @@ const Finchat = () => {
               <Card style={{ width: 300 }}>{`hello！my name is ${
                 selectedRole.role
               }, ${
-                selectedCom?.company ? `你选择了${selectedCom.company}` : ''
+                selectedCom?.length
+                  ? `你选择了${selectedCom.map(i => i.company).join('、')}`
+                  : ''
               }, 请输入您要咨询的问题?`}</Card>
             </div>
           )}
@@ -192,10 +228,17 @@ const Finchat = () => {
               return (
                 <div className={styles.user} key={index}>
                   <Card style={{ width: 300 }}>
-                    {item.content}
+                    {item.content && (
+                      <div
+                        style={{ padding: '0 16px 0 0' }}
+                        dangerouslySetInnerHTML={{
+                          __html: item.content
+                        }}
+                      />
+                    )}
                     {item.flag && <span className={styles.cursor} />}
                     <span className={styles.tag}>
-                      <UserOutlined />
+                      <UserOutlined style={{ fontSize: '18px' }} />
                     </span>
                   </Card>
                 </div>
@@ -204,9 +247,14 @@ const Finchat = () => {
             return (
               <div className={styles.user} key={index}>
                 <Card style={{ width: 300 }}>
-                  {item.content}
+                  {item.content && (
+                    <div
+                      style={{ padding: '0 16px 0 0' }}
+                      dangerouslySetInnerHTML={{ __html: item.content }}
+                    />
+                  )}
                   <span className={styles.tag}>
-                    <AndroidOutlined />
+                    <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>
                 </Card>
               </div>

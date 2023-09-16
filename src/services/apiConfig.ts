@@ -3,5 +3,6 @@ export const ApiUrl = {
   MODEL: '/category',
   LOGIN: '/login',
   SIDEBAR: '/sidebar',
-  CREATE_ARTICLE: '/article/createArticle'
+  CREATE_ARTICLE: '/article/createArticle',
+  QUERY_COMPANY: '/search'
 };

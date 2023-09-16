@@ -20,6 +20,7 @@ export default defineConfig({
   },
   proxy: {
     '/api': {
+      target: 'https://finance-api.tocmcc.cn/',
       target: 'http://121.37.5.77:5003',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
@@ -27,7 +28,7 @@ export default defineConfig({
     '/quant': {
       target: 'http://139.159.205.40:8808/',
       changeOrigin: true,
-      pathRewrite: { '^/quant': '/quant' },
+      pathRewrite: { '^/api': '/quant' }
     }
   },
   locale: {
@@ -55,7 +56,7 @@ export default defineConfig({
     {
       name: 'Quant',
       path: '/analyze',
-      component: './Analyze',
+      component: './Analyze'
       // routes: [
       //   {
       //     name: '风险模型数据应用',
@@ -78,8 +79,14 @@ export default defineConfig({
     {
       path: '/home/model/item',
       component: './Home/components/ModelsItems/',
-      exact: true,
+      exact: true
     },
+    // {
+    //   path: '/home/test',
+    //   name: 'test',
+    //   component: './Home/Test',
+    //   exact: true,
+    // },
     {
       name: 'Users',
       path: '/user',
@@ -99,12 +106,12 @@ export default defineConfig({
     {
       path: '/analyze/factordelite',
       component: './Analyze/components/Delite/FactorDelite.tsx',
-      exact: true,
+      exact: true
     },
     {
       path: '/analyze/strategy',
       component: './Analyze/components/Delite/Strategy.tsx',
-      exact: true,
+      exact: true
     }
   ],
   npmClient: 'yarn'

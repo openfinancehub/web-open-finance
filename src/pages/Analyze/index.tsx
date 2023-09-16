@@ -3,6 +3,7 @@ import { Tabs, TabsProps } from 'antd';
 import Factor from './components/Factor'
 import Strategy from './components/Strategy'
 import Subscribe from './components/Subscribe'
+import Demo from './components/Factor/demo'
 const HomePage: React.FC = () => {
   const items: TabsProps['items'] = [
     {
@@ -26,6 +27,7 @@ const HomePage: React.FC = () => {
   };
   return (
     <PageContainer
+    
       ghost
       header={{
         title: '',

@@ -50,7 +50,10 @@ export default () => {
       }));
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       history.push('/home');
-    } catch (error) {}
+    } catch (error) {
+      message.error(error?.msg);
+      console.log(error, 'error');
+    }
   };
 
   const sendSmsCode = async (phone: any) => {
