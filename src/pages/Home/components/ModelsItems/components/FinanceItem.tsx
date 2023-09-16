@@ -1,11 +1,11 @@
 import type { ProCardTabsProps } from '@ant-design/pro-components';
 import { ProCard } from '@ant-design/pro-components';
 import { useState } from 'react';
-import FirstLeftItem from './components/modelsDetail/FirstLeftItem';
-import ModelsCode from './components/modelsDetail/ModelsCode';
-import ModelsFiles from './components/modelsDetail/ModelsFiles';
-import ModelsFigure from './components/modelsDetail/ModelsFigure';
-import Test from './components/modelsDetail/Test';
+import FirstLeftItem from './modelsDetail/FirstLeftItem';
+import ModelsCode from './modelsDetail/ModelsCode';
+import ModelsFiles from './modelsDetail/ModelsFiles';
+import ModelsFigure from './modelsDetail/ModelsFigure';
+import Test from './modelsDetail/Test';
 
 function FinanceItem() {
   const [tab, setTab] = useState('tab1');
@@ -36,7 +36,7 @@ function FinanceItem() {
           {/* 内容二 */}
           <ModelsFiles />
         </ProCard.TabPane>
-        <ProCard.TabPane key="tab3" tab="Community">
+        <ProCard.TabPane key="tab3" tab="Tools">
           {/* 内容三 */}
           <ModelsFigure />
         </ProCard.TabPane>

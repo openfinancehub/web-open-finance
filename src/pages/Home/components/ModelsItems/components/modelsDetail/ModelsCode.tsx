@@ -12,9 +12,10 @@ import 'codemirror/mode/python/python';
 function ModelsCode() {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const idValue = searchParams.get('id')!;
-    console.log(idValue);
-
+    const modelValue = searchParams.get('model')!;
+    const factorValue = searchParams.get('factor')!;
+    // console.log(modelValue);
+    // console.log(factorValue);
     const [isEditing, setIsEditing] = useState(false);
     const [loadings, setLoadings] = useState<boolean[]>([false, false]);
 
@@ -22,7 +23,7 @@ function ModelsCode() {
     const [modelText, setModelText] = useState('');
     //请求后端获取代码数据
     const handleTriggerEvent = async () => {
-        const dataJson = await ModelsDetail(idValue);
+        const dataJson = await ModelsDetail(modelValue, factorValue);
         setModelCode(dataJson.data.code);
         setModelText(dataJson.data.text);
     };
@@ -41,7 +42,7 @@ function ModelsCode() {
                 newLoadings[0] = false;
                 return newLoadings;
             });
-            const response = await updateModelCode(idValue, modelCode, modelText);
+            const response = await updateModelCode(modelValue, factorValue, modelCode, modelText);
             if (response.ret_code == 0) {
                 // console.log(response.data.code)
                 setModelCode(response.data.code)

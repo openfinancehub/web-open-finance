@@ -1,12 +1,12 @@
 
 const models = [
-  { id: 0, code: 'Umi', text: 'U' },
-  { id: 1, code: 'Fish', text: 'B' }
+  { version: 0, code: 'Umi', text: 'U' },
+  { version: 1, code: 'Fish', text: 'B' }
 ];
 
 
 const ModelsItem = {
-  id: "0",
+  id: "version",
   code: `import numpy as np
 
   class Polynomial:

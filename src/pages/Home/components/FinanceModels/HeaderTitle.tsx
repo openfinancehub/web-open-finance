@@ -26,7 +26,7 @@ const HeaderTitle: React.FC<{
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       <div className={styles.inpStyle}>
-        <h3 className={styles.fountStyle}>Models</h3>
+        <h3 className={styles.fountStyle}>Tools</h3>
       </div>
       <div className={styles.inpStyle}>
         <h3 className={styles.figStyle}>{models.length}</h3>

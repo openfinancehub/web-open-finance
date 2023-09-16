@@ -8,7 +8,7 @@ const onRow = (record: any) => {
   return {
     onClick: () => {
       console.log(record);
-      history.push(`/home/model/item?id=${record.model}`);
+      history.push(`/home/model/item?model=${record.model}&factor=${record.tag}`);
     },
   };
 };

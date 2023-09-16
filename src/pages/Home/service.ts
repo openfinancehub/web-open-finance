@@ -45,7 +45,7 @@ export const categoryJson = async () => {
 };
 
 
-export const ModelsDetail = async (factor: string) => {
+export const ModelsDetail = async (model: string, factor: string) => {
   try {
     let header = {
       req_id: '1234',
@@ -56,6 +56,7 @@ export const ModelsDetail = async (factor: string) => {
     let dataStr = {
       ip: '127.0.0.1',
       factor: factor,
+      model: model,
       time: '',
       extra: 'extra',
     };
@@ -87,7 +88,7 @@ export const ModelsDetail = async (factor: string) => {
   }
 };
 //更新代码
-export const updateModelCode = async (factor: string, code: string, text: string) => {
+export const updateModelCode = async (factor: string, model: string, code: string, text: string) => {
   try {
     let header = {
       req_id: '1234',
