@@ -188,7 +188,8 @@ export default {
       extra: {}
     });
   },
-  'POST /api/upload': (req: any, res: any) => {
+  'POST /api/upload': (data: any, res: any) => {
+
     res.json({
       msg: "文件上传成功",
       data: { url: '/12/34' },

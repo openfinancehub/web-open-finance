@@ -11,19 +11,12 @@ const FileUploadDownloadPage = () => {
     // 构造你需要的请求参数
     const formData = new FormData();
     formData.append('file', options.file);
-    console.log(formData)
+    // console.log(formData.get('file'));
     try {
-      // 手动发送 POST 请求
-      // const response = await uploadFileService(formData)
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      console.log(response)
-      if (response.ok) {
-        const responseData = await response.json();
+      const response = await uploadFileService(options.file)
+      if (response.ret_code == 0) {
         // 处理成功响应
-        options.onSuccess(responseData, options.file);
+        options.onSuccess(response, options.file);
       } else {
         // 处理失败响应
         options.onError(new Error('上传失败'), null);
@@ -43,11 +36,10 @@ const FileUploadDownloadPage = () => {
     // 2. 从响应中读取并显示文件链接
     fileList = fileList.map(file => {
       if (file.response) {
-        // Component will show file.url as link
         file.url = file.response.data.url;
-        file.status = 'done'; // 设置状态为 'done'
+        file.status = 'done';
       } else {
-        file.status = 'error'; // 设置状态为 'error'
+        file.status = 'error';
       }
       return file;
     });

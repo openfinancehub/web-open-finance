@@ -176,20 +176,34 @@ export const getModelData = async (factor: string) => {
 
 export const uploadFileService = async (formData: FormData) => {
   try {
-    console.log("获取到的请求data", formData);
+    let header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
+    // console.log("获取到的请求data", formData);
     const response = await fetch('/api/upload', {
       method: 'POST',
-      body: formData, // 直接将 FormData 作为请求体
+      body: JSON.stringify({
+        header: header,
+        data: formData
+      }),
     });
-
     const json = await response.json();
-    console.log("后端返回的", json.data);
     return {
       data: json.data,
-      success: true,
+      ret_code: json.ret_code,
+      msg: json.msg,
+      extra: json.extra
     };
   } catch (error) {
     console.error('上传文件时出错:', error);
-    throw error;
+    return {
+      data: null,
+      ret_code: -1,
+      msg: 'error',
+      extra: '',
+    };
   }
 };
