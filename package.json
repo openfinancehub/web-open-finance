@@ -11,6 +11,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@ant-design/graphs": "^1.4.0",
     "@ant-design/icons": "^5.0.1",
     "@ant-design/plots": "^1.2.5",
     "@ant-design/pro-components": "^2.4.4",
@@ -20,13 +21,15 @@
     "@wangeditor/editor-for-react": "^1.0.6",
     "antd": "^4.19.0",
     "lodash": "^4.17.21",
+    "codemirror": "5.62.2",
     "numeral": "^2.0.6",
+    "react-codemirror2": "^7.2.1",
     "react-infinite-scroll-component": "^6.1.0",
     "socket.io-client": "^4.7.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.33",
-    "@types/react-dom": "^18.0.11",
+    "@types/react-dom": "^18.0.33",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",

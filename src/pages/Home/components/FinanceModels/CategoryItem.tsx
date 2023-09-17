@@ -2,7 +2,7 @@ import { ProList } from '@ant-design/pro-components';
 import { Button, Input, Tag } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, StarOutlined } from '@ant-design/icons';
-import { Description, ModelsItem, ListCategoryType, header, dataString } from '../../data';
+import { Description, ModelsItem, ListCategoryType, header, modelsData } from '../../data';
 import { modelsJson, categoryJson } from '../../service';
 import styles from './style.less';
 
@@ -18,7 +18,7 @@ let head: header = {
   user: 'user',
   token: 'token',
 };
-let dataStr: dataString = {
+let dataStr: modelsData = {
   ip: '127.0.0.1',
   factor: '',
   time: '',
@@ -37,10 +37,12 @@ const createData = (titles: string[], description: any[]): ListCategoryType => {
   }));
 };
 
-function FactorItem({ onFilterFinance }: { onFilterFinance: (data: any) => void }) {
+function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => void }) {
   const [categoryList, setCategoryList] = useState<ListCategoryType>([]);
   const [originalData, setOriginalData] = useState<ListCategoryType>([]);
   const [active, setActive] = useState(0);
+
+  const [selectedFactor, setSelectedFactor] = useState(null);
   //初始化因子结构数据
   const handleTriggerEvent = async () => {
     const dataJson = await modelsJson(head, dataStr);
@@ -69,6 +71,9 @@ function FactorItem({ onFilterFinance }: { onFilterFinance: (data: any) => void 
     }
     dataStr.factor = item.factor;
     handleTriggerEvent();
+
+    //更新被选中的因子
+    setSelectedFactor(item.factor);
   };
   //输入框过滤事件
   const changeCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +112,7 @@ function FactorItem({ onFilterFinance }: { onFilterFinance: (data: any) => void 
         })}
       </div>
       <div>
-        <Input onChange={changeCategory} placeholder='Filter Task by name' />
+        <Input onChange={changeCategory} placeholder='Filter Task By Name' />
       </div>
       <div>
         <ProList
@@ -123,7 +128,7 @@ function FactorItem({ onFilterFinance }: { onFilterFinance: (data: any) => void 
                 const color = colors.find((_, index) => item.title === categoryList[index].title) || 'blue';
                 return (
                   item.description.map(({ factor }, index) => (
-                    <Tag key={index} color={color} onClick={() => filterFinance({ factor })}>
+                    <Tag key={index} color={color} onClick={() => filterFinance({ factor })} className={selectedFactor === factor ? styles.tag2chick : ''}>
                       <IconText icon={<StarOutlined />} text={factor} key={index} />
                     </Tag>
                   ))
@@ -137,4 +142,4 @@ function FactorItem({ onFilterFinance }: { onFilterFinance: (data: any) => void 
   );
 }
 
-export default FactorItem;
+export default CategoryItem;

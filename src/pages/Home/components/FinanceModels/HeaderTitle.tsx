@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ProList } from '@ant-design/pro-components';
-import { Button, Input } from 'antd';
-import { ModelsItem, header, dataString } from '../../data';
+import { Link } from 'react-router-dom';
+import { Button, Modal, Form, Input } from 'antd';
+import { ModelsItem, } from '../../data';
 import styles from './style.less';
 
 const HeaderTitle: React.FC<{
@@ -26,7 +27,7 @@ const HeaderTitle: React.FC<{
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       <div className={styles.inpStyle}>
-        <h3 className={styles.fountStyle}>Models</h3>
+        <h3 className={styles.fountStyle}>Tools</h3>
       </div>
       <div className={styles.inpStyle}>
         <h3 className={styles.figStyle}>{models.length}</h3>
@@ -40,8 +41,8 @@ const HeaderTitle: React.FC<{
         </Button>
       </div>
       <div className={styles.but2Style}>
-        <Button key='sort1' type='primary'>
-          Full-text search
+        <Button key='sort1' type='primary' >
+          <Link to="/home/model/item">新增</Link>
         </Button>
       </div>
     </div>

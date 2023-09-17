@@ -1,7 +1,7 @@
 import { ProCard } from '@ant-design/pro-components';
-import FactorItem from './components/FinanceModels/FactorItem'
+import FactorItem from './components/FinanceModels/CategoryItem'
 import Models from './components/FinanceModels/Models'
-import TestIndex from './Test/Test'
+import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import HeaderTitle from './components/FinanceModels/HeaderTitle'
 const Home: React.FC = () => {
@@ -19,9 +19,9 @@ const Home: React.FC = () => {
   return (
     <>
       <ProCard split="vertical">
-        <ProCard title="" colSpan="30%" >
+        <ProCard title="" colSpan="40%" >
           {/* <FactorItem onFilterFinance={handleFilterFinance} /> */}
-          {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <FactorItem onFilterFinance={handleFilterFinance} />}
+          {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> : <FactorItem onFilterFinance={handleFilterFinance} />}
         </ProCard>
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container'>
-              {/* {isActivePage ? <TestIndex onFilterFinance={handleFilterFinance} /> : <Models data={financeData} />} */}
+              {/* {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> : <Models data={financeData} />} */}
               <Models data={financeData} />
             </div>
           </ProCard>

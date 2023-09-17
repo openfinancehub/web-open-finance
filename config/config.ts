@@ -21,6 +21,7 @@ export default defineConfig({
   proxy: {
     '/api': {
       target: 'https://finance-api.tocmcc.cn/',
+      target: 'http://121.37.5.77:5003',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
     },
@@ -77,7 +78,6 @@ export default defineConfig({
     },
     {
       path: '/home/model/item',
-      name: 'modelItem',
       component: './Home/components/ModelsItems/',
       exact: true
     },
