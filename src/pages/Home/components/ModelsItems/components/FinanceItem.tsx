@@ -1,7 +1,6 @@
 import type { ProCardTabsProps } from '@ant-design/pro-components';
 import { ProCard } from '@ant-design/pro-components';
 import { useState } from 'react';
-import FirstLeftItem from './modelsDetail/FirstLeftItem';
 import ModelsCode from './modelsDetail/ModelsCode';
 import ModelsFiles from './modelsDetail/ModelsFiles';
 import ModelsFigure from './modelsDetail/ModelsFigure';

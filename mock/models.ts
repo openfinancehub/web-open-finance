@@ -1,10 +1,4 @@
 
-const models = [
-  { version: 0, code: 'Umi', text: 'U' },
-  { version: 1, code: 'Fish', text: 'B' }
-];
-
-
 const ModelsItem = {
   id: "version",
   code: `import numpy as np
@@ -156,15 +150,7 @@ const modelData = {
 
 
 export default {
-  'GET /api/queryModelList': (req: any, res: any) => {
-    res.json({
-      msg: "成功",
-      data: { list: models },
-      ret_code: 0,
-      extra: {}
-    });
-  },
-  'POST /api/queryModel': (req: any, res: any) => {
+  'POST /api/getCode': (req: any, res: any) => {
     res.json({
       msg: "成功",
       data: ModelsItem,
@@ -172,7 +158,7 @@ export default {
       extra: {}
     });
   },
-  'POST /api/updateModelCode': (req: any, res: any) => {
+  'POST /api/updateCode': (req: any, res: any) => {
     res.json({
       msg: "成功",
       data: ModelsItem,
@@ -180,7 +166,7 @@ export default {
       extra: {}
     });
   },
-  'POST /api/modelData': (req: any, res: any) => {
+  'POST /api/eval': (req: any, res: any) => {
     res.json({
       msg: "成功",
       data: modelData,

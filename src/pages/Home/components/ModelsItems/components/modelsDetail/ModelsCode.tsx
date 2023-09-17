@@ -47,10 +47,11 @@ function ModelsCode() {
                 newLoadings[0] = false;
                 return newLoadings;
             });
-            const response = await updateCode(factorValue, modelValue, modelCode, modelText,'');
+            const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
             if (response.ret_code == 0) {
                 // console.log(response.data.code)
                 setModelCode(response.data.code)
+                setModelText(response.data.text)
                 message.success('提交成功');
             } else {
                 message.error('提交失败');
@@ -83,7 +84,7 @@ function ModelsCode() {
     return (
         <ProCard split="horizontal">
             <ProCard>
-                <Space wrap className={styles.butStyle}>
+                <Space wrap className={styles.butStyle} size={26}>
                     <Button type="primary" loading={loadings[1]} onClick={handleEditToggle}>
                         {isEditing ? '保存' : '编辑'}
                     </Button>
