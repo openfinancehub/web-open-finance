@@ -4,7 +4,7 @@ export interface ModelsItem {
     jump_url: string;
     like: string;
     model: string;
-    tag: number;
+    tag: string;
     time: string;
 }
 
@@ -15,7 +15,7 @@ export interface header {
     token: string;
 }
 
-export interface dataString {
+export interface modelsData {
     ip: string;
     factor: string;
     time: string;

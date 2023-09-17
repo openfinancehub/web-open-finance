@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import G6 from '@antv/g6';
 import { message } from 'antd';
-import { modelsJson, categoryJson } from '../service';
-import { ModelsItem, header, dataString } from '../data';
+import { modelsJson, categoryJson } from '../../service';
+import { ModelsItem, header, modelsData } from '../../data';
 
 let head: header = {
   req_id: '1234',
@@ -10,7 +10,7 @@ let head: header = {
   user: 'user',
   token: 'token',
 };
-let dataStr: dataString = {
+let dataStr: modelsData = {
   ip: '127.0.0.1',
   factor: '',
   time: '',
@@ -32,7 +32,7 @@ const transformData = (inputData: { [x: string]: any[]; }) => {
 
 const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeGraph>,
   containerRef: React.RefObject<HTMLDivElement>,
-  handleTriggerEvent) => {
+  handleTriggerEvent: { (): Promise<void>; (): void; }) => {
   try {
     const dataJson = await categoryJson();
     const transformedData = transformData(dataJson.data);
@@ -66,10 +66,17 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
         size: 26,
       },
       layout: {
-        type: 'dendrogram',
+        type: 'compactBox',
         direction: 'LR',
-        nodeSep: 20,
+        nodeSep: 30,
         rankSep: 100,
+        getWidth: (d) => {
+          if (d.children) {
+            console.log(d)
+            return d.children.length * 20; // 为非叶节点生成 0 到 500 之间的随机值
+          }
+          return 100; // 为叶节点同样生成 0 到 500 之间的随机值
+        },
         radial: true,
       },
     });
@@ -86,7 +93,7 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
       return {
         label: node.id,
         style: {
-          fill: colorMapping[depth] || 'red', // 使用对应层级的颜色，如果没有设置则默认为红色
+          fill: colorMapping[depth] || 'red', 
         },
       };
     });
@@ -107,8 +114,8 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
         handleTriggerEvent();
       }
     });
-
-    graphRef.current = graph; // 存储图形实例
+    // 存储图形实例
+    graphRef.current = graph;
   } catch (error) {
     console.error(error);
     message.error('数据获取失败，请刷新页面重试！');
@@ -116,7 +123,7 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
 };
 
 
-const DemoRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: any) => void }) => {
+const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: any) => void }) => {
   const containerRef = useRef(null);
   const graphRef = useRef<G6.TreeGraph>();
 
@@ -139,4 +146,4 @@ const DemoRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: any)
   return <div ref={containerRef} id="container" />;
 };
 
-export default DemoRadialTreeGraph;
+export default CategoryRadialTreeGraph;

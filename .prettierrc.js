@@ -21,5 +21,5 @@ module.exports = {
   // 换行符使用 crlf/lf/auto
   // endOfLine: 'auto',
   overrides: [{ files: '.prettierrc', options: { parser: 'json' } }],
-  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-packagejson']
+  plugins: ['prettier-plugin-organize-imports', 'prettier-plugin-packagejson'],
 };
