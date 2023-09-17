@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ModelsDetail, updateModelCode } from '../../../../service';
+import { getCode, updateCode } from '../../../../service';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Button, message, Space } from 'antd';
@@ -23,9 +23,14 @@ function ModelsCode() {
     const [modelText, setModelText] = useState('');
     //请求后端获取代码数据
     const handleTriggerEvent = async () => {
-        const dataJson = await ModelsDetail(modelValue, factorValue);
-        setModelCode(dataJson.data.code);
-        setModelText(dataJson.data.text);
+        if (modelValue === null || factorValue === null) {
+            setModelCode('');
+            setModelText('');
+        } else {
+            const dataJson = await getCode(factorValue, modelValue);
+            setModelCode(dataJson.data.code);
+            setModelText(dataJson.data.text);
+        }
     };
 
     const handleSubmit = async () => {
@@ -42,7 +47,7 @@ function ModelsCode() {
                 newLoadings[0] = false;
                 return newLoadings;
             });
-            const response = await updateModelCode(modelValue, factorValue, modelCode, modelText);
+            const response = await updateCode(factorValue, modelValue, modelCode, modelText,'');
             if (response.ret_code == 0) {
                 // console.log(response.data.code)
                 setModelCode(response.data.code)

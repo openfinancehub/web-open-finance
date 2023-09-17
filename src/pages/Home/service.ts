@@ -1,15 +1,15 @@
-import { ModelsItem, dataString, header } from './data';
+import { ModelsItem, modelsData, header } from './data';
 
-export const modelsJson = async (header: header, data: dataString) => {
+export const modelsJson = async (header: header, dataStr: modelsData) => {
   try {
-    const response = await fetch('http://121.37.5.77:5003/api/models', {
+    const response = await fetch('/api/models', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         header: header,
-        data: data
+        data: dataStr
       })
     });
     const json = (await response.json()) as { models: ModelsItem[] };
@@ -26,7 +26,7 @@ export const modelsJson = async (header: header, data: dataString) => {
 // 首页因子信息
 export const categoryJson = async () => {
   try {
-    const response = await fetch('http://121.37.5.77:5003/api/category', {
+    const response = await fetch('/api/category', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -43,9 +43,8 @@ export const categoryJson = async () => {
     return { data: [], total: 0, success: false };
   }
 };
-
-
-export const ModelsDetail = async (model: string, factor: string) => {
+//查询代码
+export const getCode = async (factor: string, model: string,) => {
   try {
     let header = {
       req_id: '1234',
@@ -60,7 +59,7 @@ export const ModelsDetail = async (model: string, factor: string) => {
       time: '',
       extra: 'extra',
     };
-    const response = await fetch('/api/queryModel', {
+    const response = await fetch('/api/getCode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -87,8 +86,8 @@ export const ModelsDetail = async (model: string, factor: string) => {
     };
   }
 };
-//更新代码
-export const updateModelCode = async (factor: string, model: string, code: string, text: string) => {
+//更新或者新增代码&&删除
+export const updateCode = async (factor: string, model: string, code: string, text: string, extra: string) => {
   try {
     let header = {
       req_id: '1234',
@@ -99,12 +98,13 @@ export const updateModelCode = async (factor: string, model: string, code: strin
     let dataStr = {
       ip: '127.0.0.1',
       factor: factor,
+      model: model,
       code: code,
       text: text,
       time: '',
-      extra: 'extra',
+      extra: extra,
     };
-    const response = await fetch('/api/updateModelCode', {
+    const response = await fetch('/api/updateCode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -131,8 +131,8 @@ export const updateModelCode = async (factor: string, model: string, code: strin
     };
   }
 };
-
-export const getModelData = async (factor: string) => {
+//关系图形界面
+export const getModelData = async (factor: string, model: string) => {
   try {
     let header = {
       req_id: '1234',
@@ -143,10 +143,11 @@ export const getModelData = async (factor: string) => {
     let dataStr = {
       ip: '127.0.0.1',
       factor: factor,
+      model: model,
       time: '',
       extra: 'extra',
     };
-    const response = await fetch('/api/modelData', {
+    const response = await fetch('/api/eval', {
       method: 'POSt',
       headers: {
         'Content-Type': 'application/json',
@@ -174,7 +175,7 @@ export const getModelData = async (factor: string) => {
     };
   }
 };
-
+//上传文件
 export const uploadFileService = async (formData: FormData) => {
   try {
     let header = {

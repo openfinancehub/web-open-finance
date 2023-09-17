@@ -1,5 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
-import FactorItem from './components/FinanceModels/FactorItem'
+import FactorItem from './components/FinanceModels/CategoryItem'
 import Models from './components/FinanceModels/Models'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';

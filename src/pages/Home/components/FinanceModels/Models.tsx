@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ProList } from '@ant-design/pro-components';
 import { HeartTwoTone, CloudDownloadOutlined, CloudTwoTone, FileTextTwoTone } from '@ant-design/icons';
 import { history } from 'umi';
-import { ModelsItem, header, dataString } from '../../data';
+import { ModelsItem, } from '../../data';
+import { updateCode } from '../../service'
 //跳转models详情
 const onRow = (record: any) => {
   return {
@@ -11,6 +12,10 @@ const onRow = (record: any) => {
       history.push(`/home/model/item?model=${record.model}&factor=${record.tag}`);
     },
   };
+};
+
+const deleteTools = (tools: ModelsItem) => {
+  updateCode(tools.tag, tools.model, '', '', "action='delete'")
 };
 //models结展示
 const DescriptionMeta: React.FC<{ json: ModelsItem }> = ({ json }) => {
@@ -33,17 +38,12 @@ const DescriptionMeta: React.FC<{ json: ModelsItem }> = ({ json }) => {
 };
 function Models({ data }: { data: ModelsItem[] }) {
   const [filteredModels, setFilteredModels] = useState(data);
-  // const [originalData, setOriginalData] = useState(data);
   useEffect(() => {
     const fetchData = async () => {
       setFilteredModels(data);
-      // setOriginalData(data);
     };
     fetchData();
   }, [data]);
-  const handleModelsChange = (filteredModels: any) => {
-    setFilteredModels(filteredModels);
-  };
   return (
     <ProList<ModelsItem>
       onRow={onRow}
@@ -56,7 +56,7 @@ function Models({ data }: { data: ModelsItem[] }) {
       metas={{
         title: {
           dataIndex: 'model',
-          title: '模块名称',
+          title: '模型名称',
         },
         avatar: {
           dataIndex: 'icon',
@@ -67,6 +67,27 @@ function Models({ data }: { data: ModelsItem[] }) {
           search: false,
           render: (_, json) => <DescriptionMeta json={json} />,
         },
+        actions: {
+          render: (text, row) => [
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              key="link"
+              onClick={() => {
+                window.location.href = `/home/model/item?model=${row.model}&factor=${row.tag}`
+              }}
+            >
+              编辑
+            </a>,
+            <a target="_blank" rel="noopener noreferrer" key="delete"
+              onClick={() => {
+                deleteTools(row)
+              }}
+            >
+              删除
+            </a>,
+          ],
+        }
       }}
     />
   );

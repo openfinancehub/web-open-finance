@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import G6 from '@antv/g6';
 import { message } from 'antd';
 import { modelsJson, categoryJson } from '../../service';
-import { ModelsItem, header, dataString } from '../../data';
+import { ModelsItem, header, modelsData } from '../../data';
 
 let head: header = {
   req_id: '1234',
@@ -10,7 +10,7 @@ let head: header = {
   user: 'user',
   token: 'token',
 };
-let dataStr: dataString = {
+let dataStr: modelsData = {
   ip: '127.0.0.1',
   factor: '',
   time: '',
