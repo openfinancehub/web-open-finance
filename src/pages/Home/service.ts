@@ -2,7 +2,7 @@ import { ModelsItem, modelsData, header } from './data';
 
 export const modelsJson = async (header: header, dataStr: modelsData) => {
   try {
-    const response = await fetch('/api/models', {
+    const response = await fetch('http://121.37.5.77:5003/api/models', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export const modelsJson = async (header: header, dataStr: modelsData) => {
 // 首页因子信息
 export const categoryJson = async () => {
   try {
-    const response = await fetch('/api/category', {
+    const response = await fetch('http://121.37.5.77:5003/api/category', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
