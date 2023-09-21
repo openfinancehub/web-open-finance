@@ -9,6 +9,10 @@ export class LoginServices {
     return REQUEST({ url: ApiUrl.GET_CAPTCHA, params });
   }
   public static login(data: any): Promise<any> {
-    return REQUEST({ method: 'POST', url: ApiUrl.LOGIN, data });
+    return REQUEST({
+      method: 'POST',
+      url: '/login',
+      data
+    });
   }
 }

@@ -31,31 +31,22 @@ export default () => {
   const handleSubmit = async (values: { mobile: string; captcha: string }) => {
     try {
       const { mobile: username, captcha } = values;
-      let res = await LoginServices.login({ username, captcha });
-      console.log(res, 'res');
-      res = {
-        data: {
-          id: 1,
-          username: '13476722550',
-          nickName: '小伙伴66254',
-          avatarUrl:
-            'https://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=%E5%A4%B4%E5%83%8F&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&hd=undefined&latest=undefined&copyright=undefined&cs=297808936,3321743440&os=321555049,2416277572&simid=297808936,3321743440&pn=68&rn=1&di=7229357672103936001&ln=1896&fr=&fmq=1689691787817_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=3c&objurl=https%3A%2F%2Fup.enterdesk.com%2Fedpic_source%2F31%2F8c%2F55%2F318c5586cf3a7a757684d9567fdbee66.jpg&rpstart=0&rpnum=0&adpicid=0&nojc=undefined&dyTabStr=MCw2LDMsMSw0LDUsMiw4LDcsOQ%3D%3D',
-          token:
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuaWNrbmFtZSI6IuWwj-S8meS8tDY2MjU0IiwiaWQiOjEsImV4cCI6MTY5MDI5ODU1NX0.TvvWTHJWziqfMVeK8EpUvLEQ1rXbhpe0R6I08a7UTAc'
-        }
-      };
+      const res = await LoginServices.login({ username, captcha });
+
       await setInitialState(s => ({
         ...s,
         currentUser: res.data
       }));
       localStorage.setItem('userInfo', JSON.stringify(res.data));
       history.push('/home');
-    } catch (error) {}
+    } catch (error) {
+      error && message.error(error.msg);
+    }
   };
 
   const sendSmsCode = async (phone: any) => {
     try {
-      const res = LoginServices.getCaptcha({ phone });
+      const res = await LoginServices.getCaptcha({ phone });
       console.log(res, 'res');
     } catch (error) {}
   };

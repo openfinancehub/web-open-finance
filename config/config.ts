@@ -23,6 +23,11 @@ export default defineConfig({
       target: 'http://121.37.5.77:5005',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
+    },
+    '/app-api': {
+      target: 'http://39.101.71.109',
+      changeOrigin: true,
+      pathRewrite: { '^/app-api': '/app-api' }
     }
   },
   locale: {

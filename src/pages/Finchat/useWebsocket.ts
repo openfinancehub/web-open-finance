@@ -74,7 +74,11 @@ const useWebSocket = (url: string): WebSocketHook => {
           input: message,
           company: info.company,
           task: info.task,
-          session_id: '1234123'
+          // id + username + token的后六位
+          session_id:
+            currentUser.id +
+            currentUser.username +
+            currentUser.token.substr(currentUser.token.length - 4)
         }
       };
       socket.send(JSON.stringify(data));
