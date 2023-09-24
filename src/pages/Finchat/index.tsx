@@ -239,7 +239,7 @@ const Finchat = () => {
                     {item.flag && <span className={styles.cursor} />}
                     <span className={styles.tag}>
                       <UserOutlined style={{ fontSize: '18px' }} />
-                    </span>
+                    </span>                   
                   </Card>
                 </div>
               );
@@ -252,7 +252,7 @@ const Finchat = () => {
                       style={{ padding: '0 16px 0 0' }}
                       dangerouslySetInnerHTML={{ __html: item.content }}
                     />
-                  )}
+                  )}                
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>
