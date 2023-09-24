@@ -3,124 +3,147 @@ import { useLocation } from 'react-router-dom';
 import { getCode, updateCode } from '../../../../service';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { Button, message, Space } from 'antd';
-import styles from './style.less';
+import { Button, message, Space, Form, Input, Radio, Tooltip, Col, Row } from 'antd';
+import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/python/python';
 
 function ModelsCode() {
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const modelValue = searchParams.get('model')!;
-    const factorValue = searchParams.get('factor')!;
-    // console.log(modelValue);
-    // console.log(factorValue);
-    const [isEditing, setIsEditing] = useState(false);
-    const [loadings, setLoadings] = useState<boolean[]>([false, false]);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [modelValue, setModelValue] = useState(searchParams.get('model') || '');
+  const [factorValue, setFactorValue] = useState(searchParams.get('factor') || '');
 
-    const [modelCode, setModelCode] = useState('');
-    const [modelText, setModelText] = useState('');
-    //请求后端获取代码数据
-    const handleTriggerEvent = async () => {
-        if (modelValue === null || factorValue === null) {
-            setModelCode('');
-            setModelText('');
-        } else {
-            const dataJson = await getCode(factorValue, modelValue);
-            setModelCode(dataJson.data.code);
-            setModelText(dataJson.data.text);
-        }
-    };
+  const [isEditing, setIsEditing] = useState(false);
+  const [loadings, setLoadings] = useState<boolean[]>([false, false]);
 
-    const handleSubmit = async () => {
-        // 非编辑状态才可以提交，向后端发送请求
-        if (!isEditing) {
-            setLoadings((prevLoadings) => {
-                const newLoadings = [...prevLoadings];
-                newLoadings[0] = true;
-                return newLoadings;
-            });
+  const [modelCode, setModelCode] = useState('');
+  const [modelText, setModelText] = useState('');
 
-            setLoadings((prevLoadings) => {
-                const newLoadings = [...prevLoadings];
-                newLoadings[0] = false;
-                return newLoadings;
-            });
-            const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
-            if (response.ret_code == 0) {
-                // console.log(response.data.code)
-                setModelCode(response.data.code)
-                setModelText(response.data.text)
-                message.success('提交成功');
-            } else {
-                message.error('提交失败');
-            }
-        } else {
-            message.error('当前正在编辑，提交失败');
-        }
-    };
+  const [form] = Form.useForm();
 
-    const handleEditToggle = () => {
-        setLoadings((prevLoadings) => {
-            const newLoadings = [...prevLoadings];
-            newLoadings[1] = true;
-            return newLoadings;
-        });
+  const toggleLoading = (index: number, isLoading: boolean) => {
+    setLoadings(prevLoadings => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = isLoading;
+      return newLoadings;
+    });
+  };
 
-        setTimeout(() => {
-            setIsEditing((prevIsEditing) => !prevIsEditing);
-            setLoadings((prevLoadings) => {
-                const newLoadings = [...prevLoadings];
-                newLoadings[1] = false;
-                return newLoadings;
-            });
-        }, 1000);
-    };
-    useEffect(() => {
-        handleTriggerEvent();
-    }, []);
+  const onFinish = async () => {
+    await form.validateFields(); // 触发表单校验
+    if (!isEditing) {
+      toggleLoading(0, true);
+      const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
+      toggleLoading(0, false);
+      if (response.ret_code === 0) {
+        setModelCode(response.data.code);
+        setModelText(response.data.text);
+        message.success('提交成功');
+      } else {
+        message.error('提交失败');
+      }
+    } else {
+      message.error('当前正在编辑，提交失败');
+    }
+  };
 
-    return (
-        <ProCard split="horizontal">
-            <ProCard>
-                <Space wrap className={styles.butStyle} size={26}>
-                    <Button type="primary" loading={loadings[1]} onClick={handleEditToggle}>
-                        {isEditing ? '保存' : '编辑'}
-                    </Button>
-                    <Button type="primary" loading={loadings[0]} onClick={handleSubmit}>
-                        提交
-                    </Button>
-                </Space>
-                <CodeMirror
-                    value={modelCode}
-                    options={{
-                        mode: 'python',
-                        theme: 'material',
-                        lineNumbers: true,
-                    }}
-                    onBeforeChange={(editor, data, value) => {
-                        if (isEditing) setModelCode(value);
-                    }}
-                />
-                <br />
-                <CodeMirror
-                    value={modelText}
-                    options={{
-                        mode: 'txt',
-                        theme: 'material',
-                        lineNumbers: true,
-                    }}
-                    onBeforeChange={(editor, data, value) => {
-                        setModelText(value);
-                    }}
-                />
-            </ProCard>
-            <ProCard title="" headerBordered>
+  const handleTriggerEvent = async () => {
+    if (modelValue && factorValue) {
+      const dataJson = await getCode(factorValue, modelValue);
+      setModelCode(dataJson.data.code);
+      setModelText(dataJson.data.text);
+    } else {
+      setModelCode('');
+      setModelText('');
+    }
+  };
+  // 删除
+  const deleteTools = () => {
+    updateCode(factorValue, modelCode, '', '', "action='delete'")
+  };
 
-            </ProCard>
-        </ProCard>
-    );
+  const handleEditToggle = () => {
+    toggleLoading(1, true);
+    setTimeout(() => {
+      setIsEditing(prevIsEditing => !prevIsEditing);
+      toggleLoading(1, false);
+    }, 500);
+  };
+
+  const TooltipIcon = ({ title }: { title: string }) => (
+    <Tooltip title={title}>
+      <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+    </Tooltip>
+  );
+  const FormButton = ({ loadingIndex, clickHandler, children }:
+    { loadingIndex: number, clickHandler: any, children: string }) => (
+    <Col span={2}>
+      <Button type="primary" loading={loadings[loadingIndex]} onClick={clickHandler}>
+        {children}
+      </Button>
+    </Col>
+  );
+
+  const CustomFormInput = ({ name, label, isEditing }: {
+    name: string, label: string, isEditing: boolean
+  }) => (
+    <Col span={10}>
+      <Form.Item name={name} label={label} rules={[{ required: true }]} hasFeedback>
+        <Input
+          suffix={<TooltipIcon title={`Enter Your ${name}`} />}
+          disabled={!isEditing}
+        />
+      </Form.Item>
+    </Col>
+  );
+  useEffect(() => {
+    handleTriggerEvent();
+  }, []);
+
+  return (
+    <ProCard split="horizontal">
+      <Form form={form} onFinish={onFinish}
+        initialValues={{ Model: modelValue, Factor: factorValue }}>
+        <Form.Item >
+          <Row gutter={0}>
+            <FormButton loadingIndex={0} clickHandler={onFinish}>{'Submit'}</FormButton>
+            <FormButton loadingIndex={1} clickHandler={handleEditToggle}>{isEditing ? 'Save' : 'Editing'}</FormButton>
+            <FormButton loadingIndex={0} clickHandler={() => { deleteTools() }}>{'Delete'}</FormButton>
+          </Row>
+          <br />
+          <Row gutter={16}>
+            <CustomFormInput name='Model' label='Model' isEditing={isEditing} />
+            <CustomFormInput name='Factor' label='Factor' isEditing={isEditing} />
+          </Row>
+        </Form.Item>
+      </Form>
+      <CodeMirror
+        value={modelCode}
+        options={{
+          mode: 'python',
+          theme: 'material',
+          lineNumbers: true,
+        }}
+        onBeforeChange={(editor, data, value) => {
+          if (isEditing) setModelCode(value);
+        }}
+      />
+      <br />
+      <CodeMirror
+        value={modelText}
+        options={{
+          mode: 'txt',
+          theme: 'material',
+          lineNumbers: true,
+        }}
+        onBeforeChange={(editor, data, value) => {
+          setModelText(value);
+        }}
+      />
+    </ProCard>
+  );
 }
 
 export default ModelsCode;
