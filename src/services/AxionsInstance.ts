@@ -64,10 +64,12 @@ const axiosRequest = async ({
       if (typeof resp === 'string') {
         return resp;
       }
-      if (resp.ret_code !== 0) {
+      if (resp.ret_code === 0 || resp.code === 200) {
+        return Promise.resolve(resp);
+      } else {
+        console.log(resp, 'resp');
         return Promise.reject(resp);
       }
-      return Promise.resolve(resp);
     } else {
       const error = {
         message: '服务器开小差~请稍后再试',
@@ -91,8 +93,8 @@ export const REQUEST = ({
   responseType,
   headers = {
     // 'multipart/form-data'  application/json
-    'Content-Type': 'application/json',
-    user: 'admin'
+    'Content-Type': 'application/json'
+    // user: 'admin'
   }
 }: any) => {
   return axiosRequest({

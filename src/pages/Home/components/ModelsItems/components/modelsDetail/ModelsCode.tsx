@@ -103,8 +103,7 @@ function ModelsCode() {
                         if (isEditing) setModelCode(value);
                     }}
                 />
-            </ProCard>
-            <ProCard title="" headerBordered>
+                <br />
                 <CodeMirror
                     value={modelText}
                     options={{
@@ -116,6 +115,9 @@ function ModelsCode() {
                         setModelText(value);
                     }}
                 />
+            </ProCard>
+            <ProCard title="" headerBordered>
+
             </ProCard>
         </ProCard>
     );

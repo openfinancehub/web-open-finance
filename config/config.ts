@@ -20,7 +20,6 @@ export default defineConfig({
   },
   proxy: {
     '/api': {
-      target: 'https://finance-api.tocmcc.cn/',
       target: 'http://121.37.5.77:5003',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
@@ -29,6 +28,11 @@ export default defineConfig({
       target: 'http://139.159.205.40:8808/',
       changeOrigin: true,
       pathRewrite: { '^/api': '/quant' }
+    },
+    '/app-api': {
+      target: 'http://39.101.71.109',
+      changeOrigin: true,
+      pathRewrite: { '^/app-api': '/app-api' }
     }
   },
   locale: {
