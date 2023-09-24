@@ -85,7 +85,7 @@ const axiosRequest = async ({
 };
 
 export const REQUEST = ({
-  baseURL = 'http://121.37.5.77:5005/api',
+  // baseURL = 'http://121.37.5.77:5005/api',
   method = 'GET',
   url,
   data,
@@ -98,7 +98,7 @@ export const REQUEST = ({
   }
 }: any) => {
   return axiosRequest({
-    baseURL,
+    // baseURL,
     method,
     url,
     data,

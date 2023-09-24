@@ -9,7 +9,7 @@ import { history, useModel } from '@umijs/max';
 import { Button, Card, Input, message as Message, Popover, Radio } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { ChatList, CompanyList, TaskList } from './components';
+import { ChatList, CompanyList, TaskList, MyCharts } from './components';
 
 import styles from './index.less';
 import useWebSocket from './useWebsocket';
@@ -164,6 +164,7 @@ const Finchat = () => {
   };
 
   const disabled = !(selectedTask || selectedCom || selectedRole);
+  console.log(message, 'message')
 
   return (
     <div className={styles.wrapFinchat}>
@@ -253,6 +254,9 @@ const Finchat = () => {
                       dangerouslySetInnerHTML={{ __html: item.content }}
                     />
                   )}
+                  {
+                    item.chartData ? <MyCharts data={item.chartData}/> : null 
+                  }
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>
