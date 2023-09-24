@@ -1,28 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { ProCard } from '@ant-design/pro-components';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Space , Popover, Select, Cascader } from 'antd';
-const { Option } = Select;
-import { Stock, Line, Mix } from '@ant-design/plots';
+import { Button, Space , Popover, Cascader } from 'antd';
+import { Mix } from '@ant-design/plots';
 import { Link, request } from 'umi';
 import './style.css'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface MyComponentProps {
-    // Define any props required by the component
-}
 
-const Factor: React.FC<MyComponentProps> = () => {
+const Factor = () => {
     // 按钮的全局样式
     const size = 'large'
     // 初始因子的折线键值
     let firstFactor = ''
     // 响应式的折线颜色
     const [lineColor,setlineColor] = useState('#000')
-
     // 响应式的因子键值
     const [inFactor,setInFactor] = useState('')
-    // 
     // 股票种类的数据
     const [sotckListData, setsotckList] = useState([])
     // 因子取值的数据
@@ -76,9 +69,9 @@ const Factor: React.FC<MyComponentProps> = () => {
         }).then((res) => {
             firstFactor = res.data.long[0].name
             setInFactor(res.data.long[0].name)
-            var long = res.data.long
-            var short = res.data.short
-            long.forEach((item) => {
+            let long = res.data.long || []
+            let short = res.data.short || []
+            long.forEach((item:object) => {
                 item.struct.children.forEach((obj) => {
                     obj.value = obj.label
                     obj.children.forEach((obj2) => {
@@ -95,7 +88,7 @@ const Factor: React.FC<MyComponentProps> = () => {
                     })
                 })
             })
-            short.forEach((item) => {
+            short.forEach((item:object) => {
                 item.struct.children.forEach((obj) => {
                     obj.value = obj.label
                     obj.children.forEach((obj2) => {
@@ -117,10 +110,10 @@ const Factor: React.FC<MyComponentProps> = () => {
     };
 
     // 某只股票近N天的K线数据的接口
-    const getstock_kline = (stock_id) => {
+    const getstock_kline = (stock_id:string) => {
         const data = {
             stock_id: stock_id,
-            days: 1,
+            days: 2,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('http://139.159.205.40:8808/quant/getstock_kline', {
@@ -135,10 +128,10 @@ const Factor: React.FC<MyComponentProps> = () => {
     };
 
     // 某只股票近N天的因子取值的接口
-    const historyfactor = (stock_id) => {
+    const historyfactor = (stock_id:string) => {
         const data = {
             stock_id: stock_id,
-            days: "1",
+            days: "2",
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
         request('http://139.159.205.40:8808/quant/historyfactor', {
@@ -172,7 +165,7 @@ const Factor: React.FC<MyComponentProps> = () => {
     }, [])
 
     // 点击切换股票数据
-    const handleButtonChange = (buttonStr: React.SetStateAction<string>, butttonId: React.SetStateAction<string>, buttonNum: any) => {
+    const handleButtonChange = (buttonStr: React.SetStateAction<string>, butttonId:string, buttonNum: any) => {
         getstock_kline(butttonId)
         setSelectedButton(buttonStr);
         historyfactor(butttonId)
@@ -221,15 +214,6 @@ const Factor: React.FC<MyComponentProps> = () => {
             },
         },
         syncViewPadding: true,
-        // xAxis:{
-        //     type: 'time',
-        //     tickCount: 10,
-        //     tickFormatter: 'YYYY-MM-DD HH:mm:ss',
-        //     tickFormatter: (value) => {
-        //         const date = new Date(value);
-        //         return date.getSeconds().toString().padStart(2, '0');
-        //       },
-        // },
         plots: [
             {
                 type: 'stock',
