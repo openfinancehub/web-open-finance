@@ -59,7 +59,7 @@ export const getCode = async (factor: string, model: string,) => {
       time: '',
       extra: 'extra',
     };
-    const response = await fetch('/api/getCode', {
+    const response = await fetch('http://121.37.5.77:5003/api/getCode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const updateCode = async (factor: string, model: string, code: string, te
       time: '',
       extra: extra,
     };
-    const response = await fetch('/api/updateCode', {
+    const response = await fetch('http://121.37.5.77:5003/api/updateCode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
