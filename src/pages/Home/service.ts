@@ -54,8 +54,8 @@ export const getCode = async (factor: string, model: string,) => {
     };
     let dataStr = {
       ip: '127.0.0.1',
-      factor: factor,
-      model: model,
+      factor: model,
+      model: "author",
       time: '',
       extra: 'extra',
     };
@@ -71,7 +71,7 @@ export const getCode = async (factor: string, model: string,) => {
     });
     const json = await response.json()
     return {
-      data: json.data,
+      data: json.models,
       ret_code: json.ret_code,
       msg: json.msg,
       extra: json.extra

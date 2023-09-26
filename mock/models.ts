@@ -52,6 +52,35 @@ const ModelsItem = {
   text: '这是一点解释说明的文本'
 }
 
+const chart = {
+  "chart": {
+    "type": "pie",
+    "appendix": {
+      "title": "Text"
+    },
+    "x": {
+      "title": ["", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+    },
+    "y": {
+      "title": { "text": "3031万", "value": "80%" },
+      "children": {}
+    }
+  }
+}
+
+const defaultData = {
+  id: 'A0',
+  value: {
+    title: '',
+    items: [
+      {
+        text: '',
+      },
+    ],
+  },
+  children: [],
+};
+
 const modelData = {
   id: 'A0',
   value: {
@@ -150,14 +179,14 @@ const modelData = {
 
 
 export default {
-  'POST /api/getCode': (req: any, res: any) => {
-    res.json({
-      msg: "成功",
-      data: ModelsItem,
-      ret_code: 0,
-      extra: {}
-    });
-  },
+  // 'POST /api/getCode': (req: any, res: any) => {
+  //   res.json({
+  //     msg: "成功",
+  //     data: ModelsItem,
+  //     ret_code: 0,
+  //     extra: {}
+  //   });
+  // },
   'POST /api/updateCode': (req: any, res: any) => {
     res.json({
       msg: "成功",
