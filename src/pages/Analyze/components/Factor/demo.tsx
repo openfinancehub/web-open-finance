@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ProCard } from '@ant-design/pro-components';
 import { request } from 'umi';
 import * as echarts from 'echarts/core';
@@ -62,51 +62,51 @@ const Demo = () => {
   // 因子取值的数据
   const [factorData, setFactorData] = useState([])
   // 折线的数据
-  const [allLineData ,setAllLineData] = useState([])
+  const [allLineData, setAllLineData] = useState([])
   // K线的时间
-  const [lineTimeData,setLineTimeData] = useState([])
+  const [lineTimeData, setLineTimeData] = useState([])
   // 某只股票近N天的K线数据的接口
-  const getstock_kline = (stock_id:string) => {
+  const getstock_kline = (stock_id: string) => {
     const data = {
-        stock_id: stock_id,
-        days: 2,
-        key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+      stock_id: stock_id,
+      days: 3,
+      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
     }
     request('http://139.159.205.40:8808/quant/getstock_kline', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        data: JSON.stringify(data)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data)
     }).then((res) => {
-        setFactorData(res.data)
+      setFactorData(res.data)
     }).catch(err => { console.log(err) })
   };
-    // 某只股票近N天的因子取值的接口
-  const historyfactor = (stock_id:string) => {
-      const data = {
-          stock_id: stock_id,
-          days: "2",
-          key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
-      }
-      request('http://139.159.205.40:8808/quant/historyfactor', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          data: JSON.stringify(data)
-      }).then((res) => {
-          setLineTimeData(res.data[60].time)
-      }).catch(err => { 
-          console.log(err)
-        })
+  // 某只股票近N天的因子取值的接口
+  const historyfactor = (stock_id: string) => {
+    const data = {
+      stock_id: stock_id,
+      days: "3",
+      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+    }
+    request('http://139.159.205.40:8808/quant/historyfactor', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data)
+    }).then((res) => {
+      setLineTimeData(res.data[60].time)
+    }).catch(err => {
+      console.log(err)
+    })
   };
-  useEffect(()=>{
+  useEffect(() => {
     getstock_kline('000001')
     historyfactor('000001')
-  },[])
-  useEffect(()=>{
-  
+  }, [])
+  useEffect(() => {
+
     function splitData(rawData: (number | string)[][]) {
       const categoryData = [];
       const values = [];
@@ -209,15 +209,17 @@ const Demo = () => {
       ['2013/6/7', 2242.26, 2210.9, 2205.07, 2250.63],
       ['2013/6/13', 2190.1, 2148.35, 2126.22, 2190.1]
     ]);
-    const data1 = factorData.map((item)=>{
+
+    // 图表的数据
+    const data1 = factorData.map((item) => {
       delete item.time
-      return  Object.values(item)
+      return Object.values(item)
     }
-     
+
     )
-    console.log(data1);
-    console.log(data0);
-    
+    // console.log(data1);
+    // console.log(data0);
+
     function calculateMA(dayCount: number) {
       let result = [];
       for (let i = 0, len = data0.values.length; i < len; i++) {
@@ -233,7 +235,7 @@ const Demo = () => {
       }
       return result;
     }
-    
+
     const option = {
       title: {
         text: '因子指数',
@@ -243,6 +245,20 @@ const Demo = () => {
         trigger: 'axis',
         axisPointer: {
           type: 'cross'
+        },
+        formatter: function (params) {
+          // 自定义弹出框的内容
+          console.log(params)
+          let open = params[0].value[1];
+          let close = params[0].value[2];
+          let lowest = params[0].value[3];
+          let highest = params[0].value[4];
+
+          return '开盘价: ' + open + '<br>'
+            + '收盘价: ' + close + '<br>'
+            + '最低价: ' + lowest + '<br>'
+            + '最高价: ' + highest;
+
         }
       },
       legend: {
@@ -286,7 +302,7 @@ const Demo = () => {
         {
           name: '日K',
           type: 'candlestick',
-          data: data0.values,
+          data: data1,
           itemStyle: {
             color: upColor,
             color0: downColor,
@@ -299,34 +315,33 @@ const Demo = () => {
                 return param != null ? Math.round(param.value) + '' : '';
               }
             },
-            data: [
-              {
-                name: 'Mark',
-                coord: ['2013/5/31', 2300],
-                // value: 2300,
-                valueDim: 'colse',
+            // data: [
+            //   {
+            //     name: 'Mark',
+            //     coord: ['2013/5/31', 2300],
+            //     // value: 2300,
+            //     valueDim: 'colse',
+            //     itemStyle: {
+            //       color: 'rgb(41,60,85)'
+            //     }
+            //   },
+            //   {
+            //     name: 'highest value',
+            //     type: 'max',
+            //     valueDim: 'highest'
+            //   },
+            //   {
 
-                itemStyle: {
-                  color: 'rgb(41,60,85)'
-                }
-              },
-              {
-                name: 'highest value',
-                type: 'max',
-                valueDim: 'highest'
-              },
-              {
-
-                name: 'lowest value',
-                type: 'min',
-                valueDim: 'lowest'
-              },
-              {
-                name: 'average value on close',
-                type: 'average',
-                valueDim: 'close'
-              }
-            ],
+            //     name: 'lowest value',
+            //     type: 'min',
+            //     valueDim: 'lowest'
+            //   },
+            //   {
+            //     name: 'average value on close',
+            //     type: 'average',
+            //     valueDim: 'close'
+            //   }
+            // ],
             tooltip: {
               formatter: function (param: any) {
                 return param.name + '<br>' + (param.data.coord || '');
@@ -334,42 +349,42 @@ const Demo = () => {
             }
           },
         },
-        {
-          name: 'OBV',
-          type: 'line',
-          data: calculateMA(5),
-          smooth: true,
-          lineStyle: {
-            opacity: 0.5
-          }
-        },
-        {
-          name: 'RSI',
-          type: 'line',
-          data: calculateMA(10),
-          smooth: true,
-          lineStyle: {
-            opacity: 0.5
-          }
-        },
-        {
-          name: 'MASS',
-          type: 'line',
-          data: calculateMA(20),
-          smooth: true,
-          lineStyle: {
-            opacity: 0.5
-          }
-        },
-        {
-          name: 'MA30',
-          type: 'line',
-          data: calculateMA(30),
-          smooth: true,
-          lineStyle: {
-            opacity: 0.5
-          }
-        }
+        // {
+        //   name: 'OBV',
+        //   type: 'line',
+        //   data: calculateMA(5),
+        //   smooth: true,
+        //   lineStyle: {
+        //     opacity: 0.5
+        //   }
+        // },
+        // {
+        //   name: 'RSI',
+        //   type: 'line',
+        //   data: calculateMA(10),
+        //   smooth: true,
+        //   lineStyle: {
+        //     opacity: 0.5
+        //   }
+        // },
+        // {
+        //   name: 'MASS',
+        //   type: 'line',
+        //   data: calculateMA(20),
+        //   smooth: true,
+        //   lineStyle: {
+        //     opacity: 0.5
+        //   }
+        // },
+        // {
+        //   name: 'MA30',
+        //   type: 'line',
+        //   data: calculateMA(30),
+        //   smooth: true,
+        //   lineStyle: {
+        //     opacity: 0.5
+        //   }
+        // }
       ]
     };
     const chart = echarts.init(chartRef.current);
@@ -378,14 +393,16 @@ const Demo = () => {
       chart.dispose();
     };
 
-  },[lineTimeData])
+  }, [lineTimeData])
 
 
-    return (
+  return (
     <ProCard gutter={16} ghost wrap>
-       <div ref={chartRef} style={{width: "1200px",height:"700px"}}></div>
+      <div ref={chartRef} style={{ width: "1200px", height: "700px" }}></div>
     </ProCard>
-    )
+  )
 
 }
+
+
 export default Demo;

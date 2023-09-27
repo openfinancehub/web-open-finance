@@ -9,7 +9,7 @@ const HomePage: React.FC = () => {
     {
       key: '1',
       label: `推荐因子`,
-      children: <Demo></Demo>,
+      children: <Factor></Factor>,
     },
     {
       key: '2',
