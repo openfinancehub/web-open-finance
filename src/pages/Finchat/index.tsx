@@ -6,6 +6,7 @@ import {
   UserOutlined
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
+import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, message as Message, Popover, Radio } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
@@ -252,7 +253,14 @@ const Finchat = () => {
                       style={{ padding: '0 16px 0 0' }}
                       dangerouslySetInnerHTML={{ __html: item.content }}
                     />
-                  )}                
+                  )}
+                  {item.chart && (
+                      <ReactEcharts
+                        option= {item.chart}
+                        style={{height: '300px'}}
+                      />
+                    )
+                  }
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>

@@ -59,7 +59,7 @@ const axiosRequest = async ({
       params,
       responseType
     });
-    if (res.status === 200 && res.statusText === 'OK') {
+    if (res.status === 200) {
       const resp = res.data;
       if (typeof resp === 'string') {
         return resp;
