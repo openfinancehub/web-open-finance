@@ -5,14 +5,8 @@ import { Button, Dropdown, InputNumber, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { request } from 'umi';
 import './style.css';
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface MyComponentProps {
-  // Define any props required by the component
-}
-
-
-const Strategy: React.FC<MyComponentProps> = () => {
+import Left from './component/left'
+const Strategy = () => {
   const size = 'large';
   const [sotckListData, setsotckList] = useState([]);
   const [selectedButton, setSelectedButton] = useState('平安银行');
@@ -208,32 +202,39 @@ const Strategy: React.FC<MyComponentProps> = () => {
       }
     ]
   };
-  const [windowdata,setWindowdata] = useState(1)
-  const [backData,setbackData] = useState(1)
-  const [intervalData,setIntervalData] = useState(1)
-  const [shopData,setShopData] = useState(1)
-  const windowChange = (value:number)=>{
-    console.log('测试窗口',value);
+  const [windowdata, setWindowdata] = useState(1)
+  const [backData, setbackData] = useState(1)
+  const [intervalData, setIntervalData] = useState(1)
+  const [shopData, setShopData] = useState(1)
+  const windowChange = (value: number) => {
+    console.log('测试窗口', value);
     setWindowdata(value)
   }
-  const backOrder = (value:number)=>{
-    console.log('回滚次数',value);
+  const backOrder = (value: number) => {
+    console.log('回滚次数', value);
     setbackData(value)
   }
-  const intervalTime = (value:number)=>{
-    console.log('间隔时长',value)
+  const intervalTime = (value: number) => {
+    console.log('间隔时长', value)
     setIntervalData(value)
   }
-  const shopOrder = (value:number)=>{
-    console.log('买入次数',value);
+  const shopOrder = (value: number) => {
+    console.log('买入次数', value);
     setShopData(value)
   }
 
   /**
    * 点击测试触发的事件
    */
-  const demoBtn = ()=>{
-    console.log(windowdata,backData,intervalData,shopData);
+  const demoBtn = () => {
+    console.log(windowdata, backData, intervalData, shopData);
+  }
+
+  /**
+ * 接收导航的数据,切换股票
+ */
+  const handleDataFromChild = (butttonId: string, buttonNum: string) => {
+    console.log(buttonNum,butttonId);
   }
 
   return (
@@ -241,21 +242,7 @@ const Strategy: React.FC<MyComponentProps> = () => {
       <ProCard
         colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 3 }}
         style={{ height: '100%' }}>
-        <div style={{ textAlign: 'center', height: '80vh', overflow: 'auto' }}>
-          <Space direction="vertical">
-            {sotckListData.map((item, index) => {
-              return (
-                <Button
-                  key={index}
-                  size={size}
-                  type={selectedButton === item[0] ? 'primary' : 'default'}
-                  onClick={() => handleButtonChange(item[0])}>
-                  {item[0]}
-                </Button>
-              );
-            })}
-          </Space>
-        </div>
+        <Left onDataChange={handleDataFromChild}></Left>
       </ProCard>
       <ProCard
         gutter={[0, 16]}
@@ -365,7 +352,7 @@ const Strategy: React.FC<MyComponentProps> = () => {
                 marginBottom: 20
               }}
               onClick={demoBtn}
-              >
+            >
               测试
             </Button>
 
@@ -378,6 +365,7 @@ const Strategy: React.FC<MyComponentProps> = () => {
       </ProCard>
     </ProCard>
   );
+  
 };
 
 export default Strategy;
