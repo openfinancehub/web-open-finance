@@ -54,7 +54,7 @@ const Factor = () => {
     const downColor = '#00da3c';
     const downBorderColor = '#008F28';
     // 响应式的折线颜色
-    const [lineColor,setlineColor] = useState('#5470c6')
+    const [lineColor, setlineColor] = useState('#5470c6')
     // 按钮的全局样式
     const size = 'large'
     // 响应式的因子键值
@@ -154,7 +154,7 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(1111,inFactor)
+            console.log(1111, inFactor)
             setLineTimeData(res.data[60].time)
             setHistoryData(res.data[60].factors)
         }).catch(err => {
@@ -162,7 +162,7 @@ const Factor = () => {
         })
     };
 
-    
+
     useEffect(() => {
         stockanalysis('000001.SZ')
         getstock_kline('000001')
@@ -170,10 +170,10 @@ const Factor = () => {
     }, [])
 
     useEffect(() => {
-        if(Object.keys(historyData).length !== 0 && inFactor !== ''){
+        if (Object.keys(historyData).length !== 0 && inFactor !== '') {
             setFactorLiData(historyData[inFactor].bins)
-        } 
-    }, [lineTimeData,inFactor])
+        }
+    }, [lineTimeData, inFactor])
 
     useEffect(() => {
         // 图表的数据
@@ -188,8 +188,30 @@ const Factor = () => {
                 axisPointer: {
                     type: 'cross'
                 },
-              
+                formatter: function (params) {
+                    // 自定义弹出框的内容
+                    console.log(params)  
+                    let bullet = '\u25CF';
+             
+                    let time = params[0].axisValue
+                    let close = params[0].value[1];
+                    let highest = params[0].value[2];
+                    let lowest = params[0].value[3];
+                    let open = params[0].value[4];
+                    let FactorName = params[1].seriesName
+                    let FactorValue = params[1].value
+                    return( time + '<br>'+
+                        bullet + '开盘价' + ': &nbsp' + open + '<br>' +
+                        bullet + '收盘价' + ': &nbsp' + close + '<br>'+
+                        bullet + '最低价' + ': &nbsp' + lowest + '<br>'+
+                        bullet + '最高价' + ': &nbsp' + highest + '<br>'+
+                        bullet + FactorName  + ': &nbsp'  + FactorValue
+                        
+                        )
+    
+                },
             },
+          
             legend: {
                 data: ['日K', inFactor]
             },
@@ -209,8 +231,8 @@ const Factor = () => {
             },
             yAxis: [
                 // 左侧Y轴配置
-                {   
-                    type:'value',
+                {
+                    type: 'value',
                     scale: true,
                     splitArea: {
                         show: true
@@ -218,7 +240,7 @@ const Factor = () => {
                 },
                 // 右侧Y轴配置
                 {
-                    type:'value',
+                    type: 'value',
                 }
             ],
             dataZoom: [
@@ -288,17 +310,17 @@ const Factor = () => {
                     yAxisIndex: 0,
                 },
                 {
-                  name: inFactor,
-                  type: 'line',
-                  data: factorLiData,
-                  smooth: true,
-                  lineStyle: {
-                    opacity: 0.9
-                  },
-                  itemStyle:{
-                    color:lineColor
-                  },
-                  yAxisIndex: 1,
+                    name: inFactor,
+                    type: 'line',
+                    data: factorLiData,
+                    smooth: true,
+                    lineStyle: {
+                        opacity: 0.9
+                    },
+                    itemStyle: {
+                        color: lineColor
+                    },
+                    yAxisIndex: 1,
                 },
                 // {
                 //   name: 'RSI',
@@ -316,13 +338,13 @@ const Factor = () => {
         return () => {
             chart.dispose();
         };
-    }, [lineTimeData,factorLiData])
+    }, [lineTimeData, factorLiData])
 
     /**
      * 点击切换因子的方法
      * 用来处理改变折线的数据
      */
-    const handleValue = (event:any, index:number) => {
+    const handleValue = (event: any, index: number) => {
         let text = event.target.textContent
         switch (index) {
             case 0:
