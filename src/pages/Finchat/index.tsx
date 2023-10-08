@@ -248,19 +248,19 @@ const Finchat = () => {
             return (
               <div className={styles.user} key={index}>
                 <Card style={{ width: 300 }}>
-                  {item.content && (
-                    <div
-                      style={{ padding: '0 16px 0 0' }}
-                      dangerouslySetInnerHTML={{ __html: item.content }}
-                    />
-                  )}
                   {item.chart && (
                       <ReactEcharts
                         option= {item.chart}
                         style={{height: '300px'}}
                       />
                     )
-                  }
+                  }                  
+                  {item.content && (
+                    <div
+                      style={{ padding: '0 16px 0 0' }}
+                      dangerouslySetInnerHTML={{ __html: item.content }}
+                    />
+                  )}
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>
