@@ -8,12 +8,7 @@ import './style.css';
 import Left from './component/left'
 const Strategy = () => {
   const size = 'large';
-  const [sotckListData, setsotckList] = useState([]);
-  const [selectedButton, setSelectedButton] = useState('平安银行');
   const [seleType, setSeleType] = useState('看涨买入');
-  const handleButtonChange = (buttonId: React.SetStateAction<string>) => {
-    setSelectedButton(buttonId);
-  };
   // 选择看涨还是看跌
   const handleTypeRise = () => {
     setSeleType('看涨买入');
@@ -21,31 +16,64 @@ const Strategy = () => {
   const handleTypeFall = () => {
     setSeleType('看跌止损');
   };
-  // 获取当前支持的股票信息的接口
-  const sotckList = () => {
+
+  const strategy_test = (stock_id:string)=>{
     const data = {
-      key: '8140ad230f687daede75a08855e8ae5ff40c3ba8'
-    };
-    request('http://139.159.205.40:8808/quant/sotcklist', {
+      stock_id: stock_id,
+      with_details: '0',
+      categories: "factor",
+      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+  }
+  request('http://139.159.205.40:8808/quant/strategy_test', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
       },
       data: JSON.stringify(data)
-    })
-      .then(res => {
-        setsotckList(
-          res.data.map(item => {
-            return item.split(',');
+  }).then((res) => {
+      setInFactor(res.data.long[0].name)
+      let long = res.data.long || []
+      let short = res.data.short || []
+      long.forEach((item: object) => {
+          item.struct.children.forEach((obj) => {
+              obj.value = obj.label
+              obj.children.forEach((obj2) => {
+                  obj2.value = obj2.label
+                  if (obj2.value === 'sigma') {
+                      obj2.children.forEach((obj3, index) => {
+                          obj3.value = `取值${index + 1}:` + obj3.value
+                      })
+                  } else {
+                      obj2.children.forEach((obj3, index) => {
+                          obj3.value = `取值${index + 1}:` + (obj3.value * 100).toFixed(2) + '%'
+                      })
+                  }
+              })
           })
-        );
       })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+      short.forEach((item: object) => {
+          item.struct.children.forEach((obj) => {
+              obj.value = obj.label
+              obj.children.forEach((obj2) => {
+                  obj2.value = obj2.label
+                  if (obj2.value === 'sigma') {
+                      obj2.children.forEach((obj3, index) => {
+                          obj3.value = `取值${index + 1}:` + obj3.value
+                      })
+                  } else {
+                      obj2.children.forEach((obj3, index) => {
+                          obj3.value = `取值${index + 1}:` + (obj3.value * 100).toFixed(2) + '%'
+                      })
+                  }
+              })
+          })
+      })
+      setQuantData({ long, short })
+  }).catch(err => { console.log(err) })
+  }
+
   useEffect(() => {
-    sotckList();
+    
   }, []);
   const items: MenuProps['items'] = [
     {

@@ -47,7 +47,7 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 10
+    const Day = 1
     const chartRef = useRef(null);
     const upColor = '#ec0000';
     const upBorderColor = '#8A0000';
@@ -190,21 +190,21 @@ const Factor = () => {
                 },
                 formatter: function (params) {
                     // 自定义弹出框的内容
-                    console.log(params)  
                     let bullet = '\u25CF';
-             
                     let time = params[0].axisValue
                     let close = params[0].value[1];
                     let highest = params[0].value[2];
                     let lowest = params[0].value[3];
                     let open = params[0].value[4];
+                    let volume = params[0].value[6];
                     let FactorName = params[1].seriesName
                     let FactorValue = params[1].value
                     return( time + '<br>'+
                         bullet + '开盘价' + ': &nbsp' + open + '<br>' +
                         bullet + '收盘价' + ': &nbsp' + close + '<br>'+
                         bullet + '最低价' + ': &nbsp' + lowest + '<br>'+
-                        bullet + '最高价' + ': &nbsp' + highest + '<br>'+
+                        bullet + '最高价' + ': &nbsp' + highest + '<br>'+ '<div style="margin-bottom:6px"></div>' +
+                        bullet + '成交量' + ': &nbsp' + volume + '<br>'+        
                         bullet + FactorName  + ': &nbsp'  + FactorValue
                         
                         )
