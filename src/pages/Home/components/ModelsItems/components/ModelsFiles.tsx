@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, message, UploadFile } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { uploadFileService } from '../../../../service';
+import { uploadFileService } from '@/pages/Home/service';
 const { Dragger } = Upload;
 
 const FileUploadDownloadPage = () => {

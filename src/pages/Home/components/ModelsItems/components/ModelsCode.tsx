@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getCode, updateCode } from '../../../../service';
+import { getCode, updateCode } from '@/pages/Home/service';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Button, message, Space, Form, Input, Radio, Tooltip, Col, Row } from 'antd';

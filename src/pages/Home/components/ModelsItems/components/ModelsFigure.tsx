@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DecompositionTreeGraph } from '@ant-design/graphs';
 import styles from './style.less';
-import { getCode, updateCode, getModelData } from '../../../../service';
+import { getModelData } from '@/pages/Home/service';
 type TreeGraphData = import('@antv/g6-core/lib/types').TreeGraphData;
 import { useLocation } from 'react-router-dom';
 
@@ -38,7 +38,7 @@ const defaultData = {
 const convertDataToTreeGraphData = (data: IData): TreeGraphData => {
   const treeGraphData: TreeGraphData = {
     id: data.id,
-    label: data.value.title, // 使用 title 作为 label
+    label: data.value.title, 
     children: data.children?.map((child) => convertDataToTreeGraphData(child)),
   };
 
