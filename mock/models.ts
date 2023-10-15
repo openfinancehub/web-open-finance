@@ -56,31 +56,123 @@ const chart = {
   "chart": {
     "type": "pie",
     "appendix": {
-      "title": "Text"
+      "title": "Get financial analysis"
     },
     "x": {
-      "title": ["", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+      "title": [
+        { "title": "1", "text": "3031万", "value": "80%" },
+        { "title": "2", "text": "3031万", "value": "80%" }]
     },
-    "y": {
-      "title": { "text": "3031万", "value": "80%" },
-      "children": {}
+    "1": {
+      "a": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
+      "b": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
+    },
+    "2": {
+      "a": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
+      "b": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
+      "c": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
     }
   }
 }
 
 const defaultData = {
-  id: 'A0',
-  value: {
-    title: '',
-    items: [
-      {
-        text: '',
+  nodes: [
+    {
+      id: '0',
+      value: {
+        title: 'spmd1',
+        items: [
+          {
+            text: '曝光UV',
+            value: '1000万',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+            trend: '45.9%',
+          },
+          {
+            text: '点击UV',
+            value: '10万',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+            trend: '1.9%',
+          },
+        ],
       },
-    ],
-  },
-  children: [],
-};
-
+    },
+    {
+      id: '1',
+      value: {
+        title: '开通营销页1',
+        items: [
+          {
+            text: '访问UV',
+            value: '1000万',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+            trend: '45.9%',
+          },
+        ],
+      },
+    },
+    {
+      id: '2',
+      value: {
+        title: '开通营销页2',
+        items: [
+          {
+            text: '访问UV',
+            value: '1000万',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+            trend: '45.9%',
+          },
+        ],
+      },
+    },
+    {
+      id: '3',
+      value: {
+        title: '去向页面1',
+        items: [
+          {
+            text: '访问UV',
+            value: '1000万',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+            trend: '45.9%',
+          },
+        ],
+      },
+    },
+    {
+      id: '4',
+      value: {
+        title: '去向页面2',
+        items: [
+          {
+            text: '访问UV',
+            value: '1000万',
+            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
+            trend: '45.9%',
+          },
+        ],
+      },
+    },
+  ],
+  edges: [
+    {
+      source: '0',
+      target: '1',
+    },
+    {
+      source: '0',
+      target: '2',
+    },
+    {
+      source: '1',
+      target: '3',
+    },
+    {
+      source: '2',
+      target: '4',
+    },
+  ],
+}
 const modelData = {
   id: 'A0',
   value: {
@@ -175,7 +267,7 @@ const modelData = {
       },
     },
   ],
-};
+}
 
 
 export default {
@@ -198,7 +290,7 @@ export default {
   'POST /api/eval': (req: any, res: any) => {
     res.json({
       msg: "成功",
-      data: modelData,
+      data: defaultData,
       ret_code: 0,
       extra: {}
     });

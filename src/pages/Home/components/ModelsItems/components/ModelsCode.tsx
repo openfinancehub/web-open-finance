@@ -4,7 +4,7 @@ import { getCode, updateCode } from '@/pages/Home/service';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Button, message, Space, Form, Input, Radio, Tooltip, Col, Row } from 'antd';
-import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/python/python';
@@ -37,9 +37,9 @@ function ModelsCode() {
       toggleLoading(0, true);
       const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
       toggleLoading(0, false);
-      if (response.ret_code === 0) {
-        setModelCode(response.data.code);
-        setModelText(response.data.text);
+      if (null != response.data && response.data.ret_code === 0) {
+        setModelCode(response.data.models.data.code);
+        setModelText(response.data.models.data.text);
         message.success('提交成功');
       } else {
         message.error('提交失败');
@@ -52,8 +52,8 @@ function ModelsCode() {
   const handleTriggerEvent = async () => {
     if (modelValue && factorValue) {
       const dataJson = await getCode(factorValue, modelValue);
-      setModelCode(dataJson.data.code);
-      setModelText(dataJson.data.text);
+      setModelCode(dataJson.data.models.code);
+      setModelText(dataJson.data.models.text);
     } else {
       setModelCode('');
       setModelText('');
@@ -62,6 +62,8 @@ function ModelsCode() {
   // 删除
   const deleteTools = () => {
     updateCode(factorValue, modelCode, '', '', "action='delete'")
+    setModelValue("")
+    setFactorValue("")
   };
 
   const handleEditToggle = () => {
@@ -110,7 +112,7 @@ function ModelsCode() {
           <Row gutter={0}>
             <FormButton loadingIndex={0} clickHandler={onFinish}>{'Submit'}</FormButton>
             <FormButton loadingIndex={1} clickHandler={handleEditToggle}>{isEditing ? 'Save' : 'Editing'}</FormButton>
-            <FormButton loadingIndex={0} clickHandler={() => { deleteTools() }}>{'Delete'}</FormButton>
+            <FormButton loadingIndex={2} clickHandler={() => { deleteTools() }}>{'Delete'}</FormButton>
           </Row>
           <br />
           <Row gutter={16}>

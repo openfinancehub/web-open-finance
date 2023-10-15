@@ -29,7 +29,7 @@ export default () => {
           { tab: 'Model Code', key: 'Code', closable: false, },
           { tab: 'Files and versions', key: 'Files', closable: false, },
           { tab: 'Data', key: 'Data', closable: false, },
-          // { tab: 'Test', key: 'Test', closable: false, },
+          { tab: 'Test', key: 'Test', closable: false, },
         ]}
         onTabChange={onTabChange}
       >

@@ -30,7 +30,7 @@ const HeaderTitle: React.FC<{
         <h3 className={styles.fountStyle}>Tools</h3>
       </div>
       <div className={styles.inpStyle}>
-        <h3 className={styles.figStyle}>{models.length}</h3>
+        {/* <h3 className={styles.figStyle}>{models.length}</h3> */}
       </div>
       <div>
         <Input onChange={(e) => changeModels(e.target.value)} placeholder='Filter by name' />
