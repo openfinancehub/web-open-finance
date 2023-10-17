@@ -176,6 +176,7 @@ const Factor = () => {
     }, [lineTimeData, inFactor])
 
     useEffect(() => {
+        console.log(factorLiData,"折线的数据")
         // 图表的数据
         const data1 = factorData.map((item) => {
             delete item.time
