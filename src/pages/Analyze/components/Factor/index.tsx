@@ -138,6 +138,7 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
+            console.log('实例',res)
             setFactorData(res.data)
         }).catch(err => { console.log(err) })
     };
@@ -154,7 +155,7 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(1111, inFactor)
+            // console.log(1111, res)
             setLineTimeData(res.data[60].time)
             setHistoryData(res.data[60].factors)
         }).catch(err => {
