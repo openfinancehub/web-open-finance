@@ -67,27 +67,27 @@ function Models({ data }: { data: ModelsItem[] }) {
           search: false,
           render: (_, json) => <DescriptionMeta json={json} />,
         },
-        actions: {
-          render: (text, row) => [
-            <a
-              target="_blank"
-              rel="noopener noreferrer"
-              key="link"
-              onClick={() => {
-                window.location.href = `/home/model/item?model=${row.model}&factor=${row.tag}`
-              }}
-            >
-              编辑
-            </a>,
-            <a target="_blank" rel="noopener noreferrer" key="delete"
-              onClick={() => {
-                deleteTools(row)
-              }}
-            >
-              删除
-            </a>,
-          ],
-        }
+        // actions: {
+        //   render: (text, row) => [
+        //     <a
+        //       target="_blank"
+        //       rel="noopener noreferrer"
+        //       key="link"
+        //       onClick={() => {
+        //         window.location.href = `/home/model/item?model=${row.model}&factor=${row.tag}`
+        //       }}
+        //     >
+        //       编辑
+        //     </a>,
+        //     <a target="_blank" rel="noopener noreferrer" key="delete"
+        //       onClick={() => {
+        //         deleteTools(row)
+        //       }}
+        //     >
+        //       删除
+        //     </a>,
+        //   ],
+        // }
       }}
     />
   );

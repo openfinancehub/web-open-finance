@@ -2,7 +2,7 @@ import { ModelsItem, modelsData, header } from './data';
 
 export const modelsJson = async (header: header, dataStr: modelsData) => {
   try {
-    const response = await fetch('/api/models', {
+    const response = await fetch('http://121.37.5.77:5003/api/models', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export const modelsJson = async (header: header, dataStr: modelsData) => {
 // 首页因子信息
 export const categoryJson = async () => {
   try {
-    const response = await fetch('/api/category', {
+    const response = await fetch('http://121.37.5.77:5003/api/category', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -54,12 +54,12 @@ export const getCode = async (factor: string, model: string,) => {
     };
     let dataStr = {
       ip: '127.0.0.1',
-      factor: factor,
-      model: model,
+      factor: model,
+      model: "author",
       time: '',
       extra: 'extra',
     };
-    const response = await fetch('/api/getCode', {
+    const response = await fetch('http://121.37.5.77:5003/api/getCode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const getCode = async (factor: string, model: string,) => {
     });
     const json = await response.json()
     return {
-      data: json.data,
+      data: json.models,
       ret_code: json.ret_code,
       msg: json.msg,
       extra: json.extra
@@ -104,7 +104,7 @@ export const updateCode = async (factor: string, model: string, code: string, te
       time: '',
       extra: extra,
     };
-    const response = await fetch('/api/updateCode', {
+    const response = await fetch('http://121.37.5.77:5003/api/updateCode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

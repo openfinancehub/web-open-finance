@@ -16,26 +16,26 @@ export default () => {
     <div style={{ background: '#F5F7FA', paddingBlock: 30 }}>
       <PageContainer
         header={{
-          title: 'Model',
+          title: 'Tools',
           ghost: true,
           breadcrumb: {
             routes: [
               { path: '', breadcrumbName: 'Open Finance' },
-              { path: '', breadcrumbName: 'Model' },
+              { path: '', breadcrumbName: 'Tools' },
             ],
           },
         }}
         tabList={[
           { tab: 'Model Code', key: 'Code', closable: false, },
           { tab: 'Files and versions', key: 'Files', closable: false, },
-          { tab: 'Tools', key: 'Tools', closable: false, },
+          { tab: 'Data', key: 'Data', closable: false, },
           { tab: 'Test', key: 'Test', closable: false, },
         ]}
         onTabChange={onTabChange}
       >
         {currentTab === 'Code' && <ModelsCode />}
         {currentTab === 'Files' && <ModelsFiles />}
-        {currentTab === 'Tools' && <ModelsFigure />}
+        {currentTab === 'Data' && <ModelsFigure />}
         {currentTab === 'Test' && <Test />}
       </PageContainer>
     </div>

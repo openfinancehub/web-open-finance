@@ -6,6 +6,7 @@ import {
   UserOutlined
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
+import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, message as Message, Popover, Radio } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
@@ -239,7 +240,7 @@ const Finchat = () => {
                     {item.flag && <span className={styles.cursor} />}
                     <span className={styles.tag}>
                       <UserOutlined style={{ fontSize: '18px' }} />
-                    </span>
+                    </span>                   
                   </Card>
                 </div>
               );
@@ -247,6 +248,13 @@ const Finchat = () => {
             return (
               <div className={styles.user} key={index}>
                 <Card style={{ width: 300 }}>
+                  {item.chart && (
+                      <ReactEcharts
+                        option= {item.chart}
+                        style={{height: '300px'}}
+                      />
+                    )
+                  }                  
                   {item.content && (
                     <div
                       style={{ padding: '0 16px 0 0' }}
