@@ -17,63 +17,84 @@ const Strategy = () => {
     setSeleType('看跌止损');
   };
 
-  const strategy_test = (stock_id:string)=>{
+  // 进行测试的接口
+  const strategy_test = () => {
     const data = {
-      stock_id: stock_id,
-      with_details: '0',
-      categories: "factor",
-      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
-  }
-  request('http://139.159.205.40:8808/quant/strategy_test', {
+      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
+      setting:[
+          { factor_name:'MACD',
+            span:60,
+            condition:'>0.008',
+            mode:'long',
+            type:'public'
+          }
+        ],
+      configs:{
+        stock_id:'000001',
+        user_id:'001',
+        // setting_mode:'公共策略 f/p  ,f表示策略基于因子的取值条件，p代表使用公共策略',
+        setting_mode:'f',
+        analysis_flag:0,
+        holding_cost:-1,
+        end_date:'2023-08-08',
+        cnt_ops:10,
+        test_days:5,
+        // mode:'long\short\both'
+        mode:'long'
+      }
+    }
+    request('http://139.159.205.40:8808/quant/strategy_test', {
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       },
       data: JSON.stringify(data)
-  }).then((res) => {
-      setInFactor(res.data.long[0].name)
-      let long = res.data.long || []
-      let short = res.data.short || []
-      long.forEach((item: object) => {
-          item.struct.children.forEach((obj) => {
-              obj.value = obj.label
-              obj.children.forEach((obj2) => {
-                  obj2.value = obj2.label
-                  if (obj2.value === 'sigma') {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + obj3.value
-                      })
-                  } else {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + (obj3.value * 100).toFixed(2) + '%'
-                      })
-                  }
-              })
-          })
-      })
-      short.forEach((item: object) => {
-          item.struct.children.forEach((obj) => {
-              obj.value = obj.label
-              obj.children.forEach((obj2) => {
-                  obj2.value = obj2.label
-                  if (obj2.value === 'sigma') {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + obj3.value
-                      })
-                  } else {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + (obj3.value * 100).toFixed(2) + '%'
-                      })
-                  }
-              })
-          })
-      })
-      setQuantData({ long, short })
-  }).catch(err => { console.log(err) })
+    }).then((res) => {
+      
+    }).catch(err => { console.log(err) })
   }
-
+  // 获取对应测试的数据接口
+  const strtegylist = () => {
+    const data = {
+      uid: 1,
+      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+    }
+    request('http://139.159.205.40:8808/quant/strtegylist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data)
+    }).then((res) => {
+      console.log(res)
+    }).catch(err => { console.log(err) })
+  }
+  // 拿到令牌 去拿数据
+  const GetStrategy = () =>{
+    const data = {
+      uid: 1,
+      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+    }
+    request('http://139.159.205.40:8808/quant/get_strategy_test_result', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data)
+    }).then((res) => {
+      console.log(res)
+      // if(res.code === 300){
+      //   setTimeout(()=>{
+      //     GetStrategy()
+      //   },5000)
+      // }
+    }).catch(err => { console.log(err) })
+  }
+ 
   useEffect(() => {
-    
+    strtegylist()
+    strategy_test()
+    GetStrategy()
   }, []);
   const items: MenuProps['items'] = [
     {
@@ -251,9 +272,6 @@ const Strategy = () => {
     setShopData(value)
   }
 
-  /**
-   * 点击测试触发的事件
-   */
   const demoBtn = () => {
     console.log(windowdata, backData, intervalData, shopData);
   }
@@ -262,7 +280,7 @@ const Strategy = () => {
  * 接收导航的数据,切换股票
  */
   const handleDataFromChild = (butttonId: string, buttonNum: string) => {
-    console.log(buttonNum,butttonId);
+    console.log(buttonNum, butttonId);
   }
 
   return (
@@ -276,20 +294,6 @@ const Strategy = () => {
         gutter={[0, 16]}
         colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }}
         direction="column">
-        <ProCard style={{ height: 360 }}>
-          <ProCard
-            style={{ height: '100%' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 8 }}
-            bordered>
-            <Radar {...raderConfig} />
-          </ProCard>
-          <ProCard
-            style={{ height: '100%' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 16 }}
-            bordered>
-            <Line {...config} />
-          </ProCard>
-        </ProCard>
         <div className="seleType">
           <div>
             <Button
@@ -309,6 +313,16 @@ const Strategy = () => {
                 handleTypeFall();
               }}>
               看跌止损
+            </Button>
+          </div>
+          <div>
+          <Button
+              size={size}
+              type={seleType === '综合策略' ? 'primary' : 'default'}
+              onClick={() => {
+                handleTypeFall();
+              }}>
+              综合策略
             </Button>
           </div>
         </div>
@@ -390,10 +404,24 @@ const Strategy = () => {
             </div>
           </ProCard>
         </ProCard>
+        <ProCard style={{ height: 360 }}>
+          <ProCard
+            style={{ height: '100%' }}
+            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 8 }}
+            bordered>
+            <Radar {...raderConfig} />
+          </ProCard>
+          <ProCard
+            style={{ height: '100%' }}
+            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 16 }}
+            bordered>
+            <Line {...config} />
+          </ProCard>
+        </ProCard>
       </ProCard>
     </ProCard>
   );
-  
+
 };
 
 export default Strategy;

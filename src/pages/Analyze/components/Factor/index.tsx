@@ -155,7 +155,8 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            // console.log(1111, res)
+            // console.log("1111", JSON.parse(res))
+            console.log("222",res)
             setLineTimeData(res.data[60].time)
             setHistoryData(res.data[60].factors)
         }).catch(err => {

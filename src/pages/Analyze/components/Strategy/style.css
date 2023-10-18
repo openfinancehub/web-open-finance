@@ -11,10 +11,9 @@
 }
 .seleType {
   display: flex;
-  justify-content: center;
-}
-.seleType div:first-child {
-  margin-right: 20px;
+  justify-content: space-evenly;
+  width: 40%;
+  margin: 0 auto;
 }
 .numberSele {
   display: flex;
