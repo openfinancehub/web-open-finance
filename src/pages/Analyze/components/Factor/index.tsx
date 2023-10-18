@@ -138,7 +138,6 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log('实例',res)
             setFactorData(res.data)
         }).catch(err => { console.log(err) })
     };
@@ -155,8 +154,6 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            // console.log("1111", JSON.parse(res))
-            console.log("222",res)
             setLineTimeData(res.data[60].time)
             setHistoryData(res.data[60].factors)
         }).catch(err => {
@@ -178,7 +175,6 @@ const Factor = () => {
     }, [lineTimeData, inFactor])
 
     useEffect(() => {
-        console.log(factorLiData,"折线的数据")
         // 图表的数据
         const data1 = factorData.map((item) => {
             delete item.time
