@@ -1,8 +1,6 @@
-import { Line, Radar } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
-import {Tabs,TabsProps, MenuProps, Button, Dropdown, InputNumber, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { request } from 'umi';
+import {Tabs,TabsProps, Button } from 'antd';
+import { useState } from 'react';
 import './style.css';
 import Left from './component/left'
 import Custom from './component/Custom'
@@ -21,87 +19,6 @@ const Strategy = () => {
   const handleAll = () => {
     setSeleType('综合策略');
   }
-
-  // 进行测试的接口
-  const strategy_test = () => {
-    const data = {
-      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
-      setting:[
-          { factor_name:'MACD',
-            span:60,
-            condition:'>0.008',
-            mode:'long',
-            type:'public'
-          }
-        ],
-      configs:{
-        stock_id:'000001',
-        user_id:'001',
-        // setting_mode:'公共策略 f/p  ,f表示策略基于因子的取值条件，p代表使用公共策略',
-        setting_mode:'f',
-        analysis_flag:0,
-        holding_cost:-1,
-        end_date:'2023-08-08',
-        cnt_ops:10,
-        test_days:5,
-        // mode:'long\short\both'
-        mode:'long'
-      }
-    }
-    request('http://139.159.205.40:8808/quant/strategy_test', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(data)
-    }).then((res) => {
-      
-    }).catch(err => { console.log(err) })
-  }
-  // 获取对应测试的数据接口
-  const strtegylist = () => {
-    const data = {
-      uid: 1,
-      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
-    }
-    request('http://139.159.205.40:8808/quant/strtegylist', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(data)
-    }).then((res) => {
-      console.log(res)
-    }).catch(err => { console.log(err) })
-  }
-  // 拿到令牌 去拿数据
-  const GetStrategy = () =>{
-    const data = {
-      uid: 1,
-      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
-    }
-    request('http://139.159.205.40:8808/quant/get_strategy_test_result', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(data)
-    }).then((res) => {
-      console.log(res)
-      // if(res.code === 300){
-      //   setTimeout(()=>{
-      //     GetStrategy()
-      //   },5000)
-      // }
-    }).catch(err => { console.log(err) })
-  }
-
-
-  useEffect(() => {
-    strtegylist()
-    strategy_test()
-    GetStrategy()
-  }, []);
 
 
   /**
