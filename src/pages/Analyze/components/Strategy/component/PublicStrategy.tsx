@@ -17,7 +17,13 @@ export default function PublicStrategy() {
     const [shopData, setShopData] = useState(1)
     const [listData, setListData] = useState([])
     const [detailsData, setDetailsData] = useState([])
-    const [listName, setListName] = useState('S_MACD')
+    const [listName, setListName] = useState()
+    const [indexdetails,setindexDetails] = useState(0)
+    const [isdemoBtn,setIsdemoBtn] = useState(true)
+    // const [count,setCount] = 
+    // const [firstKargs,setfirstKargs] = useState([])
+    const firstKargs:any = []
+    let synthesis:any = []
     // 获取对应测试的数据接口
     const strtegylist = () => {
         const data = {
@@ -31,25 +37,51 @@ export default function PublicStrategy() {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(res)
+            setListName(res.data.list[0])
             setListData(res.data.list)
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
+      // 拿到令牌 去拿数据
+    const GetStrategy = (uid: number) => {
+        const data = {
+            uid: uid,
+            key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+        }
+        request('http://139.159.205.40:8808/quant/get_strategy_test_result', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: JSON.stringify(data)
+        }).then((res) => {
+            console.log(res)
+            if(res.code === 300){
+              setTimeout(()=>{
+                GetStrategy(uid)
+              },10000)
+            }else{
+                console.log("成功！");
+                setIsdemoBtn(true);
+                synthesis = [];
+
+            }
+        }).catch(err => { console.log(err) })
+    }
     // 进行测试的接口
-    const strategy_test = () => {
+    const strategy_test = (kargs:number[]) => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
             setting: [
                 {
-                    factor_name: listName,
+                    strategy_name: listName,
                     span: 60,
                     kargs: []
                 }
             ],
             configs: {
                 stock_id: '000001',
-                user_id: 1,
+                user_id: '000001',
                 setting_mode: 'p',
                 analysis_flag: 0,
                 holding_cost: -1,
@@ -73,36 +105,9 @@ export default function PublicStrategy() {
             }
         }).catch(err => { console.log(err) })
     }
-    // 拿到令牌 去拿数据
-    const GetStrategy = (uid: number) => {
-        const data = {
-            uid: uid,
-            key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
-        }
-        request('http://139.159.205.40:8808/quant/get_strategy_test_result', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(data)
-        }).then((res) => {
-            console.log(res)
-            // if(res.code === 300){
-            //   setTimeout(()=>{
-            //     GetStrategy()
-            //   },5000)
-            // }
-        }).catch(err => { console.log(err) })
-    }
-
     useEffect(() => {
         strtegylist()
-        // strategy_test()
     }, []);
-
-    // console.log(detailsData);
-    // const arrlistSele = Object.values(detailsData)
-    // console.log(arrlistSele);
 
     const lineData = [
         {
@@ -203,9 +208,21 @@ export default function PublicStrategy() {
         console.log('最大交易次数', value);
         setShopData(value)
     }
-
     const demoBtn = () => {
-        strategy_test()
+        synthesis = [   ]
+        for (let i = 0; i < firstKargs.length; i++) {
+            if (firstKargs.length > 0) {
+                // 处理数组元素
+                synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`)
+                    if(i !==0 && firstKargs[i-1].name !== firstKargs[i].name){
+                        synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`)
+                    } 
+            }
+        }
+        console.log(synthesis);
+        strategy_test(synthesis)
+        setIsdemoBtn(false)
+     
     }
 
     const config = {
@@ -249,24 +266,18 @@ export default function PublicStrategy() {
     const handleValue = (index: number, event:any) => {
         let text = event.target.innerHTML
         setListName(text)
+        setindexDetails(index)
+       
     }
-    console.log(detailsData);
-    function Elementlist (){
-        return(
-            <>
-                {
-                     detailsData.forEach((item) => {
-                        item.map((j,i)=>{
-                         return(
-                             <div key={i}>{j.desc}</div>
-                         )
-                        })
-                     })
-                }
-            </>
-        )
+    const nuberOnChange = (name:string,value: number)=>{
+        console.log(name, value);
+        firstKargs.unshift({
+            name:name,
+            value:value
+        })
+        console.log(firstKargs);
+        
     }
-   
     return (
         <div>
             <ProCard gutter={16} ghost wrap>
@@ -274,8 +285,6 @@ export default function PublicStrategy() {
                     bordered
                     style={{ textAlign: 'center' }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
-
-
                     <Space>
                         {
                             listData.map((item, index) => {
@@ -286,7 +295,15 @@ export default function PublicStrategy() {
                         }
                     </Space>
                     <div>
-                        <Elementlist></Elementlist>
+                        {
+                            detailsData[indexdetails] && detailsData[indexdetails].map((item,index)=>{
+                                return(
+                                    <div key={index} data-name={item.name}>{item.desc} : <InputNumber min={1}  defaultValue={item.value} 
+                                    onChange={(value)=>{nuberOnChange(item.name,value)}}
+                                    /> </div> 
+                                )
+                            })
+                        }
                     </div>
                 </ProCard>
                 <ProCard
@@ -320,7 +337,7 @@ export default function PublicStrategy() {
                             <Radio value={1}>是</Radio>
                         </Radio.Group>
                     </div>
-                    <Button
+                    {isdemoBtn &&  <Button
                         size={size}
                         style={{
                             background: 'rgb(1,108,102)',
@@ -330,7 +347,19 @@ export default function PublicStrategy() {
                         onClick={demoBtn}
                     >
                         测试
+                    </Button>}  
+                    {
+                        !isdemoBtn && <Button
+                        size={size}
+                        style={{
+                            background: 'rgb(1,108,102)',
+                            color: '#fff',
+                            marginBottom: 20
+                        }}
+                    >
+                        正在测试...
                     </Button>
+                    }
 
                     <div className="demoResult">
                         测试结果:经过历史N次条件测试，平均期望涨幅为:XX%;50分位数期望涨幅:XX%;最大期望涨幅:XX%;期望波动标准差:XX%
