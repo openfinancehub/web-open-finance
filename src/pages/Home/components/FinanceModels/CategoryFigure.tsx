@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import G6 from '@antv/g6';
 import { message } from 'antd';
 import { modelsJson, categoryJson } from '../../service';
-import {  header, modelsData } from '../../data';
+import { header, modelsData } from '../../data';
 
 let head: header = {
   req_id: '1234',
@@ -93,7 +93,7 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
       return {
         label: node.id,
         style: {
-          fill: colorMapping[depth] || 'red', 
+          fill: colorMapping[depth] || 'red',
         },
       };
     });
@@ -130,8 +130,9 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
   //初始化因子结构数据
   const handleTriggerEvent = async () => {
     const dataJson = await modelsJson(head, dataStr);
-    // console.log(dataJson)
-    onFilterFinance(dataJson.data.models);
+    if (dataJson != null) {
+      onFilterFinance(dataJson.data.models);
+    }
   };
 
   useEffect(() => {

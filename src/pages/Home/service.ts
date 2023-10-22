@@ -1,48 +1,48 @@
 import { header, modelsData } from "./data";
 
 //关系图形界面
-export const getModelData = async (factor: string, model: string) => {
-  try {
-    let header = {
-      req_id: '1234',
-      req_src: 'source',
-      user: 'user',
-      token: 'token',
-    };
-    let dataStr = {
-      ip: '127.0.0.1',
-      factor: factor,
-      model: model,
-      time: '',
-      extra: 'extra',
-    };
-    const response = await fetch('/api/eval', {
-      method: 'POSt',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        header: header,
-        data: dataStr
-      }),
-    });
-    const json = await response.json()
-    return {
-      data: json.data,
-      ret_code: json.ret_code,
-      msg: json.msg,
-      extra: json.extra
-    };
-  } catch (error) {
-    console.error('error:', error);
-    return {
-      data: null,
-      ret_code: -1,
-      msg: 'error',
-      extra: '',
-    };
-  }
-};
+// export const getModelData = async (factor: string, model: string) => {
+//   try {
+//     let header = {
+//       req_id: '1234',
+//       req_src: 'source',
+//       user: 'user',
+//       token: 'token',
+//     };
+//     let dataStr = {
+//       ip: '127.0.0.1',
+//       factor: factor,
+//       model: model,
+//       time: '',
+//       extra: 'extra',
+//     };
+//     const response = await fetch('/api/eval', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         header: header,
+//         data: dataStr
+//       }),
+//     });
+//     const json = await response.json()
+//     return {
+//       data: json.data,
+//       ret_code: json.ret_code,
+//       msg: json.msg,
+//       extra: json.extra
+//     };
+//   } catch (error) {
+//     console.error('error:', error);
+//     return {
+//       data: null,
+//       ret_code: -1,
+//       msg: 'error',
+//       extra: '',
+//     };
+//   }
+// };
 //上传文件
 export const uploadFileService = async (formData: FormData) => {
   try {
@@ -78,7 +78,8 @@ export const uploadFileService = async (formData: FormData) => {
   }
 };
 
-const apiUrl = 'http://121.37.5.77:5003/api';
+// const apiUrl = 'http://121.37.5.77:5003/api';
+const apiUrl = '/api';
 
 const performRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
   try {
@@ -98,7 +99,7 @@ const performRequest = async (url: string, method: string, header: { req_id?: st
     }
 
     const response = await fetch(`${apiUrl}/${url}`, requestConfig);
-
+    // const response = await fetch(`${apiUrl}/${url}`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -108,7 +109,6 @@ const performRequest = async (url: string, method: string, header: { req_id?: st
     if (!json) {
       throw new Error('Response data is empty or not valid JSON');
     }
-    // console.log(json)
     return {
       data: json
     };
@@ -171,24 +171,24 @@ export const updateCode = async (factor: string, model: string, code: string, te
   return performRequest('updateCode', 'POST', header, dataStr);
 };
 // models详情页图形
-// export const getModelData = async (factor, model) => {
-//   const header = {
-//     req_id: '1234',
-//     req_src: 'source',
-//     user: 'user',
-//     token: 'token',
-//   };
+export const getModelData = async (factor: string, model: string) => {
+  const header = {
+    req_id: '1234',
+    req_src: 'source',
+    user: 'user',
+    token: 'token',
+  };
 
-//   const dataStr = {
-//     ip: '127.0.0.1',
-//     factor,
-//     model,
-//     time: '',
-//     extra: 'extra',
-//   };
+  const dataStr = {
+    ip: '127.0.0.1',
+    factor,
+    model,
+    time: '',
+    extra: 'extra',
+  };
 
-//   return performRequest('eval', 'POST', header, dataStr);
-// };
+  return performRequest('eval', 'POST', header, dataStr);
+};
 //上传文件
 // export const uploadFileService = async (formData) => {
 //   const header = {

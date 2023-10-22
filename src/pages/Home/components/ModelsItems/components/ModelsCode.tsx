@@ -61,9 +61,9 @@ function ModelsCode() {
   };
   // 删除
   const deleteTools = () => {
-    updateCode(factorValue, modelCode, '', '', "action='delete'")
     setModelValue("")
     setFactorValue("")
+    updateCode(factorValue, modelCode, '', '', "action='delete'")
   };
 
   const handleEditToggle = () => {

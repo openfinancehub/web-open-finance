@@ -1,110 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { message } from 'antd';
 import { getModelData } from '@/pages/Home/service';
 import { useLocation } from 'react-router-dom';
 import { FlowAnalysisGraph } from '@ant-design/graphs';
 
+type Nodes = {
+  nodes: {
+    id: string;
+    value: {
+      title: string;
+      items: {
+        text: string;
+        value: string;
+        icon: string;
+        trend: string;
+      }[];
+    };
+  };
+  edges: {
+    source: string;
+    target: string;
+  }[];
+};
+
 
 const DemoDecompositionTreeGraph = () => {
-  const [data, setData] = useState(null);
-  // const data = {
-  //   nodes: [
-  //     {
-  //       id: '0',
-  //       value: {
-  //         title: 'spmd1',
-  //         items: [
-  //           {
-  //             text: '曝光UV',
-  //             value: '1000万',
-  //             icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-  //             trend: '45.9%',
-  //           },
-  //           {
-  //             text: '点击UV',
-  //             value: '10万',
-  //             icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-  //             trend: '1.9%',
-  //           },
-  //         ],
-  //       },
-  //     },
-  //     {
-  //       id: '1',
-  //       value: {
-  //         title: '开通营销页1',
-  //         items: [
-  //           {
-  //             text: '访问UV',
-  //             value: '1000万',
-  //             icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-  //             trend: '45.9%',
-  //           },
-  //         ],
-  //       },
-  //     },
-  //     {
-  //       id: '2',
-  //       value: {
-  //         title: '开通营销页2',
-  //         items: [
-  //           {
-  //             text: '访问UV',
-  //             value: '1000万',
-  //             icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-  //             trend: '45.9%',
-  //           },
-  //         ],
-  //       },
-  //     },
-  //     {
-  //       id: '3',
-  //       value: {
-  //         title: '去向页面1',
-  //         items: [
-  //           {
-  //             text: '访问UV',
-  //             value: '1000万',
-  //             icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-  //             trend: '45.9%',
-  //           },
-  //         ],
-  //       },
-  //     },
-  //     {
-  //       id: '4',
-  //       value: {
-  //         title: '去向页面2',
-  //         items: [
-  //           {
-  //             text: '访问UV',
-  //             value: '1000万',
-  //             icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-  //             trend: '45.9%',
-  //           },
-  //         ],
-  //       },
-  //     },
-  //   ],
-  //   edges: [
-  //     {
-  //       source: '0',
-  //       target: '1',
-  //     },
-  //     {
-  //       source: '0',
-  //       target: '2',
-  //     },
-  //     {
-  //       source: '1',
-  //       target: '3',
-  //     },
-  //     {
-  //       source: '2',
-  //       target: '4',
-  //     },
-  //   ],
-  // };
+  const [data, setData] = useState<Nodes[] | null>(null);
+
+  const transformData = (inputData: { relation: any; nodes: any; }) => {
+    const { relation, nodes } = inputData;
+    const nodesValue = Object.entries(nodes).map(([id, value]) => ({ id, value: { title: id + " ", items: value } }));
+    return { nodes: nodesValue, edges: relation };
+  };
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -114,10 +41,11 @@ const DemoDecompositionTreeGraph = () => {
   const fetchData = async () => {
     // 在组件加载时从后端获取数据
     await getModelData(factorValue, modelValue).then((resp) => {
-      console.log(resp)
-      if (resp.ret_code === 0) {
-        console.log(resp.data);
-        setData(resp.data);
+      if (resp.data.ret_code === 0) {
+
+        const transformedData = transformData(resp.data.data.chart)
+        // console.log(transformedData)
+        setData(transformedData);
       }
     }).catch((err) => {
       console.error('Error fetching data:', err);
@@ -127,10 +55,18 @@ const DemoDecompositionTreeGraph = () => {
     fetchData();
   }, []);
 
-  console.log(data)
+  // console.log(data)
   if (data === null) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <span>错误</span>
+        <label >
+          {message.error("获取数据失败")}
+        </label>
+      </div>
+    );
   }
+  console.log(data)
   const config = {
     data: data,
     nodeCfg: {

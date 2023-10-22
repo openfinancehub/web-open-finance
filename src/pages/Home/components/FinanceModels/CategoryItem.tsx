@@ -46,7 +46,9 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   //初始化因子结构数据
   const handleTriggerEvent = async () => {
     const dataJson = await modelsJson(head, dataStr);
-    onFilterFinance(dataJson.data.models);
+    if (dataJson?.data?.models != null && dataJson.data.ret_code == 0) {
+      onFilterFinance(dataJson?.data?.models);
+    }
   };
   useEffect(() => {
     const fetchCategoryJson = async () => {

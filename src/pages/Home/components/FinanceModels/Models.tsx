@@ -14,9 +14,6 @@ const onRow = (record: any) => {
   };
 };
 
-const deleteTools = (tools: ModelsItem) => {
-  updateCode(tools.tag, tools.model, '', '', "action='delete'")
-};
 //models结展示
 const DescriptionMeta: React.FC<{ json: ModelsItem }> = ({ json }) => {
   return (

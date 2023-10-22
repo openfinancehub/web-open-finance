@@ -52,127 +52,30 @@ const ModelsItem = {
   text: '这是一点解释说明的文本'
 }
 
-const chart = {
+const defaultData = {
   "chart": {
     "type": "pie",
     "appendix": {
-      "title": "Get financial analysis"
+      "title": ""
     },
-    "x": {
-      "title": [
-        { "title": "1", "text": "3031万", "value": "80%" },
-        { "title": "2", "text": "3031万", "value": "80%" }]
+    "relation": [
+      { "source": "a", "target": "b" },
+      { "source": "a", "target": "c" },
+      { "source": "a", "target": "d" },
+      { "source": "c", "target": "e" }],
+    "nodes": {
+      "a": [
+        { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+        { "text": "点击", "value": "1000万", "icon": "", "trend": "45.9%" }],
+      "b": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+      "c": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+      "d": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+      "e": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
     },
-    "1": {
-      "a": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
-      "b": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
-    },
-    "2": {
-      "a": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
-      "b": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
-      "c": { "title": "Get financial analysis", "text": "3031万", "value": "80%" },
-    }
   }
 }
 
-const defaultData = {
-  nodes: [
-    {
-      id: '0',
-      value: {
-        title: 'spmd1',
-        items: [
-          {
-            text: '曝光UV',
-            value: '1000万',
-            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-            trend: '45.9%',
-          },
-          {
-            text: '点击UV',
-            value: '10万',
-            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-            trend: '1.9%',
-          },
-        ],
-      },
-    },
-    {
-      id: '1',
-      value: {
-        title: '开通营销页1',
-        items: [
-          {
-            text: '访问UV',
-            value: '1000万',
-            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-            trend: '45.9%',
-          },
-        ],
-      },
-    },
-    {
-      id: '2',
-      value: {
-        title: '开通营销页2',
-        items: [
-          {
-            text: '访问UV',
-            value: '1000万',
-            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-            trend: '45.9%',
-          },
-        ],
-      },
-    },
-    {
-      id: '3',
-      value: {
-        title: '去向页面1',
-        items: [
-          {
-            text: '访问UV',
-            value: '1000万',
-            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-            trend: '45.9%',
-          },
-        ],
-      },
-    },
-    {
-      id: '4',
-      value: {
-        title: '去向页面2',
-        items: [
-          {
-            text: '访问UV',
-            value: '1000万',
-            icon: 'https://gw.alipayobjects.com/zos/antfincdn/iFh9X011qd/7797962c-04b6-4d67-9143-e9d05f9778bf.png',
-            trend: '45.9%',
-          },
-        ],
-      },
-    },
-  ],
-  edges: [
-    {
-      source: '0',
-      target: '1',
-    },
-    {
-      source: '0',
-      target: '2',
-    },
-    {
-      source: '1',
-      target: '3',
-    },
-    {
-      source: '2',
-      target: '4',
-    },
-  ],
-}
+
 const modelData = {
   id: 'A0',
   value: {
