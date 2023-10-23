@@ -1,6 +1,8 @@
 {
   "extends": "./src/.umi/tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    // 关闭ts 大小写检验
+    "forceConsistentCasingInFileNames": false,
   }
 }

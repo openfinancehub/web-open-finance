@@ -8,8 +8,8 @@ import PublicStrategy from './component/PublicStrategy';
 import OwnStrategy from './component/OwnStrategy';
 const Strategy = () => {
   const size = 'large';
+  const [buttonId,setButtonId] = useState('000001')
   const [seleType, setSeleType] = useState('看涨买入');
-  // 选择看涨还是看跌
   const handleTypeRise = () => {
     setSeleType('看涨买入');
   };
@@ -19,13 +19,12 @@ const Strategy = () => {
   const handleAll = () => {
     setSeleType('综合策略');
   }
-
-
   /**
  * 接收导航的数据,切换股票
  */
   const handleDataFromChild = (butttonId: string, buttonNum: string) => {
     console.log(buttonNum, butttonId);
+    setButtonId(butttonId)
   }
   
   const templateItem: TabsProps['items'] = [
@@ -37,7 +36,7 @@ const Strategy = () => {
     {
       key: '2',
       label: `公共策略`,
-      children: <PublicStrategy></PublicStrategy>,
+      children: <PublicStrategy ButtonId={buttonId}></PublicStrategy>,
     },
     {
       key: '3',

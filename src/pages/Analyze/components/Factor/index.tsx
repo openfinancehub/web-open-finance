@@ -46,30 +46,22 @@ echarts.use([
 ]);
 
 const Factor = () => {
-    // 天数
-    const Day = 1
-    const chartRef = useRef(null);
+    const size = 'large'
     const upColor = '#ec0000';
     const upBorderColor = '#8A0000';
     const downColor = '#00da3c';
     const downBorderColor = '#008F28';
-    // 响应式的折线颜色
+    const [Day,setDay] = useState(1)
+    const chartRef = useRef(null);
     const [lineColor, setlineColor] = useState('#5470c6')
-    // 按钮的全局样式
-    const size = 'large'
-    // 响应式的因子键值
     const [inFactor, setInFactor] = useState('')
-    // 因子取值的数据
     const [factorData, setFactorData] = useState([])
     const [quantData, setQuantData] = useState({
         long: [],
         short: []
     })
-    // history 的所有数据
     const [historyData, setHistoryData] = useState({})
-    // 单个因子的折线数据
     const [factorLiData, setFactorLiData] = useState([])
-    // 图表的时间轴
     const [lineTimeData, setLineTimeData] = useState([])
     const stockanalysis = (stock_id: string) => {
         const data = {
@@ -175,7 +167,6 @@ const Factor = () => {
     }, [lineTimeData, inFactor])
 
     useEffect(() => {
-        // 图表的数据
         const data1 = factorData.map((item) => {
             delete item.time
             return Object.values(item)
@@ -196,16 +187,15 @@ const Factor = () => {
                     let lowest = params[0].value[3];
                     let open = params[0].value[4];
                     let volume = params[0].value[6];
-                    let FactorName = params[1].seriesName
-                    let FactorValue = params[1].value
+                    let FactorName = params[1].seriesName;
+                    let FactorValue = params[1].value;
                     return( time + '<br>'+
                         bullet + '开盘价' + ': &nbsp' + open + '<br>' +
                         bullet + '收盘价' + ': &nbsp' + close + '<br>'+
                         bullet + '最低价' + ': &nbsp' + lowest + '<br>'+
                         bullet + '最高价' + ': &nbsp' + highest + '<br>'+ '<div style="margin-bottom:6px"></div>' +
-                        bullet + '成交量' + ': &nbsp' + volume + '<br>'+        
+                        bullet + '成交量' + ': &nbsp' + volume + '<br>' +        
                         bullet + FactorName  + ': &nbsp'  + FactorValue
-                        
                         )
     
                 },
@@ -339,11 +329,7 @@ const Factor = () => {
         };
     }, [lineTimeData, factorLiData])
 
-    /**
-     * 点击切换因子的方法
-     * 用来处理改变折线的数据
-     */
-    const handleValue = (event: any, index: number) => {
+    const handleFactorLine = (event: any, index: number) => {
         let text = event.target.textContent
         switch (index) {
             case 0:
@@ -359,11 +345,6 @@ const Factor = () => {
         setInFactor(text)
     }
 
-    /**
-     * 处理段落的方法
-     * @param event 
-     * @returns 
-     */
     const handleDescContent = (event: string) => {
         const paragraphs = event.split("。");
         return paragraphs;
@@ -395,7 +376,7 @@ const Factor = () => {
                             return (
                                 <div key={item.name}>
                                     <Space>
-                                        <Button type={inFactor === item.name ? 'primary' : 'default'} size={size} onClick={(event) => { handleValue(event, index) }}>{item.name}</Button>
+                                        <Button type={inFactor === item.name ? 'primary' : 'default'} size={size} onClick={(event) => { handleFactorLine(event, index) }}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size}
                                             fieldNames={{ label: 'value', value: 'label' }}
                                             placeholder="预估数值"
@@ -425,7 +406,7 @@ const Factor = () => {
                             return (
                                 <div key={item.name}>
                                     <Space>
-                                        <Button type={inFactor === item.name ? 'primary' : 'default'} size={size} onClick={(event) => { handleValue(event, index) }}>{item.name}</Button>
+                                        <Button type={inFactor === item.name ? 'primary' : 'default'} size={size} onClick={(event) => { handleFactorLine(event, index) }}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size} fieldNames={{ label: 'value', value: 'label' }} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
                                         <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
