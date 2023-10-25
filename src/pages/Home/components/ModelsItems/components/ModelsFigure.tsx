@@ -58,12 +58,7 @@ const DemoDecompositionTreeGraph = () => {
   // console.log(data)
   if (data === null) {
     return (
-      <div>
-        <span>错误</span>
-        <label >
-          {message.error("获取数据失败")}
-        </label>
-      </div>
+      <div></div>
     );
   }
   console.log(data)
