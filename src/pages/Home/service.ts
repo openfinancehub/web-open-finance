@@ -80,7 +80,7 @@ export const uploadFileService = async (formData: FormData) => {
 
 // const apiUrl = 'http://121.37.5.77:5003/api';
 const apiUrl = '/api';
-
+//封装通用请求
 const performRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
   try {
     let requestConfig = {
@@ -178,17 +178,16 @@ export const getModelData = async (factor: string, model: string) => {
     user: 'user',
     token: 'token',
   };
-
   const dataStr = {
     ip: '127.0.0.1',
-    factor,
-    model,
+    factor: model,
+    model: "default",
     time: '',
     extra: 'extra',
   };
-
   return performRequest('eval', 'POST', header, dataStr);
 };
+
 //上传文件
 // export const uploadFileService = async (formData) => {
 //   const header = {

@@ -190,14 +190,14 @@ export default {
       extra: {}
     });
   },
-  'POST /api/eval': (req: any, res: any) => {
-    res.json({
-      msg: "成功",
-      data: defaultData,
-      ret_code: 0,
-      extra: {}
-    });
-  },
+  // 'POST /api/eval': (req: any, res: any) => {
+  //   res.json({
+  //     msg: "成功",
+  //     data: defaultData,
+  //     ret_code: 0,
+  //     extra: {}
+  //   });
+  // },
   'POST /api/upload': (data: any, res: any) => {
 
     res.json({
