@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import styles from './style.less';
+// import styles from './style.less';
 import { useLocation } from 'react-router-dom';
 import { getModelData } from '@/pages/Home/service';
-// import useEval from './useEval';
+import useRequest from './useEval';
 import { UserOutlined } from '@ant-design/icons';
 import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, Popover, Radio } from 'antd';
+import styles from './style.less'
+
+type useEvalHook = {
+  message: any[];
+};
 
 const DemoDecompositionTreeGraph = () => {
   //获取请求中的model数据
@@ -15,14 +20,25 @@ const DemoDecompositionTreeGraph = () => {
   const factorValue = searchParams.get('factor')!;
   console.log("modelValue >>", modelValue, "factorValue >>", factorValue)
 
-  // const { message, sendWebSocketMessage, clearMessage } = useEval(factorValue, modelValue);
-  type useEvalHook = {
-    message: any[];
-    clearMessage: () => void;
-    sendWebSocketMessage: (message: string, info: any) => void;
+  const [inputValue, setInputValue] = useState<string>('');
+
+  const handleSendMessage = () => {
+    if (!inputValue) return;
+    //放一个请求
+    // sendWebSocketMessage(inputValue, {
+    //   company: selectedCom,
+    //   ...selectedRole,
+    //   task: selectedTask
+    // });
+    useEval(factorValue, modelValue, inputValue)
+    setInputValue('');
   };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
   const [message, setMessage] = useState<any[]>([]);
-  const useEval = (factor: string, model: string): useEvalHook => {
+  const useEval = (factor: string, model: string, inputValue: string): useEvalHook => {
     try {
       let header = {
         req_id: '1234',
@@ -34,6 +50,7 @@ const DemoDecompositionTreeGraph = () => {
         ip: '127.0.0.1',
         factor: model,
         model: "default",
+        input: inputValue,
         time: '',
         extra: 'extra',
       };
@@ -54,6 +71,8 @@ const DemoDecompositionTreeGraph = () => {
         let content = response.output?.answer;
         content = content.replace(/\n/g, '<br>');
         let chart = response.output?.chart;
+        //设置数据之前先清空旧的数据
+        setMessage([]);
         setMessage(pre => {
           const tempList = [...pre].map(item => ({ ...item, flag: false }));
           return [...tempList, { sender: 'bot', content, chart }];
@@ -62,65 +81,56 @@ const DemoDecompositionTreeGraph = () => {
     } catch (error) {
       console.error('error:', error);
     }
-    const sendWebSocketMessage = (message: string, info: any) => {
-      setMessage(pre => [
-        ...pre,
-        { sender: 'user', content: message, flag: true }
-      ]);
-    };
-
-    const clearMessage = () => {
-      setMessage([]);
-    };
-    return { message, sendWebSocketMessage, clearMessage };
+    return { message };
   };
   useEffect(() => {
-    useEval(factorValue, modelValue);
+    useEval(factorValue, modelValue, '');
   }, []);
-  
+
   return (
-    <div className={styles.content}>
-      {message.map((item, index) => {
-        // if (item.sender === 'user') {
-        //   return (
-        //     <div className={styles.user} key={index}>
-        //       <Card style={{ width: 300 }}>
-        //         {item.content && (
-        //           <div
-        //             style={{ padding: '0 16px 0 0' }}
-        //             dangerouslySetInnerHTML={{
-        //               __html: item.content
-        //             }}
-        //           />
-        //         )}
-        //         {item.flag && <span className={styles.cursor} />}
-        //         <span className={styles.tag}>
-        //           <UserOutlined style={{ fontSize: '18px' }} />
-        //         </span>
-        //       </Card>
-        //     </div>
-        //   );
-        // }
-        return (
-          <div className={styles.user} key={index}>
-            <Card style={{ width: 600 }}>
-              {item.chart && (
-                <ReactEcharts
-                  option={item.chart}
-                  style={{ height: '300px' }}
-                />
-              )
-              }
-              {item.content && (
-                <div
-                  style={{ padding: '0 16px 0 0' }}
-                  dangerouslySetInnerHTML={{ __html: item.content }}
-                />
-              )}
-            </Card>
-          </div>
-        );
-      })}
+    <div className={styles.wrapFinchat}>
+
+      <div className={styles.right}>
+        <div className={styles.bottom}>
+          <Input
+            placeholder="Send a companies"
+            allowClear
+            value={inputValue}
+            onPressEnter={handleSendMessage}
+            onChange={handleInputChange}
+          />
+          <Button
+            type="primary"
+            onClick={handleSendMessage}
+          >
+            send
+          </Button>
+        </div>
+
+        <div className={styles.content}>
+          {message.map((item, index) => {
+            return (
+              <div className={styles.user} key={index}>
+                <Card style={{ width: "100%" }}>
+                  {item.chart && (
+                    <ReactEcharts
+                      option={item.chart}
+                      style={{ height: '300px' }}
+                    />
+                  )
+                  }
+                  {item.content && (
+                    <div
+                      style={{ padding: '0 16px 0 16px' }}
+                      dangerouslySetInnerHTML={{ __html: item.content }}
+                    />
+                  )}
+                </Card>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

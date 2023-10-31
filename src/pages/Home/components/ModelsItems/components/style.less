@@ -1,7 +1,61 @@
-.butStyle {
+.wrapFinchat {
+  width: 100%;
+  height: calc(100vh - 104px);
   display: flex;
-  flex-wrap: wrap;
-  padding-bottom: 40px;
-  // text-align: right;
-  // float: right;
+  border: 1px solid #ccc;
+
+  .right {
+    flex: 1;
+    position: relative;
+
+    .bottom {
+      display: flex;
+      position: absolute;
+      // bottom: 30px;
+      top: 30px;
+      left: 50%;
+      width: 85%;
+      transform: translateX(-50%);
+
+      :global(.ant-input-affix-wrapper) {
+        height: 44px;
+        border-radius: 4px;
+      }
+
+      :global(.ant-btn) {
+        height: 44px;
+        margin: 0 0 0 12px;
+        border-radius: 4px;
+      }
+    }
+
+    .content {
+      max-height: 90%;
+      overflow-y: auto;
+
+      .user {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 100px 0 0;
+      }
+
+      :global(.ant-card) {
+        width: 90% !important;
+        border-radius: 4px;
+      }
+
+      :global(.ant-card-body) {
+        padding: 12px;
+        font-size: 14px;
+      }
+    }
+
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
