@@ -35,7 +35,7 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
   handleTriggerEvent: { (): Promise<void>; (): void; }) => {
   try {
     const dataJson = await categoryJson();
-    const transformedData = transformData(dataJson.data.category);
+    const transformedData = transformData(dataJson?.result.category);
 
     const container = containerRef.current;
     if (!container) {
@@ -131,7 +131,7 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
   const handleTriggerEvent = async () => {
     const dataJson = await modelsJson(head, dataStr);
     if (dataJson != null) {
-      onFilterFinance(dataJson.data.models);
+      onFilterFinance(dataJson.result.models);
     }
   };
 

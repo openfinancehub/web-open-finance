@@ -32,17 +32,36 @@ function ModelsCode() {
   };
 
   const onFinish = async () => {
-    await form.validateFields(); // 触发表单校验
+    try {
+      await form.validateFields();
+    } catch (error) {
+      message.error('表单验证失败');
+      return;
+    }
+
     if (!isEditing) {
-      toggleLoading(0, true);
-      const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
-      toggleLoading(0, false);
-      if (null != response.data && response.data.ret_code === 0) {
-        setModelCode(response.data.models.data.code);
-        setModelText(response.data.models.data.text);
-        message.success('提交成功');
-      } else {
-        message.error('提交失败');
+      try {
+        // 开始加载  
+        toggleLoading(0, true);
+        const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
+        console.log(response);
+        // 处理响应数据  
+        console.log(response && response.result && response.result.ret_code === 0);
+        if (response && response.result && response.result.ret_code === 0) {
+          // 更新模型代码和文本  
+          setModelCode(response.result.data.code);
+          setModelText(response.result.data.text);
+          // 显示提交成功的消息  
+          message.success('提交成功');
+        } else {
+          // 显示提交失败的消息  
+          message.error('提交失败');
+        }
+      } catch (error) {
+        console.error('updateCode failed:', error);
+        return;
+      } finally {
+        toggleLoading(0, false);
       }
     } else {
       message.error('当前正在编辑，提交失败');
@@ -52,8 +71,9 @@ function ModelsCode() {
   const handleTriggerEvent = async () => {
     if (modelValue && factorValue) {
       const dataJson = await getCode(factorValue, modelValue);
-      setModelCode(dataJson.data.models.code);
-      setModelText(dataJson.data.models.text);
+      dataJson?.result
+      setModelCode(dataJson?.result.models.code);
+      setModelText(dataJson?.result.models.text);
     } else {
       setModelCode('');
       setModelText('');
@@ -87,7 +107,6 @@ function ModelsCode() {
       </Button>
     </Col>
   );
-
   const CustomFormInput = ({ name, label, isEditing }: {
     name: string, label: string, isEditing: boolean
   }) => (
