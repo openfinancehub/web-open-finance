@@ -104,26 +104,19 @@ const performRequest = async (url: string, method: string, header: { req_id?: st
       throw new Error('Network response was not ok');
     }
 
-    const json = await response.json();
+    let result = await response.json();
 
-    if (!json) {
+    if (!data) {
       throw new Error('Response data is empty or not valid JSON');
     }
-    return {
-      data: json
-    };
+    return { result };
   } catch (error) {
     console.error('An error occurred:', error);
-    return {
-      data: null,
-      ret_code: -1,
-      msg: 'error',
-      extra: '',
-    };
   }
 };
 
-export const modelsJson = async (header: header, dataStr: modelsData) => {
+export const modelsJson = async (header, dataStr) => {
+
   return performRequest('models', 'POST', header, dataStr);
 };
 
@@ -178,17 +171,16 @@ export const getModelData = async (factor: string, model: string) => {
     user: 'user',
     token: 'token',
   };
-
   const dataStr = {
     ip: '127.0.0.1',
-    factor,
-    model,
+    factor: model,
+    model: "default",
     time: '',
     extra: 'extra',
   };
-
-  return performRequest('eval', 'POST', header, dataStr);
+  return performRequest('test', 'POST', header, dataStr);
 };
+
 //上传文件
 // export const uploadFileService = async (formData) => {
 //   const header = {

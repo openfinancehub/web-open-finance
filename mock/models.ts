@@ -190,7 +190,7 @@ export default {
       extra: {}
     });
   },
-  'POST /api/eval': (req: any, res: any) => {
+  'POST /api/test': (req: any, res: any) => {
     res.json({
       msg: "成功",
       data: defaultData,

@@ -46,8 +46,9 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   //初始化因子结构数据
   const handleTriggerEvent = async () => {
     const dataJson = await modelsJson(head, dataStr);
-    if (dataJson?.data?.models != null && dataJson.data.ret_code == 0) {
-      onFilterFinance(dataJson?.data?.models);
+    console.log(dataJson)
+    if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
+      onFilterFinance(dataJson?.result?.models);
     }
   };
   useEffect(() => {
@@ -55,8 +56,8 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
       try {
         const response = await categoryJson();
         // console.log(response.data.category)
-        const titles = Object.keys(response.data.category);
-        const descriptions = Object.values(response.data.category);
+        const titles = Object.keys(response.result.category);
+        const descriptions = Object.values(response.result.category);
         const categories = createData(titles, descriptions);
         setCategoryList(categories);
         setOriginalData(categories);

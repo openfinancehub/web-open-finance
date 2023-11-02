@@ -1,180 +1,137 @@
 import React, { useEffect, useState } from 'react';
-import { message } from 'antd';
-import { getModelData } from '@/pages/Home/service';
 import { useLocation } from 'react-router-dom';
-import { FlowAnalysisGraph } from '@ant-design/graphs';
+import { getModelData } from '@/pages/Home/service';
+import { UserOutlined } from '@ant-design/icons';
+import ReactEcharts from 'echarts-for-react';
+import { Button, Card, Input, Popover, Radio } from 'antd';
+import { Tabs, message as Message } from 'antd';
+import styles from './style.less'
 
-type Nodes = {
-  nodes: {
-    id: string;
-    value: {
-      title: string;
-      items: {
-        text: string;
-        value: string;
-        icon: string;
-        trend: string;
-      }[];
-    };
-  };
-  edges: {
-    source: string;
-    target: string;
-  }[];
-};
-
-
-const DemoDecompositionTreeGraph = () => {
-  const [data, setData] = useState<Nodes[] | null>(null);
-
-  const transformData = (inputData: { relation: any; nodes: any; }) => {
-    const { relation, nodes } = inputData;
-    const nodesValue = Object.entries(nodes).map(([id, value]) => ({ id, value: { title: id + " ", items: value } }));
-    return { nodes: nodesValue, edges: relation };
-  };
-
+const ModelsFigure = () => {
+  //获取请求中的model数据
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const modelValue = searchParams.get('model')!;
   const factorValue = searchParams.get('factor')!;
+  // console.log("modelValue >>", modelValue, "factorValue >>", factorValue)
 
-  const fetchData = async () => {
-    // 在组件加载时从后端获取数据
-    await getModelData(factorValue, modelValue).then((resp) => {
-      if (resp.data.ret_code === 0) {
+  const [inputValue, setInputValue] = useState<string>('');
 
-        const transformedData = transformData(resp.data.data.chart)
-        // console.log(transformedData)
-        setData(transformedData);
+  const handleSendMessage = () => {
+    if (!inputValue) return;
+    useEval(factorValue, modelValue, inputValue)
+    setInputValue('');
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const [message, setMessage] = useState<any[]>([]);
+  const useEval = async (factor: string, model: string, inputValue: string) => {
+    let header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
+    let dataStr = {
+      ip: '127.0.0.1',
+      factor: model,
+      model: "default",
+      input: inputValue,
+      time: '',
+      extra: 'extra',
+    };
+
+    try {
+      const response = await fetch('/api/eval', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          header: header,
+          data: dataStr
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    }).catch((err) => {
-      console.error('Error fetching data:', err);
-    })
+
+      const json = await response.json();
+      const result = processJson(json);
+      setMessage([]);
+      setMessage(pre => [...pre, result]);
+      return result;
+    } catch (err) {
+      console.error(err);
+      Message.error("获取数据失败" + err)
+    }
+  };
+
+  const processJson = (json: { data: any; } | null) => {
+    if (typeof json !== 'object' || json === null) {
+      throw new Error('Unexpected value in response');
+    }
+
+    const response = JSON.parse(json.data || '{}');
+    let content = response.output?.answer;
+    content = content.replace(/\n/g, '<br>');
+    let chart = response.output?.chart;
+
+    return { sender: 'bot', content, chart };
   };
   useEffect(() => {
-    fetchData();
+    useEval(factorValue, modelValue, '');
   }, []);
 
-  // console.log(data)
-  if (data === null) {
-    return (
-      <div></div>
-    );
-  }
-  console.log(data)
-  const config = {
-    data: data,
-    nodeCfg: {
-      size: [180, 30],
-      items: {
-        padding: 6,
-        containerStyle: {
-          fill: '#fff',
-        },
-      },
-      customContent: (item: { text: any; value: any; icon: any; trend: any; }, group: { addShape: (arg0: string, arg1: { attrs: { textBaseline: string; x: any; y: any; text: any; fill: string; } | { textBaseline: string; x: any; y: any; text: any; fill: string; } | { x: any; y: any; width: number; height: number; img: any; } | { textBaseline: string; x: any; y: any; text: any; fill: string; }; name: string; }) => any; }, cfg: { startX: any; startY: any; width: any; }) => {
-        const { startX, startY, width } = cfg;
-        const { text, value, icon, trend } = item;
-        text &&
-          group?.addShape('text', {
-            attrs: {
-              textBaseline: 'top',
-              x: startX,
-              y: startY,
-              text,
-              fill: '#aaa',
-            },
-            // group 内唯一字段
-            name: `text-${Math.random()}`,
-          });
-        value &&
-          group?.addShape('text', {
-            attrs: {
-              textBaseline: 'top',
-              x: startX + 60,
-              y: startY,
-              text: value,
-              fill: '#000',
-            },
-            name: `value-${Math.random()}`,
-          });
-        icon &&
-          group?.addShape('image', {
-            attrs: {
-              x: startX + 100,
-              y: startY,
-              width: 8,
-              height: 10,
-              img: icon,
-            },
-            name: `image-${Math.random()}`,
-          });
-        trend &&
-          group?.addShape('text', {
-            attrs: {
-              textBaseline: 'top',
-              x: startX + 110,
-              y: startY,
-              text: trend,
-              fill: '#f00',
-            },
-            name: `value-${Math.random()}`,
-          });
+  return (
+    <div className={styles.wrapFinchat}>
 
-        // 行高
-        return 14;
-      },
-      nodeStateStyles: {
-        hover: {
-          stroke: '#1890ff',
-          lineWidth: 2,
-        },
-      },
-      title: {
-        containerStyle: {
-          fill: 'transparent',
-        },
-        style: {
-          fill: '#000',
-          fontSize: 12,
-        },
-      },
-      style: {
-        fill: '#E6EAF1',
-        stroke: '#B2BED5',
-        radius: 2,
-      },
-    },
-    edgeCfg: {
-      label: {
-        style: {
-          fill: '#aaa',
-          fontSize: 12,
-          fillOpacity: 0.5,
-        },
-      },
-      edgeStateStyles: {
-        hover: {
-          stroke: '#1890ff',
-          lineWidth: 2,
-        },
-      },
-    },
-    markerCfg: (cfg: { id: string; }) => {
-      const { edges } = data;
-      return {
-        position: 'right',
-        show: edges.find((item) => item.source === cfg.id),
-      };
-    },
-    layout: {
-      ranksepFunc: () => 30,
-      nodesepFunc: () => 30,
-    },
-    behaviors: ['drag-canvas', 'zoom-canvas', 'drag-node'],
-  };
+      <div className={styles.right}>
+        <div className={styles.bottom}>
+          <Input
+            placeholder="Send a companies"
+            allowClear
+            value={inputValue}
+            onPressEnter={handleSendMessage}
+            onChange={handleInputChange}
+          />
+          <Button
+            type="primary"
+            onClick={handleSendMessage}
+          >
+            send
+          </Button>
+        </div>
 
-  return <FlowAnalysisGraph {...config} />;
+        <div className={styles.content}>
+          {message.map((item, index) => {
+            return (
+              <div className={styles.user} key={index}>
+                <Card style={{ width: "100%" }}>
+                  {item.chart && (
+                    <ReactEcharts
+                      option={item.chart}
+                      style={{ height: '300px' }}
+                    />
+                  )
+                  }
+                  {item.content && (
+                    <div
+                      style={{ padding: '0 16px 0 16px' }}
+                      dangerouslySetInnerHTML={{ __html: item.content }}
+                    />
+                  )}
+                </Card>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default DemoDecompositionTreeGraph;
+export default ModelsFigure;
