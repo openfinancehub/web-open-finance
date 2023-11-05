@@ -67,8 +67,8 @@ const useWebSocket = (url: string): WebSocketHook => {
       const data = {
         header: {
           // currentUser.username
-          user: 'admin',
-          token: 'yes',
+          user: currentUser.username,
+          token: currentUser.token,
           req_id: currentUser.id,
           req_src: currentUser.avatarUrl
         },

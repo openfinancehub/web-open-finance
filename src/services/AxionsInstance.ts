@@ -61,10 +61,11 @@ const axiosRequest = async ({
     });
     if (res.status === 200 && res.statusText === 'OK') {
       const resp = res.data;
+      console.log(resp, 'respppp')
       if (typeof resp === 'string') {
         return resp;
       }
-      if (resp.ret_code === 0 || resp.code === 200) {
+      if (resp.ret_code === 0 || resp.code === 200 || resp.code === 0) {
         return Promise.resolve(resp);
       } else {
         console.log(resp, 'resp');

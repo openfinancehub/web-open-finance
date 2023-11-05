@@ -6,15 +6,16 @@ import {
   UserOutlined
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
-import { Button, Card, Input, message as Message, Popover, Radio } from 'antd';
+import { Button, Card, Input, message as Message, Popover, Radio, Typography  } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { ChatList, CompanyList, TaskList, MyCharts } from './components';
+import { ChatList, CompanyList, TaskList, MyCharts, HistoryList } from './components';
 
 import styles from './index.less';
 import useWebSocket from './useWebsocket';
 
 const { Search } = Input;
+const { Text } = Typography;
 
 // const suffix = (
 //   <AudioOutlined
@@ -174,6 +175,16 @@ const Finchat = () => {
           icon={<PlusOutlined />}>
           New Chat
         </Button>
+      {
+        historyList?.length ? (
+          <>
+          <Text style={{margin: '12px 0', width: '80%', textAlign: 'left', display: 'inline-block'}}>History List</Text>
+           <div className={styles.wrapHistory}>
+             <HistoryList/>
+           </div>
+          </>
+        ) : null
+      }
         <Radio.Group
           defaultValue={activeKey}
           value={activeKey}
