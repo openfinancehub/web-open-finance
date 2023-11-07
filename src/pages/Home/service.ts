@@ -181,6 +181,24 @@ export const getModelData = async (factor: string, model: string) => {
   return performRequest('test', 'POST', header, dataStr);
 };
 
+export const getEval = async (factor: string, model: string, inputValue: string) => {
+  let header = {
+    req_id: '1234',
+    req_src: 'source',
+    user: 'user',
+    token: 'token',
+  };
+  let dataStr = {
+    ip: '127.0.0.1',
+    factor: model,
+    model: "default",
+    input: inputValue,
+    time: '',
+    extra: 'extra',
+  };
+  return performRequest('eval', 'POST', header, dataStr);
+};
+
 //上传文件
 // export const uploadFileService = async (formData) => {
 //   const header = {
