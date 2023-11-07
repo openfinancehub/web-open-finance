@@ -53,7 +53,7 @@ export default () => {
     try {
       const res = await LoginServices.getCaptcha({ phone });
       console.log(res, 'res');
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
