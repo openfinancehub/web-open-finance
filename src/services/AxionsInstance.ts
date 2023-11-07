@@ -61,10 +61,11 @@ const axiosRequest = async ({
     });
     if (res.status === 200) {
       const resp = res.data;
+      console.log(resp, 'respppp')
       if (typeof resp === 'string') {
         return resp;
       }
-      if (resp.ret_code === 0 || resp.code === 0) {
+      if (resp.ret_code === 0 || resp.code === 200 || resp.code === 0) {
         return Promise.resolve(resp);
       } else {
         console.log(resp, 'resp');
@@ -85,7 +86,7 @@ const axiosRequest = async ({
 };
 
 export const REQUEST = ({
-  baseURL = 'http://121.37.5.77:5005/api',
+  // baseURL = 'http://121.37.5.77:5005/api',
   method = 'GET',
   url,
   data,
@@ -98,7 +99,7 @@ export const REQUEST = ({
   }
 }: any) => {
   return axiosRequest({
-    baseURL,
+    // baseURL,
     method,
     url,
     data,
