@@ -1,7 +1,7 @@
-import { Line, Radar } from '@ant-design/plots';
+import { Radar } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
-import { Button, InputNumber, Space, DatePicker, Radio,  } from 'antd';
+import { Button, InputNumber, Space, DatePicker, Radio, } from 'antd';
 import { useEffect, useState } from 'react';
 import { request } from 'umi';
 export default function PublicStrategy() {
@@ -18,13 +18,12 @@ export default function PublicStrategy() {
     const [listData, setListData] = useState([])
     const [detailsData, setDetailsData] = useState([])
     const [listName, setListName] = useState()
-    const [indexdetails,setindexDetails] = useState(0)
-    const [isdemoBtn,setIsdemoBtn] = useState(true)
-    const [demoEndData,setDemoEndData] = useState([{desc:'测试结果:'}])
-    // const [count,setCount] = 
-    // const [firstKargs,setfirstKargs] = useState([])
-    const firstKargs:any = []
-    let synthesis:any = []
+    const [indexdetails, setindexDetails] = useState(0)
+    const [isdemoBtn, setIsdemoBtn] = useState(true)
+    const [demoEndData, setDemoEndData] = useState([{ desc: '测试结果:' }])
+    const [raderData,setRaderData] = useState([])
+    const firstKargs: any = []
+    let synthesis: any = []
     // 获取对应测试的数据接口
     const strtegylist = () => {
         const data = {
@@ -43,7 +42,7 @@ export default function PublicStrategy() {
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
-      // 拿到令牌 去拿数据
+    // 拿到令牌 去拿数据
     const GetStrategy = (uid: number) => {
         const data = {
             uid: uid,
@@ -57,21 +56,31 @@ export default function PublicStrategy() {
             data: JSON.stringify(data)
         }).then((res) => {
             console.log(res)
-            if(res.code === 300){
-              setTimeout(()=>{
-                GetStrategy(uid)
-              },10000)
-            }else{
-                setDemoEndData(res.data.result)
+            if (res.code === 300) {
+                setTimeout(() => {
+                    GetStrategy(uid)
+                }, 10000)
+            } else {
+                let destArr = []
+                let raderArr = []
+                res.data.result.forEach(item => {
+                    if(item.indicator_flag === 'True'){
+                        destArr.push({name:item.name,desc:item.desc})
+                        raderArr.push({name:item.name,star:item.value})
+                    }
+                });
+
+                destArr.push()
+                setDemoEndData(destArr)
+                setRaderData(raderArr)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
-
             }
         }).catch(err => { console.log(err) })
     }
     // 进行测试的接口
-    const strategy_test = (kargs:number[]) => {
+    const strategy_test = (kargs: number[]) => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
             setting: [
@@ -107,70 +116,11 @@ export default function PublicStrategy() {
             }
         }).catch(err => { console.log(err) })
     }
+
     useEffect(() => {
         strtegylist()
     }, []);
 
-    const lineData = [
-        {
-            year: '二月',
-            value: 2
-        },
-        {
-            year: '三月',
-            value: 2.8
-        },
-        {
-            year: '四月',
-            value: 3
-        },
-        {
-            year: '五月',
-            value: 4
-        },
-        {
-            year: '六月',
-            value: 3.5
-        },
-        {
-            year: '七月',
-            value: 5
-        },
-        {
-            year: '八月',
-            value: 4.9
-        },
-        {
-            year: '九月',
-            value: 6
-        },
-        {
-            year: '十月',
-            value: 7
-        }
-    ];
-    const raderData = [
-        {
-            name: '评估维度1',
-            star: 10371
-        },
-        {
-            name: '评估维度2',
-            star: 7380
-        },
-        {
-            name: '评估维度3',
-            star: 7414
-        },
-        {
-            name: '评估维度4',
-            star: 2140
-        },
-        {
-            name: '评估维度5',
-            star: 660
-        }
-    ];
     const raderConfig = {
         data: raderData.map(d => ({ ...d, star: Math.sqrt(d.star) })),
         xField: 'name',
@@ -198,7 +148,9 @@ export default function PublicStrategy() {
         },
         area: {}
     };
-    const backOrder = (e:any) => {
+
+
+    const backOrder = (e: any) => {
         console.log('回滚次数', e.target.value);
         setbackData(e.target.value)
     }
@@ -211,74 +163,41 @@ export default function PublicStrategy() {
         setShopData(value)
     }
     const demoBtn = () => {
-        synthesis = [   ]
+        synthesis = []
         for (let i = 0; i < firstKargs.length; i++) {
             if (firstKargs.length > 0) {
                 // 处理数组元素
                 synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`)
-                    if(i !==0 && firstKargs[i-1].name !== firstKargs[i].name){
-                        synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`)
-                    } 
+                if (i !== 0 && firstKargs[i - 1].name !== firstKargs[i].name) {
+                    synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`)
+                }
             }
         }
         console.log(synthesis);
         strategy_test(synthesis)
         setIsdemoBtn(false)
-     
-    }
 
-    const config = {
-        data: lineData,
-        xField: 'year',
-        yField: 'value',
-        label: {},
-        point: {
-            size: 5,
-            shape: 'diamond',
-            style: {
-                fill: 'white',
-                stroke: '#5B8FF9',
-                lineWidth: 2
-            }
-        },
-        tooltip: {
-            showMarkers: false
-        },
-        state: {
-            active: {
-                style: {
-                    shadowBlur: 4,
-                    stroke: '#000',
-                    fill: 'red'
-                }
-            }
-        },
-        interactions: [
-            {
-                type: 'marker-active'
-            }
-        ]
-    };
+    }
 
     const demoDaysChange = (value: number) => {
         console.log('测试天数', value);
         setDemoDays(value)
     }
 
-    const handleValue = (index: number, event:any) => {
+    const handleValue = (index: number, event: any) => {
         let text = event.target.innerHTML
         setListName(text)
         setindexDetails(index)
-       
+
     }
-    const nuberOnChange = (name:string,value: number)=>{
+    const nuberOnChange = (name: string, value: number) => {
         console.log(name, value);
         firstKargs.unshift({
-            name:name,
-            value:value
+            name: name,
+            value: value
         })
         console.log(firstKargs);
-        
+
     }
     return (
         <div>
@@ -296,13 +215,13 @@ export default function PublicStrategy() {
                             })
                         }
                     </Space>
-                    <div>
+                    <div >
                         {
-                            detailsData[indexdetails] && detailsData[indexdetails].map((item,index)=>{
-                                return(
-                                    <div key={index} data-name={item.name}>{item.desc} : <InputNumber min={1}  defaultValue={item.value} 
-                                    onChange={(value)=>{nuberOnChange(item.name,value)}}
-                                    /> </div> 
+                            detailsData[indexdetails] && detailsData[indexdetails].map((item, index) => {
+                                return (
+                                    <div style={{marginTop:'20px'}} key={index} data-name={item.name}>{item.desc} : <InputNumber min={1} defaultValue={item.value}
+                                        onChange={(value) => { nuberOnChange(item.name, value) }}
+                                    /> </div>
                                 )
                             })
                         }
@@ -339,7 +258,7 @@ export default function PublicStrategy() {
                             <Radio value={1}>是</Radio>
                         </Radio.Group>
                     </div>
-                    {isdemoBtn &&  <Button
+                    {isdemoBtn && <Button
                         size={size}
                         style={{
                             background: 'rgb(1,108,102)',
@@ -349,41 +268,43 @@ export default function PublicStrategy() {
                         onClick={demoBtn}
                     >
                         测试
-                    </Button>}  
+                    </Button>}
                     {
                         !isdemoBtn && <Button
-                        size={size}
-                        style={{
-                            background: 'rgb(1,108,102)',
-                            color: '#fff',
-                            marginBottom: 20
-                        }}
-                    >
-                        正在测试...
-                    </Button>
+                            size={size}
+                            style={{
+                                background: 'rgb(1,108,102)',
+                                color: '#fff',
+                                marginBottom: 20
+                            }}
+                        >
+                            正在测试...
+                        </Button>
                     }
-
-                    <div className="demoResult">
-                    {demoEndData.map((item,index)=>{
-                        return(
-                            <span key={index}>{item.desc}</span>
-                        )
-                    })}
-                    </div>
                 </ProCard>
             </ProCard>
             <ProCard style={{ height: 360 }}>
                 <ProCard
                     style={{ height: '100%' }}
-                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 8 }}
+                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}
                     bordered>
-                    <Radar {...raderConfig} />
+                    <div className="demoResult">
+                        {demoEndData.map((item, index) => {
+                            return (
+                                // <span key={index}>{item.desc}</span>
+                                <div key={index}>
+                                    <p >{item.name?`${item.name}:`:''}</p>
+                                    <p>{item.desc}</p>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </ProCard>
                 <ProCard
                     style={{ height: '100%' }}
-                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 16 }}
+                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
                     bordered>
-                    <Line {...config} />
+                    <Radar {...raderConfig} />
                 </ProCard>
             </ProCard>
         </div>

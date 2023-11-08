@@ -48,12 +48,11 @@ echarts.use([
 const Factor = () => {
     // 天数
     const Day = 3
-    const chartRef = useRef(null);
+    const size = 'large'
     const upColor = '#ec0000';
     const upBorderColor = '#8A0000';
     const downColor = '#00da3c';
     const downBorderColor = '#008F28';
-    const [Day,setDay] = useState(1)
     const chartRef = useRef(null);
     const [lineColor, setlineColor] = useState('#5470c6')
     const [inFactor, setInFactor] = useState('')
