@@ -20,6 +20,7 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails,setindexDetails] = useState(0)
     const [isdemoBtn,setIsdemoBtn] = useState(true)
+    const [demoEndData,setDemoEndData] = useState([{desc:'测试结果:'}])
     // const [count,setCount] = 
     // const [firstKargs,setfirstKargs] = useState([])
     const firstKargs:any = []
@@ -61,6 +62,7 @@ export default function PublicStrategy() {
                 GetStrategy(uid)
               },10000)
             }else{
+                setDemoEndData(res.data.result)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
@@ -76,7 +78,7 @@ export default function PublicStrategy() {
                 {
                     strategy_name: listName,
                     span: 60,
-                    kargs: []
+                    kargs: kargs
                 }
             ],
             configs: {
@@ -362,8 +364,11 @@ export default function PublicStrategy() {
                     }
 
                     <div className="demoResult">
-                        测试结果:经过历史N次条件测试，平均期望涨幅为:XX%;50分位数期望涨幅:XX%;最大期望涨幅:XX%;期望波动标准差:XX%
-                        经过历史N次条件测试，平均期望涨幅为：xx%；50分位数期望涨幅：xx%；最大期望涨幅：xx%；期望波动标准差：xx%
+                    {demoEndData.map((item,index)=>{
+                        return(
+                            <span key={index}>{item.desc}</span>
+                        )
+                    })}
                     </div>
                 </ProCard>
             </ProCard>

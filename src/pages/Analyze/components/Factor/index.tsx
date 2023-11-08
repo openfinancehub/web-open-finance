@@ -47,7 +47,7 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 1
+    const Day = 3
     const chartRef = useRef(null);
     const upColor = '#ec0000';
     const upBorderColor = '#8A0000';
