@@ -1,9 +1,20 @@
-import { Radar } from '@ant-design/plots';
+// import { Radar } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
 import { Button, InputNumber, Space, DatePicker, Radio, } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
+import * as echarts from 'echarts/core';
+import { TitleComponent, LegendComponent } from 'echarts/components';
+import { RadarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+
+echarts.use([
+    TitleComponent,
+    LegendComponent,
+    CanvasRenderer,
+    RadarChart
+]);
 export default function PublicStrategy() {
     const size = 'large';
     const today = new Date();
@@ -11,6 +22,7 @@ export default function PublicStrategy() {
     const month = today.getMonth() + 1;
     const year = today.getFullYear();
     const todayDate = `${year}-${month}-${date}`
+    const radarRef = useRef(null)
     const [demoDays, setDemoDays] = useState(5)
     const [backData, setbackData] = useState(0)
     const [dateData, setDateData] = useState(todayDate)
@@ -21,7 +33,13 @@ export default function PublicStrategy() {
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
     const [demoEndData, setDemoEndData] = useState([{ desc: '测试结果:' }])
-    const [raderData,setRaderData] = useState([])
+    const [raderData,setRaderData] = useState([ { name: 'Sales', max: 6500 },
+    { name: 'Administration', max: 16000 },
+    { name: 'Information Technology', max: 30000 },
+    { name: 'Customer Support', max: 38000 },
+    { name: 'Development', max: 52000 },
+    { name: 'Marketing', max: 25000 }])
+    const [raderValue,setRaderValue] = useState([4200, 3000, 20000, 35000, 50000, 18000])
     const firstKargs: any = []
     let synthesis: any = []
     // 获取对应测试的数据接口
@@ -63,16 +81,19 @@ export default function PublicStrategy() {
             } else {
                 let destArr = []
                 let raderArr = []
+                let radervalue = []
                 res.data.result.forEach(item => {
                     if(item.indicator_flag === 'True'){
                         destArr.push({name:item.name,desc:item.desc})
-                        raderArr.push({name:item.name,star:item.value})
+                        raderArr.push({name:item.name,max:item.max})
+                        radervalue.push(item.value)
                     }
                 });
 
                 destArr.push()
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
+                setRaderValue(radervalue)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
@@ -120,34 +141,60 @@ export default function PublicStrategy() {
     useEffect(() => {
         strtegylist()
     }, []);
+    useEffect(()=>{
+        const option = {
+            title: {
+                text: 'Basic Radar Chart'
+              },
+              radar: {
+                indicator: raderData
+              },
+              series: [
+                {
+                  name: 'Budget vs spending',
+                  type: 'radar',
+                  data: [
+                    {
+                      value: raderValue ,
+                      name: 'Allocated Budget'
+                    }
+                  ]
+                }
+              ]
+        }
+        const chart = echarts.init(radarRef.current);
+        chart.setOption(option);
+    },[raderValue]);
 
-    const raderConfig = {
-        data: raderData.map(d => ({ ...d, star: Math.sqrt(d.star) })),
-        xField: 'name',
-        yField: 'star',
-        appendPadding: [0, 10, 0, 10],
-        meta: {
-            star: {
-                alias: 'star 数量',
-                min: 0,
-                nice: true
-            }
-        },
-        xAxis: {
-            tickLine: null
-        },
-        yAxis: {
-            label: false,
-            grid: {
-                alternateColor: 'rgba(0, 0, 0, 0.04)'
-            }
-        },
-        // 开启辅助点
-        point: {
-            size: 2
-        },
-        area: {}
-    };
+
+
+    // const raderConfig = {
+    //     data: raderData,
+    //     xField: 'name',
+    //     yField: 'star',
+    //     // appendPadding: [0, 10, 0, 10],
+    //     meta: {
+    //         star: {
+    //             alias: 'star 数量',
+    //             min: 0,
+    //             nice: true
+    //         }
+    //     },
+    //     xAxis: {
+    //         tickLine: null
+    //     },
+    //     yAxis: {
+    //         label: false,
+    //         grid: {
+    //             alternateColor: 'rgba(0, 0, 0, 0.04)'
+    //         }
+    //     },
+    //     // 开启辅助点
+    //     point: {
+    //         size: 2
+    //     },
+    //     area: {}
+    // };
 
 
     const backOrder = (e: any) => {
@@ -304,7 +351,8 @@ export default function PublicStrategy() {
                     style={{ height: '100%' }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
                     bordered>
-                    <Radar {...raderConfig} />
+                    <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
+                    {/* <Radar {...raderConfig} /> */}
                 </ProCard>
             </ProCard>
         </div>
