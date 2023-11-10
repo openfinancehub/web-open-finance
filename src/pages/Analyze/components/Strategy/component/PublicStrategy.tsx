@@ -33,13 +33,9 @@ export default function PublicStrategy() {
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
     const [demoEndData, setDemoEndData] = useState([{ desc: '测试结果:' }])
-    const [raderData,setRaderData] = useState([ { name: 'Sales', max: 6500 },
-    { name: 'Administration', max: 16000 },
-    { name: 'Information Technology', max: 30000 },
-    { name: 'Customer Support', max: 38000 },
-    { name: 'Development', max: 52000 },
-    { name: 'Marketing', max: 25000 }])
-    const [raderValue,setRaderValue] = useState([4200, 3000, 20000, 35000, 50000, 18000])
+    const [raderData,setRaderData] = useState([ { name: '', max: '' },
+   ])
+    const [raderValue,setRaderValue] = useState([])
     const firstKargs: any = []
     let synthesis: any = []
     // 获取对应测试的数据接口
@@ -167,34 +163,6 @@ export default function PublicStrategy() {
     },[raderValue]);
 
 
-
-    // const raderConfig = {
-    //     data: raderData,
-    //     xField: 'name',
-    //     yField: 'star',
-    //     // appendPadding: [0, 10, 0, 10],
-    //     meta: {
-    //         star: {
-    //             alias: 'star 数量',
-    //             min: 0,
-    //             nice: true
-    //         }
-    //     },
-    //     xAxis: {
-    //         tickLine: null
-    //     },
-    //     yAxis: {
-    //         label: false,
-    //         grid: {
-    //             alternateColor: 'rgba(0, 0, 0, 0.04)'
-    //         }
-    //     },
-    //     // 开启辅助点
-    //     point: {
-    //         size: 2
-    //     },
-    //     area: {}
-    // };
 
 
     const backOrder = (e: any) => {
