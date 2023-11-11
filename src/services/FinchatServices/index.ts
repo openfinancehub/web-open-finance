@@ -5,6 +5,9 @@ export class FinchatServices {
   public static fetchSidebar(data: any): Promise<any> {
     return REQUEST({ method: 'POST', url: ApiUrl.SIDEBAR, data });
   }
+   public static fetchHistoryList(data: any): Promise<any> {
+    return REQUEST({ method: 'POST', url: ApiUrl.HISTORY, data });
+  }
   public static queryCompany(data: any): Promise<any> {
     return REQUEST({ method: 'POST', url: ApiUrl.QUERY_COMPANY, data });
   }
