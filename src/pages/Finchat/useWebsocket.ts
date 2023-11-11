@@ -70,8 +70,8 @@ const useWebSocket = (url: string): WebSocketHook => {
       const data = {
         header: {
           // currentUser.username
-          user: 'admin',
-          token: 'yes',
+          user: currentUser.username,
+          token: currentUser.token,
           req_id: currentUser.id,
           req_src: currentUser.avatarUrl
         },
@@ -86,8 +86,8 @@ const useWebSocket = (url: string): WebSocketHook => {
           // id + username + token的后六位
           session_id:
             currentUser.id +
-            currentUser.username +
-            currentUser.token.substr(currentUser.token.length - 4)
+            currentUser.username 
+            // currentUser.token.substr(currentUser.token.length - 4)
         }
       };
       socket.send(JSON.stringify(data));
