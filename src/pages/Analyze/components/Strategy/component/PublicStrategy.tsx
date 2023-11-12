@@ -32,11 +32,11 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
-    const [lineData,setLineData] = useState([])
-    const [demoEndData, setDemoEndData] = useState([{ desc: '测试结果:' }])
-    const [raderData,setRaderData] = useState([ { name: '', max: '' },
-   ])
-    const [raderValue,setRaderValue] = useState([])
+    const [lineData, setLineData] = useState([])
+    const [demoEndData, setDemoEndData] = useState([{value:0, desc: '测试结果:' }])
+    const [raderData, setRaderData] = useState([{ name: '', max: '' },
+    ])
+    const [raderValue, setRaderValue] = useState([])
     const firstKargs: any = []
     let synthesis: any = []
     // 获取对应测试的数据接口
@@ -81,15 +81,15 @@ export default function PublicStrategy() {
                 let radervalue = []
                 let linedata = []
                 res.data.result.forEach(item => {
-                    if(item.indicator_flag === 'True'){
-                        destArr.push({name:item.name,desc:item.desc})
-                        raderArr.push({name:item.name,max:item.max})
+                    if (item.indicator_flag === 'True') {
+                        destArr.push({ name: item.name, desc: item.desc ,value:item.value})
+                        raderArr.push({ name: item.name, max: item.max })
                         radervalue.push(item.value)
                     }
                 });
-                 if(!backData){
+                if (!backData) {
                     res.data.raw_data.forEach(list => {
-                        linedata.push({date:Object.keys(list)[0],value:Object.values(list)[0]})
+                        linedata.push({ date: Object.keys(list)[0], value: Object.values(list)[0] })
                     });
                 }
                 destArr.push()
@@ -144,30 +144,33 @@ export default function PublicStrategy() {
     useEffect(() => {
         strtegylist()
     }, []);
-    useEffect(()=>{
+    useEffect(() => {
         const option = {
             title: {
                 text: 'Basic Radar Chart'
-              },
-              radar: {
+            },
+            radar: {
                 indicator: raderData
-              },
-              series: [
+            },
+            tooltip: {
+                trigger: 'item',
+            },
+            series: [
                 {
-                  name: 'Budget vs spending',
-                  type: 'radar',
-                  data: [
-                    {
-                      value: raderValue ,
-                      name: 'Allocated Budget'
-                    }
-                  ]
+                    name: 'Budget vs spending',
+                    type: 'radar',
+                    data: [
+                        {
+                            value: raderValue,
+                            name: 'Allocated Budget'
+                        }
+                    ]
                 }
-              ]
+            ]
         }
         const chart = echarts.init(radarRef.current);
         chart.setOption(option);
-    },[raderValue]);
+    }, [raderValue]);
 
     const backOrder = (e: any) => {
         console.log('回滚次数', e.target.value);
@@ -218,27 +221,35 @@ export default function PublicStrategy() {
         console.log(firstKargs);
 
     }
-    console.log(lineData,'111');
+    console.log(lineData, '111');
     const lineconfig = {
-        data:lineData,
+        data: lineData,
         padding: 'auto',
         xField: 'date',
         yField: 'value',
+        yAxis: {
+            min: 10.30, // 设置 y 轴最小值
+            max: 10.80, // 设置 y 轴最大值
+            // tickInterval: 11, // 设置 y 轴刻度之间的间距    
+        },
         xAxis: {
-          tickCount: 5,
+            tickCount: 5,
+        },
+        lineStyle: {
+            stroke: 'green', // Set the line color here
         },
         point: {
             size: 5,
-            shape: 'diamond',
-            // style: {
-            //   fill: 'white',
-            //   stroke: '#5B8FF9',
-            //   lineWidth: 1,
-            // },
-          },
+            shape: 'circular',
+            style: {
+                fill: 'red',
+                stroke: 'red',
+                lineWidth: 0.1,
+            },
+        },
         slider: {
-          start: 0.1,
-          end: 0.2,
+            start: 0.1,
+            end: 0.12,
         },
     };
     return (
@@ -261,7 +272,7 @@ export default function PublicStrategy() {
                         {
                             detailsData[indexdetails] && detailsData[indexdetails].map((item, index) => {
                                 return (
-                                    <div style={{marginTop:'20px'}} key={index} data-name={item.name}>{item.desc} : <InputNumber min={1} defaultValue={item.value}
+                                    <div style={{ marginTop: '20px' }} key={index} data-name={item.name}>{item.desc} : <InputNumber min={1} defaultValue={item.value}
                                         onChange={(value) => { nuberOnChange(item.name, value) }}
                                     /> </div>
                                 )
@@ -335,7 +346,7 @@ export default function PublicStrategy() {
                             return (
                                 // <span key={index}>{item.desc}</span>
                                 <div key={index}>
-                                    <p >{item.name?`${item.name}:`:''}</p>
+                                    <p >{item.name ? `${item.name}(${item.value}):` : ''}</p>
                                     <p>{item.desc}</p>
                                 </div>
                             )
@@ -351,7 +362,7 @@ export default function PublicStrategy() {
                 </ProCard>
             </ProCard>
             <ProCard style={{ height: 360 }}>
-                    <Line {...lineconfig}></Line>
+                <Line {...lineconfig}></Line>
             </ProCard>
         </div>
     )
