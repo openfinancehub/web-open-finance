@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getModelData } from '@/pages/Home/service';
-import { UserOutlined, PlusOutlined, } from '@ant-design/icons';
 import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, Popover, Radio } from 'antd';
 import { Tabs, message as Message } from 'antd';
@@ -9,6 +7,8 @@ import { CompanyList } from '@/pages/Finchat/components';
 import { getEval } from '@/pages/Home/service';
 import styles from './style.less'
 import { FinchatServices } from '@/services';
+import { history, useModel } from '@umijs/max';
+
 const { Search } = Input;
 const ModelsFigure = () => {
   //获取请求中的model数据
@@ -20,21 +20,21 @@ const ModelsFigure = () => {
   const [inputValue, setInputValue] = useState<string>('');
 
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
-  // const {
-  //   initialState: { currentUser }
-  // } = useModel('@@initialState');
-  // const commonHeader = {
-  //   user: currentUser.username,
-  //   req_id: currentUser.id,
-  //   req_src: currentUser.avatarUrl,
-  //   token: currentUser.token
-  // };
+  const {
+    initialState: { currentUser }
+  } = useModel('@@initialState');
   const commonHeader = {
-    user: "124",
-    req_id: "124",
-    req_src: "124",
-    token: "124"
+    user: currentUser.username,
+    req_id: currentUser.id,
+    req_src: currentUser.avatarUrl,
+    token: currentUser.token
   };
+  // const commonHeader = {
+  //   user: "124",
+  //   req_id: "124",
+  //   req_src: "124",
+  //   token: "124"
+  // };
   const handleCompany = (list: any[]) => {
 
     if (list.length === 1) {
@@ -139,9 +139,6 @@ const ModelsFigure = () => {
   return (
     <div className={styles.wrapFinchat}>
       <div className={styles.left}>
-        {/* <Button style={{ width: '80%', margin: '18px' }} >
-          {factorValue}
-        </Button> */}
         <h3 style={{ margin: '18px' }}>{modelValue}</h3>
         <Search
           placeholder="Search Companies"
