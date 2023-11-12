@@ -28,8 +28,6 @@ const useWebSocket = (url: string): WebSocketHook => {
       const response = JSON.parse(event.data || '{}');
       let content = response.output?.answer;
       content = content.replace(/\n/g, '<br>');
-      let chartData = response.output?.chart;
-
       let chart = response.output?.chart;
       if (typeof chart === 'object' && Object.keys(chart).length === 0) {
         chart = null;
@@ -38,7 +36,7 @@ const useWebSocket = (url: string): WebSocketHook => {
       // const tempList = [...message];
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
-        return [...tempList, { sender: 'bot', content, chartData: chartData?.type ? chartData : null, chart }];
+        return [...tempList, { sender: 'bot', content, chart }];
       });
     };
 

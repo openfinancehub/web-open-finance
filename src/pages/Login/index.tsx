@@ -32,7 +32,7 @@ export default () => {
     try {
       const { mobile: username, captcha } = values;
       const res = await LoginServices.login({ username, captcha });
-      if (res?.code === 0 || res?.code === 0) {
+      if (res?.code === 200 || res?.code === 0) {
         await setInitialState(s => ({
           ...s,
           currentUser: res.data

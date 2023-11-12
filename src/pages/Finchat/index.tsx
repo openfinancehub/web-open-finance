@@ -7,6 +7,7 @@ import {
   HistoryOutlined
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
+import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, message as Message, Popover, Radio, Typography, Tooltip  } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
