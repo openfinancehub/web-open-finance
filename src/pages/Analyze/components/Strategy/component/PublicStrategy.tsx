@@ -1,4 +1,4 @@
-// import { Radar } from '@ant-design/plots';
+import { Line } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
 import { Button, InputNumber, Space, DatePicker, Radio, } from 'antd';
@@ -32,6 +32,7 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
+    const [lineData,setLineData] = useState([])
     const [demoEndData, setDemoEndData] = useState([{ desc: '测试结果:' }])
     const [raderData,setRaderData] = useState([ { name: '', max: '' },
    ])
@@ -78,6 +79,7 @@ export default function PublicStrategy() {
                 let destArr = []
                 let raderArr = []
                 let radervalue = []
+                let linedata = []
                 res.data.result.forEach(item => {
                     if(item.indicator_flag === 'True'){
                         destArr.push({name:item.name,desc:item.desc})
@@ -85,11 +87,16 @@ export default function PublicStrategy() {
                         radervalue.push(item.value)
                     }
                 });
-
+                 if(!backData){
+                    res.data.raw_data.forEach(list => {
+                        linedata.push({date:Object.keys(list)[0],value:Object.values(list)[0]})
+                    });
+                }
                 destArr.push()
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
                 setRaderValue(radervalue)
+                setLineData(linedata)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
@@ -162,9 +169,6 @@ export default function PublicStrategy() {
         chart.setOption(option);
     },[raderValue]);
 
-
-
-
     const backOrder = (e: any) => {
         console.log('回滚次数', e.target.value);
         setbackData(e.target.value)
@@ -214,6 +218,29 @@ export default function PublicStrategy() {
         console.log(firstKargs);
 
     }
+    console.log(lineData,'111');
+    const lineconfig = {
+        data:lineData,
+        padding: 'auto',
+        xField: 'date',
+        yField: 'value',
+        xAxis: {
+          tickCount: 5,
+        },
+        point: {
+            size: 5,
+            shape: 'diamond',
+            // style: {
+            //   fill: 'white',
+            //   stroke: '#5B8FF9',
+            //   lineWidth: 1,
+            // },
+          },
+        slider: {
+          start: 0.1,
+          end: 0.2,
+        },
+    };
     return (
         <div>
             <ProCard gutter={16} ghost wrap>
@@ -322,6 +349,9 @@ export default function PublicStrategy() {
                     <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
                     {/* <Radar {...raderConfig} /> */}
                 </ProCard>
+            </ProCard>
+            <ProCard style={{ height: 360 }}>
+                    <Line {...lineconfig}></Line>
             </ProCard>
         </div>
     )
