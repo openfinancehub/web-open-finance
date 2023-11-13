@@ -93,7 +93,7 @@ const Finchat = () => {
       const { output } = res;
       if (output?.result?.length) {
         const tempList = output.result;
-        const chatList = []
+        const chatList: any[] = []
         tempList.forEach((v: any) => {
           console.log(JSON.parse(v));
           const item = JSON.parse(v);
@@ -116,7 +116,7 @@ const Finchat = () => {
   }, []);
 
   useEffect(() => {
-    setMessageList([...messageList, message])
+    setMessageList([...messageList, ...message])
   }, [message]);
 
   const onSearch = async (value: string) => {
@@ -208,7 +208,7 @@ const Finchat = () => {
     </>
   )
   const disabled = !(selectedTask || selectedCom || selectedRole);
-  console.log(message, 'message')
+  console.log(messageList, 'messageList')
 
   return (
     <div className={styles.wrapFinchat}>
