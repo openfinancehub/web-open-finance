@@ -264,7 +264,15 @@ export default function PublicStrategy() {
         point: {
             size: 5,
             shape: 'circular',
-            style:(d)=>({fill:d.long ? 'blue':'red'}) 
+            style:(d)=>{
+                console.log(d,'d');
+                
+                if(d.long){
+                    console.log(d.long);
+                    return {fill:'green'}
+                }
+                return {fill:'red'}
+            }
         },
          // stroke: 'red',
         // lineWidth: 0.1,
