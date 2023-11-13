@@ -74,7 +74,7 @@ export default function PublicStrategy() {
             if (res.code === 300) {
                 setTimeout(() => {
                     GetStrategy(uid)
-                }, 10000)
+                }, 5000)
             } else {
                 let destArr = []
                 let raderArr = []
@@ -89,14 +89,35 @@ export default function PublicStrategy() {
                 });
                 if (!backData) {
                     res.data.raw_data.forEach(list => {
+
+                        for (let index = 0; index < res.data.decision_long.length; index++) {
+                            if(Object.keys(list)[0] === res.data.decision_long[index]){
+                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,long:true})
+                            }
+                        }
+                        for(let j=0;j<res.data.decision_short.length;j++){
+                            if(Object.keys(list)[0] === res.data.decision_short[j]){
+                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,short:true})
+                            }
+                        }
+
                         linedata.push({ date: Object.keys(list)[0], value: Object.values(list)[0] })
+
                     });
                 }
+                console.log(linedata);
+                const newLineData = linedata.filter((value, index, self) => {
+                    return (
+                      index === self.findIndex((item) => (
+                        item.date === value.date
+                      ))
+                    );
+                  });
                 destArr.push()
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
                 setRaderValue(radervalue)
-                setLineData(linedata)
+                setLineData(newLineData)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
@@ -227,9 +248,11 @@ export default function PublicStrategy() {
         padding: 'auto',
         xField: 'date',
         yField: 'value',
+        smooth: true,
         yAxis: {
-            min: 10.30, // 设置 y 轴最小值
-            max: 10.80, // 设置 y 轴最大值
+            min: 11, // 设置 y 轴最小值
+            // max: 11, // 设置 y 轴最大值
+            // tickCount: 3, // 设置横线条数为 5
             // tickInterval: 11, // 设置 y 轴刻度之间的间距    
         },
         xAxis: {
@@ -241,12 +264,10 @@ export default function PublicStrategy() {
         point: {
             size: 5,
             shape: 'circular',
-            style: {
-                fill: 'red',
-                stroke: 'red',
-                lineWidth: 0.1,
-            },
+            style:(d)=>({fill:d.long ? 'blue':'red'}) 
         },
+         // stroke: 'red',
+        // lineWidth: 0.1,
         slider: {
             start: 0.1,
             end: 0.12,
