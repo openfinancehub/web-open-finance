@@ -49,6 +49,7 @@ const Finchat = () => {
 
   const [messageList, setMessageList] = useState<any[]>(message);
 
+
   const commonHeader = {
     user: currentUser.username,
     req_id: currentUser.id,
@@ -102,6 +103,7 @@ const Finchat = () => {
              sender: 'bot', content: item.output, chartData: item.chartData?.type ? item.chartData : null 
          })
         })   
+        setHistoryList(chatList)
         setMessageList(chatList)
       }
        
@@ -116,7 +118,7 @@ const Finchat = () => {
   }, []);
 
   useEffect(() => {
-    setMessageList([...messageList, ...message])
+    setMessageList([...historyList, ...message])
   }, [message]);
 
   const onSearch = async (value: string) => {
@@ -218,7 +220,7 @@ const Finchat = () => {
           icon={<PlusOutlined />}>
           New Chat
         </Button>
-      {
+      {/* {
         historyList?.length ? (
           <>
           <Text style={{margin: '12px 0', width: '80%', textAlign: 'left', display: 'inline-block'}}>History List</Text>
@@ -227,7 +229,7 @@ const Finchat = () => {
            </div>
           </>
         ) : null
-      }
+      } */}
         <Radio.Group
           defaultValue={activeKey}
           value={activeKey}
