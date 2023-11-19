@@ -16,6 +16,7 @@ echarts.use([
     RadarChart
 ]);
 export default function PublicStrategy() {
+    const demoLine = []
     const size = 'large';
     const today = new Date();
     const date = today.getDate();
@@ -32,7 +33,7 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
-    const [lineData, setLineData] = useState([])
+    const [lineData, setLineData] = useState(demoLine)
     const [demoEndData, setDemoEndData] = useState([{value:0, desc: '测试结果:' }])
     const [raderData, setRaderData] = useState([{ name: '', max: '' },
     ])
@@ -92,12 +93,12 @@ export default function PublicStrategy() {
 
                         for (let index = 0; index < res.data.decision_long.length; index++) {
                             if(Object.keys(list)[0] === res.data.decision_long[index]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,long:true})
+                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'long'})
                             }
                         }
                         for(let j=0;j<res.data.decision_short.length;j++){
                             if(Object.keys(list)[0] === res.data.decision_short[j]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,short:true})
+                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'short'})
                             }
                         }
 
@@ -245,16 +246,17 @@ export default function PublicStrategy() {
     console.log(lineData, '111');
     const lineconfig = {
         data: lineData,
-        padding: 'auto',
         xField: 'date',
         yField: 'value',
-        smooth: true,
-        yAxis: {
+        // isStack:true,
+        seriesField:'buy',
+        // yAxis: {
             min: 11, // 设置 y 轴最小值
             // max: 11, // 设置 y 轴最大值
             // tickCount: 3, // 设置横线条数为 5
-            // tickInterval: 11, // 设置 y 轴刻度之间的间距    
-        },
+            // tickInterval: 11, // 设置 y 轴   刻度之间的间距    
+        // },
+        // point:annotations,
         xAxis: {
             tickCount: 5,
         },
@@ -264,22 +266,39 @@ export default function PublicStrategy() {
         point: {
             size: 5,
             shape: 'circular',
+            stroke: 'red',
+            lineWidth: 0.1,
             style:(d)=>{
-                console.log(d,'d');
-                
-                if(d.long){
-                    console.log(d.long);
-                    return {fill:'green'}
+                console.log(d);
+                if(d.buy === 'long'){
+                    return {
+                        fill:'green',
+                        lineWidth: 15,
+                        stroke:'green',
+                        // style:{
+                            // width: '10px',
+                            // height: '10px',
+                            // transform: 'rotate(45deg)',
+                            // backgroundColor: 'blue',
+                            // border: 'none',
+                        // }
+                    }
                 }
-                return {fill:'red'}
+                else if(d.buy === 'short'){
+                    return {
+                        fill:'red',
+                        lineWidth: 15,
+                        stroke:'red',
+                    }
+                }
+                return {fill:'blue'}
             }
         },
-         // stroke: 'red',
-        // lineWidth: 0.1,
         slider: {
             start: 0.1,
             end: 0.12,
         },
+        smooth: true,
     };
     return (
         <div>
