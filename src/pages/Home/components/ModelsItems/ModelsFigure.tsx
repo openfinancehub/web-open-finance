@@ -8,6 +8,7 @@ import { getEval } from '@/pages/Home/service';
 import styles from './style.less'
 import { FinchatServices } from '@/services';
 import { history, useModel } from '@umijs/max';
+import _ from 'lodash';
 
 const { Search } = Input;
 const ModelsFigure = () => {
