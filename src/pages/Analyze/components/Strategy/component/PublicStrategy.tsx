@@ -93,12 +93,12 @@ export default function PublicStrategy() {
 
                         for (let index = 0; index < res.data.decision_long.length; index++) {
                             if(Object.keys(list)[0] === res.data.decision_long[index]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'long'})
+                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'买入'})
                             }
                         }
                         for(let j=0;j<res.data.decision_short.length;j++){
                             if(Object.keys(list)[0] === res.data.decision_short[j]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'short'})
+                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'卖出'})
                             }
                         }
 
@@ -250,12 +250,12 @@ export default function PublicStrategy() {
         yField: 'value',
         // isStack:true,
         seriesField:'buy',
-        // yAxis: {
+        yAxis: {
             min: 11, // 设置 y 轴最小值
             // max: 11, // 设置 y 轴最大值
             // tickCount: 3, // 设置横线条数为 5
             // tickInterval: 11, // 设置 y 轴   刻度之间的间距    
-        // },
+        },
         // point:annotations,
         xAxis: {
             tickCount: 5,
@@ -269,12 +269,11 @@ export default function PublicStrategy() {
             stroke: 'red',
             lineWidth: 0.1,
             style:(d)=>{
-                console.log(d);
-                if(d.buy === 'long'){
+                if(d.buy === '买入'){
                     return {
-                        fill:'green',
+                        fill:'red',
                         lineWidth: 15,
-                        stroke:'green',
+                        stroke:'red',
                         // style:{
                             // width: '10px',
                             // height: '10px',
@@ -284,11 +283,11 @@ export default function PublicStrategy() {
                         // }
                     }
                 }
-                else if(d.buy === 'short'){
+                else if(d.buy === '卖出'){
                     return {
-                        fill:'red',
+                        fill:'green',
                         lineWidth: 15,
-                        stroke:'red',
+                        stroke:'green',
                     }
                 }
                 return {fill:'blue'}
