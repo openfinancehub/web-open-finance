@@ -28,21 +28,21 @@ const Strategy = () => {
   }
   
   const templateItem: TabsProps['items'] = [
-    {
-      key: '1',
-      label: `自定义`,
-      children: <Custom></Custom>,
-    },
-    {
-      key: '2',
-      label: `公共策略`,
-      children: <PublicStrategy ButtonId={buttonId}></PublicStrategy>,
-    },
-    {
-      key: '3',
-      label: `自有策略`,
-      children: <OwnStrategy></OwnStrategy>,
-    },
+      // {
+      //   key: '1',
+      //   label: `自定义`,
+      //   children: <Custom></Custom>,
+      // },
+      // {
+      //   key: '2',
+      //   label: `公共策略`,
+      //   children: <PublicStrategy ButtonId={buttonId}></PublicStrategy>,
+      // },
+      // {
+      //   key: '3',
+      //   label: `自有策略`,
+      //   children: <OwnStrategy></OwnStrategy>,
+      // },
   ];
 
   // 二级切换
@@ -61,7 +61,7 @@ const Strategy = () => {
         gutter={[0, 16]}
         colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }}
         direction="column">
-        <div className="seleType">
+        {/* <div className="seleType">
           <div>
             <Button
               type={seleType === '看涨买入' ? 'primary' : 'default'}
@@ -92,9 +92,10 @@ const Strategy = () => {
               综合策略
             </Button>
           </div>
-        </div>
+        </div> */}
 
-        <Tabs tabPosition={"left"} items={templateItem} onChange={templateChange}></Tabs>
+        {/* <Tabs tabPosition={"left"} items={templateItem} onChange={templateChange}></Tabs> */}
+        <PublicStrategy ButtonId={buttonId}></PublicStrategy>
 
       </ProCard>
     </ProCard>

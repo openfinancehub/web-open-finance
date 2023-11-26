@@ -16,11 +16,11 @@ const HomePage: React.FC = () => {
       label: `策略生成器`,
       children: <Strategy></Strategy>,
     },
-    {
-      key: '3',
-      label: `已订阅`,
-      children: <Subscribe></Subscribe>,
-    },
+    // {
+    //   key: '3',
+    //   label: `已订阅`,
+    //   children: <Subscribe></Subscribe>,
+    // },
   ];
   const onChange = (key: string) => {
     console.log(key);

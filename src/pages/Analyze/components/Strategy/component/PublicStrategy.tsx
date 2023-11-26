@@ -304,7 +304,7 @@ export default function PublicStrategy() {
             <ProCard gutter={16} ghost wrap>
                 <ProCard
                     bordered
-                    style={{ textAlign: 'center' }}
+                    style={{ textAlign: 'center',height:225 }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space>
                         {
@@ -328,7 +328,7 @@ export default function PublicStrategy() {
                     </div>
                 </ProCard>
                 <ProCard
-                    style={{ textAlign: 'center' }}
+                    style={{ textAlign: 'center',height:225 }}
                     bordered
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
                     <div className="numberSele">
@@ -383,6 +383,8 @@ export default function PublicStrategy() {
                     }
                 </ProCard>
             </ProCard>
+
+
             <ProCard style={{ height: 360 }}>
                 <ProCard
                     style={{ height: '100%' }}

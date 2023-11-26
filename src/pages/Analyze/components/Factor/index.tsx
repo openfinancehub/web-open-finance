@@ -47,7 +47,7 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 3
+    const Day = 2
     const size = 'large'
     const upColor = '#ec0000';
     const upBorderColor = '#8A0000';
@@ -168,7 +168,9 @@ const Factor = () => {
     }, [lineTimeData, inFactor])
 
     useEffect(() => {
-        const data1 = factorData.map((item) => {
+        console.log(111,'第一次');
+        
+        const data1 = factorData?.map((item) => {
             delete item.time
             return Object.values(item)
         }
@@ -201,7 +203,13 @@ const Factor = () => {
     
                 },
             },
-          
+            loading: {
+                text: '正在加载中...',
+                color: '#000',
+                backgroundColor: '#fff',
+                width: '100%',
+                height: '100%',
+            },
             legend: {
                 data: ['日K', inFactor]
             },
@@ -233,18 +241,19 @@ const Factor = () => {
                     type: 'value',
                 }
             ],
+            // 控制缩略轴
             dataZoom: [
                 {
                     type: 'inside',
-                    start: 50,
-                    end: 100
+                    start: 0,
+                    end: 50
                 },
                 {
                     show: true,
                     type: 'slider',
                     top: '90%',
-                    start: 50,
-                    end: 100
+                    start: 0,
+                    end: 50
                 }
             ],
             series: [
@@ -383,7 +392,7 @@ const Factor = () => {
                                             placeholder="预估数值"
                                         />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
-                                        <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
+                                        {/* <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link> */}
                                         <Popover content={<div style={{ width: "500px" }} >{
                                             handleDescContent(item.desc).map((item, index) => {
                                                 return (
@@ -410,7 +419,7 @@ const Factor = () => {
                                         <Button type={inFactor === item.name ? 'primary' : 'default'} size={size} onClick={(event) => { handleFactorLine(event, index) }}>{item.name}</Button>
                                         <Cascader style={{ width: '100%' }} options={item.struct.children} size={size} fieldNames={{ label: 'value', value: 'label' }} placeholder="预估数值" />
                                         <Button type="primary" size={size}>推荐指数{item.rate}</Button>
-                                        <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link>
+                                        {/* <Link to={`/analyze/factordelite?id=${14}`}><Button type="primary" size={size}>详情</Button></Link> */}
                                         <Popover content={<div style={{ width: "500px" }} >{
                                             handleDescContent(item.desc).map((item, index) => {
                                                 return (
