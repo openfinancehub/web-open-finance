@@ -1,4 +1,4 @@
-// import { Line } from '@ant-design/plots';
+import { Line } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
 import { Button, InputNumber, Space, DatePicker, Radio, } from 'antd';
@@ -7,15 +7,13 @@ import { request } from 'umi';
 import * as echarts from 'echarts/core';
 import { TitleComponent, LegendComponent } from 'echarts/components';
 import { RadarChart } from 'echarts/charts';
-import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
 echarts.use([
     TitleComponent,
     LegendComponent,
     CanvasRenderer,
-    RadarChart,
-    LineChart
+    RadarChart
 ]);
 export default function PublicStrategy() {
     const demoLine = []
@@ -26,7 +24,6 @@ export default function PublicStrategy() {
     const year = today.getFullYear();
     const todayDate = `${year}-${month}-${date}`
     const radarRef = useRef(null)
-    const lineRef = useRef(null)
     const [demoDays, setDemoDays] = useState(5)
     const [backData, setbackData] = useState(0)
     const [dateData, setDateData] = useState(todayDate)
@@ -169,7 +166,6 @@ export default function PublicStrategy() {
     useEffect(() => {
         strtegylist()
     }, []);
-
     useEffect(() => {
         const option = {
             title: {
@@ -198,87 +194,6 @@ export default function PublicStrategy() {
         chart.setOption(option);
     }, [raderValue]);
 
-    useEffect(()=>{
-       const  option = {
-            title: {
-              text: 'Temperature Change in the Coming Week'
-            },
-            tooltip: {
-              trigger: 'axis'
-            },
-            legend: {},
-            toolbox: {
-              show: true,
-              feature: {
-                dataZoom: {
-                  yAxisIndex: 'none'
-                },
-                dataView: { readOnly: false },
-                magicType: { type: ['line', 'bar'] },
-                restore: {},
-                saveAsImage: {}
-              }
-            },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-            },
-            yAxis: {
-              type: 'value',
-              axisLabel: {
-                formatter: '{value} °C'
-              }
-            },
-            series: [
-              {
-                name: 'Highest',
-                type: 'line',
-                data: [10, 11, 13, 11, 12, 12, 9],
-                markPoint: {
-                  data: [
-                    { type: 'max', name: 'Max' },
-                    { type: 'min', name: 'Min' }
-                  ]
-                },
-                markLine: {
-                  data: [{ type: 'average', name: 'Avg' }]
-                }
-              },
-              {
-                name: 'Lowest',
-                type: 'line',
-                data: [1, -2, 2, 5, 3, 2, 0],
-                markPoint: {
-                  data: [{ name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }]
-                },
-                markLine: {
-                  data: [
-                    { type: 'average', name: 'Avg' },
-                    [
-                      {
-                        symbol: 'none',
-                        x: '90%',
-                        yAxis: 'max'
-                      },
-                      {
-                        symbol: 'circle',
-                        label: {
-                          position: 'start',
-                          formatter: 'Max'
-                        },
-                        type: 'max',
-                        name: '最高点'
-                      }
-                    ]
-                  ]
-                }
-              }
-            ]
-        };
-        const chart = echarts.init(lineRef.current)
-        chart.setOption(option)
-    },[lineData])
     const backOrder = (e: any) => {
         console.log('回滚次数', e.target.value);
         setbackData(e.target.value)
@@ -328,7 +243,62 @@ export default function PublicStrategy() {
         console.log(firstKargs);
 
     }
-
+    console.log(lineData, '111');
+    const lineconfig = {
+        data: lineData,
+        xField: 'date',
+        yField: 'value',
+        // isStack:true,
+        seriesField:'buy',
+        yAxis: {
+            min: 11, // 设置 y 轴最小值
+            // max: 11, // 设置 y 轴最大值
+            // tickCount: 3, // 设置横线条数为 5
+            // tickInterval: 11, // 设置 y 轴   刻度之间的间距    
+        },
+        // point:annotations,
+        xAxis: {
+            tickCount: 5,
+        },
+        lineStyle: {
+            stroke: 'green', // Set the line color here
+        },
+        point: {
+            size: 5,
+            shape: 'circular',
+            stroke: 'red',
+            lineWidth: 0.1,
+            style:(d)=>{
+                if(d.buy === '买入'){
+                    return {
+                        fill:'red',
+                        lineWidth: 15,
+                        stroke:'red',
+                        // style:{
+                            // width: '10px',
+                            // height: '10px',
+                            // transform: 'rotate(45deg)',
+                            // backgroundColor: 'blue',
+                            // border: 'none',
+                        // }
+                    }
+                }
+                else if(d.buy === '卖出'){
+                    return {
+                        fill:'green',
+                        lineWidth: 15,
+                        stroke:'green',
+                    }
+                }
+                return {fill:'blue'}
+            }
+        },
+        slider: {
+            start: 0.1,
+            end: 0.12,
+        },
+        smooth: true,
+    };
     return (
         <div>
             <ProCard gutter={16} ghost wrap>
@@ -413,6 +383,8 @@ export default function PublicStrategy() {
                     }
                 </ProCard>
             </ProCard>
+
+
             <ProCard style={{ height: 360 }}>
                 <ProCard
                     style={{ height: '100%' }}
@@ -435,10 +407,11 @@ export default function PublicStrategy() {
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
                     bordered>
                     <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
+                    {/* <Radar {...raderConfig} /> */}
                 </ProCard>
             </ProCard>
-            <ProCard style={{ height: 460, width:'80%'}} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
-                <div ref={lineRef} style={{  height: "100%" }}></div>
+            <ProCard style={{ height: 360 }}>
+                <Line {...lineconfig}></Line>
             </ProCard>
         </div>
     )
