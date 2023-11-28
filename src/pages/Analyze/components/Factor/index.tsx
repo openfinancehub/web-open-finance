@@ -23,14 +23,12 @@ import {
 } from 'echarts/components';
 import {
     CandlestickChart,
-    CandlestickSeriesOption,
     LineChart,
-    LineSeriesOption
 } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "./component/left"
-
+import Loading from "../Loading"
 echarts.use([
     TitleComponent,
     TooltipComponent,
@@ -47,7 +45,7 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 2
+    const Day = 1
     const size = 'large'
     const upColor = '#ec0000';
     const upBorderColor = '#8A0000';
@@ -378,7 +376,7 @@ const Factor = () => {
             </ProCard>
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
                 <ProCard style={{ height: 460 }} bordered>
-                    <div ref={chartRef} style={{ width: "100%", height: "100%" }}></div>
+                    <div ref={chartRef} style={{  width: "100%", height: "100%" }}></div>
                 </ProCard>
                 <ProCard title="看涨因子" type="inner" bordered direction="column">
                     {

@@ -43,7 +43,6 @@ export default function PublicStrategy() {
     const [raderValue, setRaderValue] = useState([])
     const firstKargs: any = []
     let synthesis: any = []
-    // 获取对应测试的数据接口
     const strtegylist = () => {
         const data = {
             uid: 1,
@@ -61,7 +60,6 @@ export default function PublicStrategy() {
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
-    // 拿到令牌 去拿数据
     const GetStrategy = (uid: number) => {
         const data = {
             uid: uid,
@@ -93,30 +91,9 @@ export default function PublicStrategy() {
                 });
                 if (!backData) {
                     res.data.raw_data.forEach(list => {
-
-                        for (let index = 0; index < res.data.decision_long.length; index++) {
-                            if(Object.keys(list)[0] === res.data.decision_long[index]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'买入'})
-                            }
-                        }
-                        for(let j=0;j<res.data.decision_short.length;j++){
-                            if(Object.keys(list)[0] === res.data.decision_short[j]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'卖出'})
-                            }
-                        }
-
                         linedata.push({ date: Object.keys(list)[0], value: Object.values(list)[0] })
-
                     });
                 }
-                console.log(linedata);
-                const newLineData = linedata.filter((value, index, self) => {
-                    return (
-                      index === self.findIndex((item) => (
-                        item.date === value.date
-                      ))
-                    );
-                  });
                 destArr.push()
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
@@ -128,7 +105,6 @@ export default function PublicStrategy() {
             }
         }).catch(err => { console.log(err) })
     }
-    // 进行测试的接口
     const strategy_test = (kargs: number[]) => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
@@ -200,9 +176,9 @@ export default function PublicStrategy() {
 
     useEffect(()=>{
        const  option = {
-            title: {
-              text: 'Temperature Change in the Coming Week'
-            },
+            // title: {
+            //   text: 'Temperature Change in the Coming Week'
+            // },
             tooltip: {
               trigger: 'axis'
             },
@@ -226,9 +202,6 @@ export default function PublicStrategy() {
             },
             yAxis: {
               type: 'value',
-              axisLabel: {
-                formatter: '{value} °C'
-              }
             },
             series: [
               {
@@ -245,35 +218,6 @@ export default function PublicStrategy() {
                   data: [{ type: 'average', name: 'Avg' }]
                 }
               },
-              {
-                name: 'Lowest',
-                type: 'line',
-                data: [1, -2, 2, 5, 3, 2, 0],
-                markPoint: {
-                  data: [{ name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }]
-                },
-                markLine: {
-                  data: [
-                    { type: 'average', name: 'Avg' },
-                    [
-                      {
-                        symbol: 'none',
-                        x: '90%',
-                        yAxis: 'max'
-                      },
-                      {
-                        symbol: 'circle',
-                        label: {
-                          position: 'start',
-                          formatter: 'Max'
-                        },
-                        type: 'max',
-                        name: '最高点'
-                      }
-                    ]
-                  ]
-                }
-              }
             ]
         };
         const chart = echarts.init(lineRef.current)
