@@ -130,6 +130,11 @@ const Factor = () => {
             data: JSON.stringify(data)
         }).then((res) => {
             setFactorData(res.data)
+            let list = []
+            res.data.forEach((item)=>{
+                list.push(item.time)
+            })
+            setLineTimeData(list)
         }).catch(err => { console.log(err) })
     };
     const historyfactor = (stock_id: string) => {
@@ -145,14 +150,14 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            setLineTimeData(res.data[60].time)
+            // setLineTimeData(res.data[60].time)
             setHistoryData(res.data[60].factors)
         }).catch(err => {
             console.log(err)
         })
     };
 
-
+    
     useEffect(() => {
         stockanalysis('000001.SZ')
         getstock_kline('000001')
@@ -188,8 +193,8 @@ const Factor = () => {
                     let lowest = params[0].value[3];
                     let open = params[0].value[4];
                     let volume = params[0].value[6];
-                    let FactorName = params[1].seriesName;
-                    let FactorValue = params[1].value;
+                    let FactorName = params[1]?params[1].seriesName:'暂无数据';
+                    let FactorValue = params[1]?params[1].value:'暂无数据';
                     return( time + '<br>'+
                         bullet + '开盘价' + ': &nbsp' + open + '<br>' +
                         bullet + '收盘价' + ': &nbsp' + close + '<br>'+
@@ -198,7 +203,6 @@ const Factor = () => {
                         bullet + '成交量' + ': &nbsp' + volume + '<br>' +        
                         bullet + FactorName  + ': &nbsp'  + FactorValue
                         )
-    
                 },
             },
             loading: {
