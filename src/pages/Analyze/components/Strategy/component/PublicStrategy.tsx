@@ -39,6 +39,10 @@ export default function PublicStrategy() {
     const [isdemoBtn, setIsdemoBtn] = useState(true)
     const [lineDataTime,setlineDataTime] = useState(demoLineTime)
     const [lineData, setLineData] = useState(demoLine)
+    const [lineMax,setLinemax] = useState()
+    const [lineMin,setLinemin] = useState()
+    const [longLine,setLongline] = useState([])
+    const [shortLine,setShortline] = useState([])
     const [demoEndData, setDemoEndData] = useState([{ value: 0, desc: '测试结果:' }])
     const [raderData, setRaderData] = useState([{ name: '', max: '' }])
     const [selectedButton, setSelectedButton] = useState('')
@@ -86,6 +90,12 @@ export default function PublicStrategy() {
                 let radervalue = []
                 let linedata = []
                 let lineDataTime = []
+                // 买入 red
+                let long = []
+                let add = true
+                // 卖出 greed
+                let short = []
+                let add2 = true
                 res.data.result.forEach(item => {
                     if (item.indicator_flag === 'True') {
                         destArr.push({ name: item.name, desc: item.desc, value: item.value.toFixed(4) })
@@ -97,16 +107,46 @@ export default function PublicStrategy() {
                     res.data.raw_data.forEach(list => {
                         linedata.push(Object.values(list)[0])
                         lineDataTime.push(Object.keys(list)[0])
+                        for(let i=0;i<res.data.decision_long.length;i++){
+                            if(res.data.decision_long[i] === Object.keys(list)[0]){
+                                long.push(Object.values(list)[0])
+                                add = false
+                                break;
+                            }
+                        }
+                        for(let i=0;i<res.data.decision_short.length;i++){
+                            if(res.data.decision_short[i] === Object.keys(list)[0]){
+                                short.push(Object.values(list)[0])
+                                add = false
+                                break;
+                            }
+                        }
+                        if(add){
+                            long.push('')
+                        }else{
+                            add = true
+                        }
+
+
+                        if(add2){
+                            short.push('')
+                        }else{
+                            add2 = true
+                        }
                     });
                 }
                 destArr.push()
                 console.log(linedata);
-                console.log(lineDataTime);
-                
+                const max = Math.max(...linedata)
+                const min = Math.min(...linedata)
+                setLinemax(max)
+                setLinemin(min)
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
                 setRaderValue(radervalue)
                 setLineData(linedata)
+                setLongline(long)
+                setShortline(short)
                 setlineDataTime(lineDataTime)
                 console.log("成功！");
                 setIsdemoBtn(true);
@@ -165,6 +205,7 @@ export default function PublicStrategy() {
             },
             tooltip: {
                 trigger: 'item',
+
             },
             series: [
                 {
@@ -186,7 +227,22 @@ export default function PublicStrategy() {
     useEffect(() => {
         const option = {
             tooltip: {
-                trigger: 'axis'
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                },
+                formatter: function(params) {
+                    console.log(params);
+                    if(params[1] && params[1].data !==''){
+                        return '买入 :'+ params[0].data
+                    }
+                    else if(params[1] && params[2].data !=='' ){
+                        return '卖出 :'+ params[0].data
+                    }else{
+                        return '股票 :' + params[0].data ;
+                    }
+                    
+                }
               },
             xAxis: {
                 type: 'category',
@@ -194,8 +250,8 @@ export default function PublicStrategy() {
             },
             yAxis: {
                 type: 'value',
-                min: 10.2,
-                max: 10.35,
+                min: lineMin,
+                max: lineMax,
             },
             // 控制缩略轴
             dataZoom: [
@@ -228,34 +284,34 @@ export default function PublicStrategy() {
                         color: 'blue'
                     }
                 },
-                // {
-                //     data: [120, 200],
-                //     type: 'line',
-                //     symbol: 'pin',
-                //     symbolSize: 20,
-                //     lineStyle: {
-                //         color: '#5470C6',
-                //     },
-                //     itemStyle: {
-                //         borderWidth: 3,
-                //         borderColor: 'red',
-                //         color: 'red'
-                //     }
-                // },
-                // {
-                //     data: [, , 150],
-                //     type: 'line',
-                //     symbol: 'pin',
-                //     symbolSize: 20,
-                //     lineStyle: {
-                //         color: '#5470C6',
-                //     },
-                //     itemStyle: {
-                //         borderWidth: 3,
-                //         borderColor: 'green',
-                //         color: 'green'
-                //     }
-                // }
+                {
+                    data: longLine,
+                    type: 'line',
+                    symbol: 'pin',
+                    symbolSize: 20,
+                    lineStyle: {
+                        color: '#5470C6',
+                    },
+                    itemStyle: {
+                        borderWidth: 3,
+                        borderColor: 'red',
+                        color: 'red'
+                    }
+                },
+                {
+                    data: shortLine,
+                    type: 'line',
+                    symbol: 'pin',
+                    symbolSize: 20,
+                    lineStyle: {
+                        color: '#5470C6',
+                    },
+                    itemStyle: {
+                        borderWidth: 3,
+                        borderColor: 'green',
+                        color: 'green'
+                    }
+                }
             ]
         };
         const chart = echarts.init(lineRef.current)
