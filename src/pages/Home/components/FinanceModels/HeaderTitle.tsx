@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Button, Modal, Form, Input } from 'antd';
 import { ModelsItem, } from '../../data';
 import styles from './style.less';
-import MyEditor from './MyEditor';
 
 const HeaderTitle: React.FC<{
   models: ModelsItem[];
@@ -24,10 +23,6 @@ const HeaderTitle: React.FC<{
   const ChangeStyle = () => {
     setActivePage(!isActivePage)
   }
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const handleButtonClick = () => {
-    setIsFormVisible(true);
-  };
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -35,7 +30,7 @@ const HeaderTitle: React.FC<{
         <h3 className={styles.fountStyle}>Tools</h3>
       </div>
       <div className={styles.inpStyle}>
-        <h3 className={styles.figStyle}>{models.length}</h3>
+        {/* <h3 className={styles.figStyle}>{models.length}</h3> */}
       </div>
       <div>
         <Input onChange={(e) => changeModels(e.target.value)} placeholder='Filter by name' />
@@ -49,10 +44,6 @@ const HeaderTitle: React.FC<{
         <Button key='sort1' type='primary' >
           <Link to="/home/model/item">新增</Link>
         </Button>
-        {/* <Button key='sort1' type='primary' onClick={handleButtonClick}>
-          新增
-        </Button>
-        {isFormVisible ? <MyEditor /> : ''} */}
       </div>
     </div>
   );

@@ -52,34 +52,29 @@ const ModelsItem = {
   text: '这是一点解释说明的文本'
 }
 
-const chart = {
+const defaultData = {
   "chart": {
     "type": "pie",
     "appendix": {
-      "title": "Text"
+      "title": ""
     },
-    "x": {
-      "title": ["", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+    "relation": [
+      { "source": "a", "target": "b" },
+      { "source": "a", "target": "c" },
+      { "source": "a", "target": "d" },
+      { "source": "c", "target": "e" }],
+    "nodes": {
+      "a": [
+        { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+        { "text": "点击", "value": "1000万", "icon": "", "trend": "45.9%" }],
+      "b": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+      "c": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+      "d": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
+      "e": { "text": "曝光UV", "value": "1000万", "icon": "", "trend": "45.9%" },
     },
-    "y": {
-      "title": { "text": "3031万", "value": "80%" },
-      "children": {}
-    }
   }
 }
 
-const defaultData = {
-  id: 'A0',
-  value: {
-    title: '',
-    items: [
-      {
-        text: '',
-      },
-    ],
-  },
-  children: [],
-};
 
 const modelData = {
   id: 'A0',
@@ -175,7 +170,7 @@ const modelData = {
       },
     },
   ],
-};
+}
 
 
 export default {
@@ -195,10 +190,10 @@ export default {
       extra: {}
     });
   },
-  'POST /api/eval': (req: any, res: any) => {
+  'POST /api/test': (req: any, res: any) => {
     res.json({
       msg: "成功",
-      data: modelData,
+      data: defaultData,
       ret_code: 0,
       extra: {}
     });
