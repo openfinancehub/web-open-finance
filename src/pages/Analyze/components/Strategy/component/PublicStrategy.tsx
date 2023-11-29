@@ -232,14 +232,16 @@ export default function PublicStrategy() {
                     type: 'cross'
                 },
                 formatter: function(params) {
-                    console.log(params);
+                    let v1  = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:blue;"></span>'
+                    let v2 = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:red;"></span>'
+                    let v3 =  '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:green;"></span>'
                     if(params[1] && params[1].data !==''){
-                        return '买入 :'+ params[0].data
+                        return v2 + '买入 :'+ params[0].data
                     }
                     else if(params[1] && params[2].data !=='' ){
-                        return '卖出 :'+ params[0].data
+                        return v3 + '卖出 :'+ params[0].data
                     }else{
-                        return '股票 :' + params[0].data ;
+                        return v1 + '股票 :' + params[0].data ;
                     }
                     
                 }
@@ -288,7 +290,7 @@ export default function PublicStrategy() {
                     data: longLine,
                     type: 'line',
                     symbol: 'pin',
-                    symbolSize: 20,
+                    symbolSize: 30,
                     lineStyle: {
                         color: '#5470C6',
                     },
@@ -302,7 +304,7 @@ export default function PublicStrategy() {
                     data: shortLine,
                     type: 'line',
                     symbol: 'pin',
-                    symbolSize: 20,
+                    symbolSize: 30,
                     lineStyle: {
                         color: '#5470C6',
                     },
@@ -476,7 +478,7 @@ export default function PublicStrategy() {
                     <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
                 </ProCard>
             </ProCard>
-            <ProCard style={{ height: 460, width: '80%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
+            <ProCard style={{ height: 460, width: '100%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
                 <div ref={lineRef} style={{ height: "100%" }}></div>
             </ProCard>
         </div>
