@@ -18,7 +18,8 @@ echarts.use([
     LineChart
 ]);
 export default function PublicStrategy() {
-    const demoLine = []
+    const demoLine = [10.26, 10.26, 10.26, 10.26, 10.26, 10.28, 10.3, 10.28, 10.27, 10.27, 10.26, 10.28, 10.27, 10.28, 10.27, 10.27, 10.25, 10.25, 10.26, 10.25, 10.26]
+    const demoLineTime = ['2023-11-22 09:30:00', '2023-11-22 09:31:00', '2023-11-22 09:32:00', '2023-11-22 09:33:00', '2023-11-22 09:34:00', '2023-11-22 09:35:00', '2023-11-22 09:36:00', '2023-11-22 09:37:00', '2023-11-22 09:38:00', '2023-11-22 09:39:00', '2023-11-22 09:40:00', '2023-11-22 09:41:00', '2023-11-22 09:42:00', '2023-11-22 09:43:00', '2023-11-22 09:44:00', '2023-11-22 09:45:00', '2023-11-22 09:46:00', '2023-11-22 09:47:00', '2023-11-22 09:48:00', '2023-11-22 09:49:00']
     const size = 'large';
     const today = new Date();
     const date = today.getDate();
@@ -36,10 +37,11 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
+    const [lineDataTime,setlineDataTime] = useState(demoLineTime)
     const [lineData, setLineData] = useState(demoLine)
-    const [demoEndData, setDemoEndData] = useState([{value:0, desc: '测试结果:' }])
-    const [raderData, setRaderData] = useState([{ name: '', max: '' },
-    ])
+    const [demoEndData, setDemoEndData] = useState([{ value: 0, desc: '测试结果:' }])
+    const [raderData, setRaderData] = useState([{ name: '', max: '' }])
+    const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
     const firstKargs: any = []
     let synthesis: any = []
@@ -56,6 +58,7 @@ export default function PublicStrategy() {
             data: JSON.stringify(data)
         }).then((res) => {
             setListName(res.data.list[0])
+            setSelectedButton(res.data.list[0])
             setListData(res.data.list)
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
@@ -82,23 +85,29 @@ export default function PublicStrategy() {
                 let raderArr = []
                 let radervalue = []
                 let linedata = []
+                let lineDataTime = []
                 res.data.result.forEach(item => {
                     if (item.indicator_flag === 'True') {
-                        destArr.push({ name: item.name, desc: item.desc ,value:item.value})
+                        destArr.push({ name: item.name, desc: item.desc, value: item.value.toFixed(4) })
                         raderArr.push({ name: item.name, max: item.max })
                         radervalue.push(item.value)
                     }
                 });
                 if (!backData) {
                     res.data.raw_data.forEach(list => {
-                        linedata.push({ date: Object.keys(list)[0], value: Object.values(list)[0] })
+                        linedata.push(Object.values(list)[0])
+                        lineDataTime.push(Object.keys(list)[0])
                     });
                 }
                 destArr.push()
+                console.log(linedata);
+                console.log(lineDataTime);
+                
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
                 setRaderValue(radervalue)
-                setLineData(newLineData)
+                setLineData(linedata)
+                setlineDataTime(lineDataTime)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
@@ -174,55 +183,84 @@ export default function PublicStrategy() {
         chart.setOption(option);
     }, [raderValue]);
 
-    useEffect(()=>{
-       const  option = {
-            // title: {
-            //   text: 'Temperature Change in the Coming Week'
-            // },
+    useEffect(() => {
+        const option = {
             tooltip: {
-              trigger: 'axis'
-            },
-            legend: {},
-            toolbox: {
-              show: true,
-              feature: {
-                dataZoom: {
-                  yAxisIndex: 'none'
-                },
-                dataView: { readOnly: false },
-                magicType: { type: ['line', 'bar'] },
-                restore: {},
-                saveAsImage: {}
-              }
-            },
+                trigger: 'axis'
+              },
             xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                type: 'category',
+                data: lineDataTime
             },
             yAxis: {
-              type: 'value',
+                type: 'value',
+                min: 10.2,
+                max: 10.35,
             },
-            series: [
-              {
-                name: 'Highest',
-                type: 'line',
-                data: [10, 11, 13, 11, 12, 12, 9],
-                markPoint: {
-                  data: [
-                    { type: 'max', name: 'Max' },
-                    { type: 'min', name: 'Min' }
-                  ]
+            // 控制缩略轴
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 50
                 },
-                markLine: {
-                  data: [{ type: 'average', name: 'Avg' }]
+                {
+                    show: true,
+                    type: 'slider',
+                    top: '90%',
+                    start: 0,
+                    end: 50
                 }
-              },
+            ],
+            series: [
+                {
+                    data: lineData,
+                    type: 'line',
+                    symbolSize: 10,
+                    symbol: 'circle',
+                    lineStyle: {
+                        color: '#5470C6',
+                        width: 3,
+                    },
+                    itemStyle: {
+                        borderWidth: 3,
+                        //   borderColor: '#EE6666',
+                        color: 'blue'
+                    }
+                },
+                // {
+                //     data: [120, 200],
+                //     type: 'line',
+                //     symbol: 'pin',
+                //     symbolSize: 20,
+                //     lineStyle: {
+                //         color: '#5470C6',
+                //     },
+                //     itemStyle: {
+                //         borderWidth: 3,
+                //         borderColor: 'red',
+                //         color: 'red'
+                //     }
+                // },
+                // {
+                //     data: [, , 150],
+                //     type: 'line',
+                //     symbol: 'pin',
+                //     symbolSize: 20,
+                //     lineStyle: {
+                //         color: '#5470C6',
+                //     },
+                //     itemStyle: {
+                //         borderWidth: 3,
+                //         borderColor: 'green',
+                //         color: 'green'
+                //     }
+                // }
             ]
         };
         const chart = echarts.init(lineRef.current)
         chart.setOption(option)
-    },[lineData])
+    }, [lineData])
     const backOrder = (e: any) => {
         console.log('回滚次数', e.target.value);
         setbackData(e.target.value)
@@ -261,7 +299,7 @@ export default function PublicStrategy() {
         let text = event.target.innerHTML
         setListName(text)
         setindexDetails(index)
-
+        setSelectedButton(text)
     }
     const nuberOnChange = (name: string, value: number) => {
         console.log(name, value);
@@ -278,13 +316,14 @@ export default function PublicStrategy() {
             <ProCard gutter={16} ghost wrap>
                 <ProCard
                     bordered
-                    style={{ textAlign: 'center',height:225 }}
+                    style={{ textAlign: 'center', height: 225 }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space>
                         {
                             listData.map((item, index) => {
                                 return (
-                                    <Button key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
+                                    <Button type={selectedButton === item ? 'primary' : 'default'}
+                                        key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
                                 )
                             })
                         }
@@ -302,7 +341,7 @@ export default function PublicStrategy() {
                     </div>
                 </ProCard>
                 <ProCard
-                    style={{ textAlign: 'center',height:225 }}
+                    style={{ textAlign: 'center', height: 225 }}
                     bordered
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
                     <div className="numberSele">
@@ -381,8 +420,8 @@ export default function PublicStrategy() {
                     <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
                 </ProCard>
             </ProCard>
-            <ProCard style={{ height: 460, width:'80%'}} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
-                <div ref={lineRef} style={{  height: "100%" }}></div>
+            <ProCard style={{ height: 460, width: '80%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
+                <div ref={lineRef} style={{ height: "100%" }}></div>
             </ProCard>
         </div>
     )
