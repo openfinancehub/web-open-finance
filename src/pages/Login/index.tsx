@@ -32,7 +32,7 @@ export default () => {
     try {
       const { mobile: username, captcha } = values;
       const res = await LoginServices.login({ username, captcha });
-      if (res?.code === 0) {
+      if (res?.code === 200 || res?.code === 0) {
         await setInitialState(s => ({
           ...s,
           currentUser: res.data
@@ -40,7 +40,6 @@ export default () => {
         localStorage.setItem('userInfo', JSON.stringify(res.data));
         history.push('/home');
       } else {
-        history.push('/home');
         message.error('服务器错误');
       }
     } catch (error: any) {

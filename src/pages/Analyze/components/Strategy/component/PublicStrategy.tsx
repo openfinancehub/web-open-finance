@@ -463,8 +463,8 @@ export default function PublicStrategy() {
                         {demoEndData.map((item, index) => {
                             return (
                                 // <span key={index}>{item.desc}</span>
-                                <div key={index}>
-                                    <p >{item.name ? `${item.name}(${item.value}):` : ''}</p>
+                                <div style={{fontWeight:'bole'}} key={index}>
+                                    <p > <span>{index +1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
                                     <p>{item.desc}</p>
                                 </div>
                             )
