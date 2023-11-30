@@ -37,13 +37,12 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
-    const [lineDataTime,setlineDataTime] = useState(demoLineTime)
-    const [lineData, setLineData] = useState(demoLine)
+    const [lineDataTime,setlineDataTime] = useState()
+    const [lineData, setLineData] = useState()
     const [lineMax,setLinemax] = useState()
     const [lineMin,setLinemin] = useState()
-    const [longLine,setLongline] = useState([])
-    const [shortLine,setShortline] = useState([])
-    const [demoEndData, setDemoEndData] = useState([{ value: 0, desc: '测试结果:' }])
+    const [lineIdent,setLineIdent] = useState([])
+    const [demoEndData, setDemoEndData] = useState([])
     const [raderData, setRaderData] = useState([{ name: '', max: '' }])
     const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
@@ -90,12 +89,8 @@ export default function PublicStrategy() {
                 let radervalue = []
                 let linedata = []
                 let lineDataTime = []
-                // 买入 red
-                let long = []
-                let add = true
-                // 卖出 greed
-                let short = []
-                let add2 = true
+                // 买入卖出节点
+                let longAndshort = []
                 res.data.result.forEach(item => {
                     if (item.indicator_flag === 'True') {
                         destArr.push({ name: item.name, desc: item.desc, value: item.value.toFixed(4) })
@@ -109,29 +104,27 @@ export default function PublicStrategy() {
                         lineDataTime.push(Object.keys(list)[0])
                         for(let i=0;i<res.data.decision_long.length;i++){
                             if(res.data.decision_long[i] === Object.keys(list)[0]){
-                                long.push(Object.values(list)[0])
-                                add = false
+                                longAndshort.push({
+                                    coord: [Object.keys(list)[0], Object.values(list)[0]],
+                                    itemStyle: {color: 'red'},
+                                    label: {
+                                        formatter: '买入'
+                                    }
+                                })
                                 break;
                             }
                         }
                         for(let i=0;i<res.data.decision_short.length;i++){
                             if(res.data.decision_short[i] === Object.keys(list)[0]){
-                                short.push(Object.values(list)[0])
-                                add = false
+                                longAndshort.push({
+                                    coord: [Object.keys(list)[0], Object.values(list)[0]],
+                                    itemStyle: {color: 'green'},
+                                    label: {
+                                        formatter: '卖出'
+                                    }
+                                })
                                 break;
                             }
-                        }
-                        if(add){
-                            long.push('')
-                        }else{
-                            add = true
-                        }
-
-
-                        if(add2){
-                            short.push('')
-                        }else{
-                            add2 = true
                         }
                     });
                 }
@@ -141,12 +134,11 @@ export default function PublicStrategy() {
                 const min = Math.min(...linedata)
                 setLinemax(max)
                 setLinemin(min)
+                setLineIdent(longAndshort)
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
                 setRaderValue(radervalue)
                 setLineData(linedata)
-                setLongline(long)
-                setShortline(short)
                 setlineDataTime(lineDataTime)
                 console.log("成功！");
                 setIsdemoBtn(true);
@@ -190,7 +182,6 @@ export default function PublicStrategy() {
             }
         }).catch(err => { console.log(err) })
     }
-
     useEffect(() => {
         strtegylist()
     }, []);
@@ -205,7 +196,6 @@ export default function PublicStrategy() {
             },
             tooltip: {
                 trigger: 'item',
-
             },
             series: [
                 {
@@ -245,7 +235,7 @@ export default function PublicStrategy() {
                     }
                     
                 }
-              },
+            },
             xAxis: {
                 type: 'category',
                 data: lineDataTime
@@ -276,6 +266,13 @@ export default function PublicStrategy() {
                     type: 'line',
                     symbolSize: 10,
                     symbol: 'circle',
+                    markPoint: {
+                        label: {
+                            show: true,
+                            position: 'top'
+                        },
+                        data: lineIdent
+                    },
                     lineStyle: {
                         color: '#5470C6',
                         width: 3,
@@ -286,34 +283,6 @@ export default function PublicStrategy() {
                         color: 'blue'
                     }
                 },
-                {
-                    data: longLine,
-                    type: 'line',
-                    symbol: 'pin',
-                    symbolSize: 30,
-                    lineStyle: {
-                        color: '#5470C6',
-                    },
-                    itemStyle: {
-                        borderWidth: 3,
-                        borderColor: 'red',
-                        color: 'red'
-                    }
-                },
-                {
-                    data: shortLine,
-                    type: 'line',
-                    symbol: 'pin',
-                    symbolSize: 30,
-                    lineStyle: {
-                        color: '#5470C6',
-                    },
-                    itemStyle: {
-                        borderWidth: 3,
-                        borderColor: 'green',
-                        color: 'green'
-                    }
-                }
             ]
         };
         const chart = echarts.init(lineRef.current)
@@ -374,7 +343,7 @@ export default function PublicStrategy() {
             <ProCard gutter={16} ghost wrap>
                 <ProCard
                     bordered
-                    style={{ textAlign: 'center', height: 225 }}
+                    style={{ textAlign: 'center', height: 225 ,overflowY: 'scroll'}}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space>
                         {
@@ -399,7 +368,7 @@ export default function PublicStrategy() {
                     </div>
                 </ProCard>
                 <ProCard
-                    style={{ textAlign: 'center', height: 225 }}
+                    style={{ textAlign: 'center', height: 225}}
                     bordered
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
                     <div className="numberSele">
@@ -460,11 +429,11 @@ export default function PublicStrategy() {
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}
                     bordered>
                     <div className="demoResult">
+                        <div>测试结果：</div><br></br>
                         {demoEndData.map((item, index) => {
                             return (
-                                // <span key={index}>{item.desc}</span>
                                 <div style={{fontWeight:'bole'}} key={index}>
-                                    <p > <span>{index +1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
+                                      <p > <span>{index +1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
                                     <p>{item.desc}</p>
                                 </div>
                             )
@@ -478,7 +447,7 @@ export default function PublicStrategy() {
                     <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
                 </ProCard>
             </ProCard>
-            <ProCard style={{ height: 460, width: '100%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
+            <ProCard style={{ height: 460, width: '90%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
                 <div ref={lineRef} style={{ height: "100%" }}></div>
             </ProCard>
         </div>
