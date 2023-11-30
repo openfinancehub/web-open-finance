@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import defaultSettings from './defaultSettings';
 
 export default defineConfig({
+  esbuildMinifyIIFE: true,  
   antd: {},
   access: {},
   model: {},
