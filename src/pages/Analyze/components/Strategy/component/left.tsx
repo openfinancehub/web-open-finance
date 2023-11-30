@@ -1,7 +1,7 @@
 import { useEffect,useState } from 'react'
 import { request } from 'umi';
 import { Button, Space } from 'antd';
-export default function left({ onDataChange }) {
+export default function Left({ onDataChange }) {
     const size = 'large'
     // 股票种类的数据
     const [sotckListData, setsotckList] = useState([])

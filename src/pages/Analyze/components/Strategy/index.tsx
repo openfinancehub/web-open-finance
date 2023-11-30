@@ -1,268 +1,53 @@
-import { Line, Radar } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
-import type { MenuProps } from 'antd';
-import { Button, Dropdown, InputNumber, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { request } from 'umi';
+import {Tabs,TabsProps, Button } from 'antd';
+import { useState } from 'react';
 import './style.css';
 import Left from './component/left'
+import Custom from './component/Custom'
+import PublicStrategy from './component/PublicStrategy';
+import OwnStrategy from './component/OwnStrategy';
 const Strategy = () => {
   const size = 'large';
+  const [buttonId,setButtonId] = useState('000001')
   const [seleType, setSeleType] = useState('看涨买入');
-  // 选择看涨还是看跌
   const handleTypeRise = () => {
     setSeleType('看涨买入');
   };
   const handleTypeFall = () => {
     setSeleType('看跌止损');
   };
-
-  const strategy_test = (stock_id:string)=>{
-    const data = {
-      stock_id: stock_id,
-      with_details: '0',
-      categories: "factor",
-      key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+  const handleAll = () => {
+    setSeleType('综合策略');
   }
-  request('http://139.159.205.40:8808/quant/strategy_test', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(data)
-  }).then((res) => {
-      setInFactor(res.data.long[0].name)
-      let long = res.data.long || []
-      let short = res.data.short || []
-      long.forEach((item: object) => {
-          item.struct.children.forEach((obj) => {
-              obj.value = obj.label
-              obj.children.forEach((obj2) => {
-                  obj2.value = obj2.label
-                  if (obj2.value === 'sigma') {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + obj3.value
-                      })
-                  } else {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + (obj3.value * 100).toFixed(2) + '%'
-                      })
-                  }
-              })
-          })
-      })
-      short.forEach((item: object) => {
-          item.struct.children.forEach((obj) => {
-              obj.value = obj.label
-              obj.children.forEach((obj2) => {
-                  obj2.value = obj2.label
-                  if (obj2.value === 'sigma') {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + obj3.value
-                      })
-                  } else {
-                      obj2.children.forEach((obj3, index) => {
-                          obj3.value = `取值${index + 1}:` + (obj3.value * 100).toFixed(2) + '%'
-                      })
-                  }
-              })
-          })
-      })
-      setQuantData({ long, short })
-  }).catch(err => { console.log(err) })
-  }
-
-  useEffect(() => {
-    
-  }, []);
-  const items: MenuProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com">
-          1st menu item
-        </a>
-      )
-    },
-    {
-      key: '2',
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com">
-          2nd menu item
-        </a>
-      )
-    },
-    {
-      key: '3',
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com">
-          3rd menu item
-        </a>
-      )
-    }
-  ];
-  const raderData = [
-    {
-      name: '评估维度1',
-      star: 10371
-    },
-    {
-      name: '评估维度2',
-      star: 7380
-    },
-    {
-      name: '评估维度3',
-      star: 7414
-    },
-    {
-      name: '评估维度4',
-      star: 2140
-    },
-    {
-      name: '评估维度5',
-      star: 660
-    }
-  ];
-  const raderConfig = {
-    data: raderData.map(d => ({ ...d, star: Math.sqrt(d.star) })),
-    xField: 'name',
-    yField: 'star',
-    appendPadding: [0, 10, 0, 10],
-    meta: {
-      star: {
-        alias: 'star 数量',
-        min: 0,
-        nice: true,
-        formatter: v => Number(v).toFixed(2)
-      }
-    },
-    xAxis: {
-      tickLine: null
-    },
-    yAxis: {
-      label: false,
-      grid: {
-        alternateColor: 'rgba(0, 0, 0, 0.04)'
-      }
-    },
-    // 开启辅助点
-    point: {
-      size: 2
-    },
-    area: {}
-  };
-  const lineData = [
-    {
-      year: '二月',
-      value: 2
-    },
-    {
-      year: '三月',
-      value: 2.8
-    },
-    {
-      year: '四月',
-      value: 3
-    },
-    {
-      year: '五月',
-      value: 4
-    },
-    {
-      year: '六月',
-      value: 3.5
-    },
-    {
-      year: '七月',
-      value: 5
-    },
-    {
-      year: '八月',
-      value: 4.9
-    },
-    {
-      year: '九月',
-      value: 6
-    },
-    {
-      year: '十月',
-      value: 7
-    }
-  ];
-  const config = {
-    data: lineData,
-    xField: 'year',
-    yField: 'value',
-    label: {},
-    point: {
-      size: 5,
-      shape: 'diamond',
-      style: {
-        fill: 'white',
-        stroke: '#5B8FF9',
-        lineWidth: 2
-      }
-    },
-    tooltip: {
-      showMarkers: false
-    },
-    state: {
-      active: {
-        style: {
-          shadowBlur: 4,
-          stroke: '#000',
-          fill: 'red'
-        }
-      }
-    },
-    interactions: [
-      {
-        type: 'marker-active'
-      }
-    ]
-  };
-  const [windowdata, setWindowdata] = useState(1)
-  const [backData, setbackData] = useState(1)
-  const [intervalData, setIntervalData] = useState(1)
-  const [shopData, setShopData] = useState(1)
-  const windowChange = (value: number) => {
-    console.log('测试窗口', value);
-    setWindowdata(value)
-  }
-  const backOrder = (value: number) => {
-    console.log('回滚次数', value);
-    setbackData(value)
-  }
-  const intervalTime = (value: number) => {
-    console.log('间隔时长', value)
-    setIntervalData(value)
-  }
-  const shopOrder = (value: number) => {
-    console.log('买入次数', value);
-    setShopData(value)
-  }
-
-  /**
-   * 点击测试触发的事件
-   */
-  const demoBtn = () => {
-    console.log(windowdata, backData, intervalData, shopData);
-  }
-
   /**
  * 接收导航的数据,切换股票
  */
   const handleDataFromChild = (butttonId: string, buttonNum: string) => {
-    console.log(buttonNum,butttonId);
+    console.log(buttonNum, butttonId);
+    setButtonId(butttonId)
+  }
+  
+  const templateItem: TabsProps['items'] = [
+      // {
+      //   key: '1',
+      //   label: `自定义`,
+      //   children: <Custom></Custom>,
+      // },
+      // {
+      //   key: '2',
+      //   label: `公共策略`,
+      //   children: <PublicStrategy ButtonId={buttonId}></PublicStrategy>,
+      // },
+      // {
+      //   key: '3',
+      //   label: `自有策略`,
+      //   children: <OwnStrategy></OwnStrategy>,
+      // },
+  ];
+
+  // 二级切换
+  const templateChange = ()=>{
+
   }
 
   return (
@@ -276,21 +61,7 @@ const Strategy = () => {
         gutter={[0, 16]}
         colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }}
         direction="column">
-        <ProCard style={{ height: 360 }}>
-          <ProCard
-            style={{ height: '100%' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 8 }}
-            bordered>
-            <Radar {...raderConfig} />
-          </ProCard>
-          <ProCard
-            style={{ height: '100%' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 16 }}
-            bordered>
-            <Line {...config} />
-          </ProCard>
-        </ProCard>
-        <div className="seleType">
+        {/* <div className="seleType">
           <div>
             <Button
               type={seleType === '看涨买入' ? 'primary' : 'default'}
@@ -311,89 +82,25 @@ const Strategy = () => {
               看跌止损
             </Button>
           </div>
-        </div>
-        <ProCard gutter={16} ghost wrap>
-          <ProCard
-            bordered
-            style={{ textAlign: 'center' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
-            <Space>
-              <Button type="primary" size={size}>
-                因子
-              </Button>
-              <Dropdown menu={{ items }} placement="bottom" arrow>
-                <Button size={size}>取值</Button>
-              </Dropdown>
-              <Dropdown menu={{ items }} placement="bottom" arrow>
-                <Button size={size}>条件</Button>
-              </Dropdown>
-              <Button type="primary" size={size}>
-                条件值
-              </Button>
-            </Space>
-          </ProCard>
-          <ProCard
-            style={{ textAlign: 'center' }}
-            bordered
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
-            <div className="numberSele">
-              <InputNumber
-                size={size}
-                min={0}
-                addonBefore="测试窗口"
-                addonAfter="分钟"
-                defaultValue={1}
-                onChange={windowChange}
-              />
-              <InputNumber
-                size={size}
-                min={0}
-                addonBefore="回滚次数"
-                addonAfter="次"
-                defaultValue={1}
-                onChange={backOrder}
-              />
-            </div>
-            <div className="numberSele">
-              <InputNumber
-                size={size}
-                min={0}
-                addonBefore="间隔时长"
-                addonAfter="分钟"
-                defaultValue={1}
-                onChange={intervalTime}
-              />
-              <InputNumber
-                size={size}
-                min={0}
-                addonBefore="买入次数"
-                addonAfter="次"
-                defaultValue={1}
-                onChange={shopOrder}
-              />
-            </div>
-            <Button
+          <div>
+          <Button
               size={size}
-              style={{
-                background: 'rgb(1,108,102)',
-                color: '#fff',
-                marginBottom: 20
-              }}
-              onClick={demoBtn}
-            >
-              测试
+              type={seleType === '综合策略' ? 'primary' : 'default'}
+              onClick={() => {
+                handleAll();
+              }}>
+              综合策略
             </Button>
+          </div>
+        </div> */}
 
-            <div className="demoResult">
-              测试结果:经过历史N次条件测试，平均期望涨幅为:XX%;50分位数期望涨幅:XX%;最大期望涨幅:XX%;期望波动标准差:XX%
-              经过历史N次条件测试，平均期望涨幅为：xx%；50分位数期望涨幅：xx%；最大期望涨幅：xx%；期望波动标准差：xx%
-            </div>
-          </ProCard>
-        </ProCard>
+        {/* <Tabs tabPosition={"left"} items={templateItem} onChange={templateChange}></Tabs> */}
+        <PublicStrategy ButtonId={buttonId}></PublicStrategy>
+
       </ProCard>
     </ProCard>
   );
-  
+
 };
 
 export default Strategy;
