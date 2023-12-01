@@ -1,4 +1,4 @@
-import { Line } from '@ant-design/plots';
+// import { Line } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
 import { Button, InputNumber, Space, DatePicker, Radio, } from 'antd';
@@ -7,16 +7,19 @@ import { request } from 'umi';
 import * as echarts from 'echarts/core';
 import { TitleComponent, LegendComponent } from 'echarts/components';
 import { RadarChart } from 'echarts/charts';
+import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
 echarts.use([
     TitleComponent,
     LegendComponent,
     CanvasRenderer,
-    RadarChart
+    RadarChart,
+    LineChart
 ]);
 export default function PublicStrategy() {
-    const demoLine = []
+    const demoLine = [10.26, 10.26, 10.26, 10.26, 10.26, 10.28, 10.3, 10.28, 10.27, 10.27, 10.26, 10.28, 10.27, 10.28, 10.27, 10.27, 10.25, 10.25, 10.26, 10.25, 10.26]
+    const demoLineTime = ['2023-11-22 09:30:00', '2023-11-22 09:31:00', '2023-11-22 09:32:00', '2023-11-22 09:33:00', '2023-11-22 09:34:00', '2023-11-22 09:35:00', '2023-11-22 09:36:00', '2023-11-22 09:37:00', '2023-11-22 09:38:00', '2023-11-22 09:39:00', '2023-11-22 09:40:00', '2023-11-22 09:41:00', '2023-11-22 09:42:00', '2023-11-22 09:43:00', '2023-11-22 09:44:00', '2023-11-22 09:45:00', '2023-11-22 09:46:00', '2023-11-22 09:47:00', '2023-11-22 09:48:00', '2023-11-22 09:49:00']
     const size = 'large';
     const today = new Date();
     const date = today.getDate();
@@ -24,6 +27,7 @@ export default function PublicStrategy() {
     const year = today.getFullYear();
     const todayDate = `${year}-${month}-${date}`
     const radarRef = useRef(null)
+    const lineRef = useRef(null)
     const [demoDays, setDemoDays] = useState(5)
     const [backData, setbackData] = useState(0)
     const [dateData, setDateData] = useState(todayDate)
@@ -33,14 +37,18 @@ export default function PublicStrategy() {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
+    const [lineDataTime,setlineDataTime] = useState(demoLineTime)
     const [lineData, setLineData] = useState(demoLine)
-    const [demoEndData, setDemoEndData] = useState([{value:0, desc: '测试结果:' }])
-    const [raderData, setRaderData] = useState([{ name: '', max: '' },
-    ])
+    const [lineMax,setLinemax] = useState()
+    const [lineMin,setLinemin] = useState()
+    const [longLine,setLongline] = useState([])
+    const [shortLine,setShortline] = useState([])
+    const [demoEndData, setDemoEndData] = useState([])
+    const [raderData, setRaderData] = useState([{ name: '', max: '' }])
+    const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
     const firstKargs: any = []
     let synthesis: any = []
-    // 获取对应测试的数据接口
     const strtegylist = () => {
         const data = {
             uid: 1,
@@ -54,11 +62,11 @@ export default function PublicStrategy() {
             data: JSON.stringify(data)
         }).then((res) => {
             setListName(res.data.list[0])
+            setSelectedButton(res.data.list[0])
             setListData(res.data.list)
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
-    // 拿到令牌 去拿数据
     const GetStrategy = (uid: number) => {
         const data = {
             uid: uid,
@@ -81,51 +89,71 @@ export default function PublicStrategy() {
                 let raderArr = []
                 let radervalue = []
                 let linedata = []
+                let lineDataTime = []
+                // 买入 red
+                let long = []
+                let add = true
+                // 卖出 greed
+                let short = []
+                let add2 = true
                 res.data.result.forEach(item => {
                     if (item.indicator_flag === 'True') {
-                        destArr.push({ name: item.name, desc: item.desc ,value:item.value})
+                        destArr.push({ name: item.name, desc: item.desc, value: item.value.toFixed(4) })
                         raderArr.push({ name: item.name, max: item.max })
                         radervalue.push(item.value)
                     }
                 });
                 if (!backData) {
                     res.data.raw_data.forEach(list => {
-
-                        for (let index = 0; index < res.data.decision_long.length; index++) {
-                            if(Object.keys(list)[0] === res.data.decision_long[index]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'买入'})
+                        linedata.push(Object.values(list)[0])
+                        lineDataTime.push(Object.keys(list)[0])
+                        for(let i=0;i<res.data.decision_long.length;i++){
+                            if(res.data.decision_long[i] === Object.keys(list)[0]){
+                                long.push(Object.values(list)[0])
+                                add = false
+                                break;
                             }
                         }
-                        for(let j=0;j<res.data.decision_short.length;j++){
-                            if(Object.keys(list)[0] === res.data.decision_short[j]){
-                                linedata.push({date: Object.keys(list)[0], value: Object.values(list)[0] ,buy:'卖出'})
+                        for(let i=0;i<res.data.decision_short.length;i++){
+                            if(res.data.decision_short[i] === Object.keys(list)[0]){
+                                short.push(Object.values(list)[0])
+                                add = false
+                                break;
                             }
                         }
+                        if(add){
+                            long.push('')
+                        }else{
+                            add = true
+                        }
 
-                        linedata.push({ date: Object.keys(list)[0], value: Object.values(list)[0] })
 
+                        if(add2){
+                            short.push('')
+                        }else{
+                            add2 = true
+                        }
                     });
                 }
-                console.log(linedata);
-                const newLineData = linedata.filter((value, index, self) => {
-                    return (
-                      index === self.findIndex((item) => (
-                        item.date === value.date
-                      ))
-                    );
-                  });
                 destArr.push()
+                console.log(linedata);
+                const max = Math.max(...linedata)
+                const min = Math.min(...linedata)
+                setLinemax(max)
+                setLinemin(min)
                 setDemoEndData(destArr)
                 setRaderData(raderArr)
                 setRaderValue(radervalue)
-                setLineData(newLineData)
+                setLineData(linedata)
+                setLongline(long)
+                setShortline(short)
+                setlineDataTime(lineDataTime)
                 console.log("成功！");
                 setIsdemoBtn(true);
                 synthesis = [];
             }
         }).catch(err => { console.log(err) })
     }
-    // 进行测试的接口
     const strategy_test = (kargs: number[]) => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
@@ -162,10 +190,10 @@ export default function PublicStrategy() {
             }
         }).catch(err => { console.log(err) })
     }
-
     useEffect(() => {
         strtegylist()
     }, []);
+
     useEffect(() => {
         const option = {
             title: {
@@ -194,6 +222,120 @@ export default function PublicStrategy() {
         chart.setOption(option);
     }, [raderValue]);
 
+    useEffect(() => {
+        const option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                },
+                formatter: function(params) {
+                    let v1  = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:blue;"></span>'
+                    let v2 = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:red;"></span>'
+                    let v3 =  '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:green;"></span>'
+                    if(params[1] && params[1].data !==''){
+                        return v2 + '买入 :'+ params[0].data
+                    }
+                    else if(params[1] && params[2].data !=='' ){
+                        return v3 + '卖出 :'+ params[0].data
+                    }else{
+                        return v1 + '股票 :' + params[0].data ;
+                    }
+                    
+                }
+            },
+         
+            xAxis: {
+                type: 'category',
+                data: lineDataTime
+            },
+            yAxis: {
+                type: 'value',
+                min: lineMin,
+                max: lineMax,
+            },
+            // 控制缩略轴
+            dataZoom: [
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 50
+                },
+                {
+                    show: true,
+                    type: 'slider',
+                    top: '90%',
+                    start: 0,
+                    end: 50
+                }
+            ],
+            series: [
+                {
+                    data: lineData,
+                    type: 'line',
+                    symbolSize: 10,
+                    symbol: 'circle',
+                    markPoint: {
+                        label: {
+                            show: true,
+                            position: 'top'
+                        },
+                        data: [
+                            {type:'long', coord: ['2023-11-22 09:30:00', 10.26],itemStyle: {color: 'red'},
+                            label: {
+                                formatter: '买入'
+                            }
+                        }, 
+                            {type:'short', coord: ['2023-11-22 09:31:00', 10.26],itemStyle: {color: 'green'},
+                            label: {
+                                formatter: '卖出'
+                            }}, 
+                        ]
+                    },
+                    lineStyle: {
+                        color: '#5470C6',
+                        width: 3,
+                    },
+                    itemStyle: {
+                        borderWidth: 3,
+                        //   borderColor: '#EE6666',
+                        color: 'blue'
+                    }
+                },
+                {
+                    data: longLine,
+                    type: 'line',
+                    symbol: 'pin',
+                    symbolSize: 40,
+                    lineStyle: {
+                        // color: '#5470C6',
+                        color: 'red',
+                    },
+                    itemStyle: {
+                        borderWidth: 3,
+                        borderColor: 'red',
+                        color: 'red'
+                    }
+                },
+                {
+                    data: shortLine,
+                    type: 'line',
+                    symbol: 'pin',
+                    symbolSize: 40,
+                    lineStyle: {
+                        color: '#5470C6',
+                    },
+                    itemStyle: {
+                        borderWidth: 3,
+                        borderColor: 'green',
+                        color: 'green'
+                    }
+                }
+            ]
+        };
+        const chart = echarts.init(lineRef.current)
+        chart.setOption(option)
+    }, [lineData])
     const backOrder = (e: any) => {
         console.log('回滚次数', e.target.value);
         setbackData(e.target.value)
@@ -232,7 +374,7 @@ export default function PublicStrategy() {
         let text = event.target.innerHTML
         setListName(text)
         setindexDetails(index)
-
+        setSelectedButton(text)
     }
     const nuberOnChange = (name: string, value: number) => {
         console.log(name, value);
@@ -243,74 +385,20 @@ export default function PublicStrategy() {
         console.log(firstKargs);
 
     }
-    console.log(lineData, '111');
-    const lineconfig = {
-        data: lineData,
-        xField: 'date',
-        yField: 'value',
-        // isStack:true,
-        seriesField:'buy',
-        yAxis: {
-            min: 11, // 设置 y 轴最小值
-            // max: 11, // 设置 y 轴最大值
-            // tickCount: 3, // 设置横线条数为 5
-            // tickInterval: 11, // 设置 y 轴   刻度之间的间距    
-        },
-        // point:annotations,
-        xAxis: {
-            tickCount: 5,
-        },
-        lineStyle: {
-            stroke: 'green', // Set the line color here
-        },
-        point: {
-            size: 5,
-            shape: 'circular',
-            stroke: 'red',
-            lineWidth: 0.1,
-            style:(d)=>{
-                if(d.buy === '买入'){
-                    return {
-                        fill:'red',
-                        lineWidth: 15,
-                        stroke:'red',
-                        // style:{
-                            // width: '10px',
-                            // height: '10px',
-                            // transform: 'rotate(45deg)',
-                            // backgroundColor: 'blue',
-                            // border: 'none',
-                        // }
-                    }
-                }
-                else if(d.buy === '卖出'){
-                    return {
-                        fill:'green',
-                        lineWidth: 15,
-                        stroke:'green',
-                    }
-                }
-                return {fill:'blue'}
-            }
-        },
-        slider: {
-            start: 0.1,
-            end: 0.12,
-        },
-        smooth: true,
-    };
+
     return (
         <div>
             <ProCard gutter={16} ghost wrap>
                 <ProCard
                     bordered
-                    style={{ textAlign: 'center',height:225 }}
+                    style={{ textAlign: 'center', height: 225 ,overflowY: 'scroll'}}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space>
                         {
                             listData.map((item, index) => {
                                 return (
-                                    <Button key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
+                                    <Button type={selectedButton === item ? 'primary' : 'default'}
+                                        key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
                                 )
                             })
                         }
@@ -328,7 +416,7 @@ export default function PublicStrategy() {
                     </div>
                 </ProCard>
                 <ProCard
-                    style={{ textAlign: 'center',height:225 }}
+                    style={{ textAlign: 'center', height: 225}}
                     bordered
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
                     <div className="numberSele">
@@ -383,19 +471,17 @@ export default function PublicStrategy() {
                     }
                 </ProCard>
             </ProCard>
-
-
             <ProCard style={{ height: 360 }}>
                 <ProCard
                     style={{ height: '100%' }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}
                     bordered>
                     <div className="demoResult">
+                        <div>测试结果：</div><br></br>
                         {demoEndData.map((item, index) => {
                             return (
-                                // <span key={index}>{item.desc}</span>
-                                <div key={index}>
-                                    <p >{item.name ? `${item.name}(${item.value}):` : ''}</p>
+                                <div style={{fontWeight:'bole'}} key={index}>
+                                      <p > <span>{index +1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
                                     <p>{item.desc}</p>
                                 </div>
                             )
@@ -407,11 +493,10 @@ export default function PublicStrategy() {
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
                     bordered>
                     <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
-                    {/* <Radar {...raderConfig} /> */}
                 </ProCard>
             </ProCard>
-            <ProCard style={{ height: 360 }}>
-                <Line {...lineconfig}></Line>
+            <ProCard style={{ height: 460, width: '90%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
+                <div ref={lineRef} style={{ height: "100%" }}></div>
             </ProCard>
         </div>
     )
