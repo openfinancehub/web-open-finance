@@ -345,7 +345,7 @@ export default function PublicStrategy() {
                     bordered
                     style={{ textAlign: 'center', height: 225 ,overflowY: 'scroll'}}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
-                    <Space>
+                    <Space wrap align="center">
                         {
                             listData.map((item, index) => {
                                 return (
