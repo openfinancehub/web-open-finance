@@ -28,6 +28,7 @@
     "rc-field-form": "^1.38.0",
     "react-codemirror2": "^7.2.1",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-modal": "^3.16.1",
     "socket.io-client": "^4.7.1"
   },
   "devDependencies": {
@@ -39,5 +40,6 @@
     "prettier-plugin-organize-imports": "^3.2.2",
     "prettier-plugin-packagejson": "^2.4.3",
     "typescript": "^5.1.6"
-  }
+  },
+  "version": "0.0.0"
 }
