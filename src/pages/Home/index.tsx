@@ -1,13 +1,21 @@
 import { ProCard } from '@ant-design/pro-components';
-import FactorItem from './components/FinanceModels/CategoryItem'
+import CategoryItem from './components/FinanceModels/CategoryItem'
 import Models from './components/FinanceModels/Models'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import HeaderTitle from './components/FinanceModels/HeaderTitle'
+import Test from './components/ModelsItems/Test'
+import CompanyList from './components/ModelsItems/CompanyList'
 const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);
   const [filteredModels, setFilteredModels] = useState([]);
   const [financeData, setFinanceData] = useState([]);
+  const [company, setCompany] = useState([]);
+
+  const companyChange = (company: React.SetStateAction<never[]>) => {
+    // console.log(company, 'shoudaode')
+    setCompany(company);
+  };
 
   const handleFilterFinance = (newData: React.SetStateAction<never[]>) => {
     setFinanceData(newData);
@@ -19,10 +27,19 @@ const Home: React.FC = () => {
   return (
     <>
       <ProCard split="vertical">
-        <ProCard title="" colSpan="40%" >
-          {/* <FactorItem onFilterFinance={handleFilterFinance} /> */}
-          {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> : <FactorItem onFilterFinance={handleFilterFinance} />}
+        <ProCard split="horizontal" title="" colSpan="40%" >
+          {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> :
+            <div>
+              <ProCard title="" headerBordered>
+                <Test onFilterFinance={handleFilterFinance} />
+              </ProCard>
+              <ProCard title="" headerBordered>
+                <CompanyList companyChange={companyChange} />
+              </ProCard>
+            </div>
+          }
         </ProCard>
+
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
             <HeaderTitle
@@ -35,8 +52,7 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container'>
-              {/* {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> : <Models data={financeData} />} */}
-              <Models data={financeData} />
+              <Models data={financeData} company={company} setCompany={companyChange} />
             </div>
           </ProCard>
         </ProCard>

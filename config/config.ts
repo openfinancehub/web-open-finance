@@ -80,11 +80,11 @@ export default defineConfig({
       path: '/finchat',
       component: './Finchat'
     },
-    {
-      path: '/home/model/item',
-      component: './Home/components/ModelsItems/',
-      exact: true
-    },
+    // {
+    //   path: '/home/model/item',
+    //   component: './Home/components/ModelsItems/',
+    //   exact: true
+    // },
     // {
     //   path: '/home/test',
     //   name: 'test',

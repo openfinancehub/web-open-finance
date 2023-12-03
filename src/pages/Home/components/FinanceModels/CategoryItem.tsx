@@ -46,7 +46,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   //初始化因子结构数据
   const handleTriggerEvent = async () => {
     const dataJson = await modelsJson(head, dataStr);
-    console.log(dataJson)
+    // console.log(dataJson)
     if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
       onFilterFinance(dataJson?.result?.models);
     }
@@ -132,6 +132,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
                 const color = colors.find((_, index) => item.title === categoryList[index].title) || 'blue';
                 return (
                   item.description.map(({ factor }, index) => (
+                    // <div></div>
                     <Tag key={index} color={color} onClick={() => filterFinance({ factor })} className={selectedFactor === factor ? styles.tag2chick : ''}>
                       <IconText icon={<StarOutlined />} text={factor} key={index} />
                     </Tag>

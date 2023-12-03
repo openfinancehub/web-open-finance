@@ -1,180 +1,120 @@
-import React, { useEffect, useState } from 'react';
-import { message } from 'antd';
-import { getModelData } from '@/pages/Home/service';
-import { useLocation } from 'react-router-dom';
-import { FlowAnalysisGraph } from '@ant-design/graphs';
+import { Collapse } from 'antd';
+import { Button, Input, Tag } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { StarOutlined } from '@ant-design/icons';
+import { categoryJson, modelsJson } from '../../service';
+import { ModelsItem, header, modelsData } from '../../data';
+const { Panel } = Collapse;
 
-type Nodes = {
-  nodes: {
-    id: string;
-    value: {
-      title: string;
-      items: {
-        text: string;
-        value: string;
-        icon: string;
-        trend: string;
-      }[];
-    };
-  };
-  edges: {
-    source: string;
-    target: string;
-  }[];
+type Description = {
+  factor: string,
+  icon: string,
+  jump_url: string,
 };
 
+type ListCategoryType = {
+  title: string,
+  description: Description[],
+}[];
 
-const DemoDecompositionTreeGraph = () => {
-  const [data, setData] = useState<Nodes[] | null>(null);
+let dataStr: modelsData = {
+  ip: '127.0.0.1',
+  factor: '',
+  time: '',
+  extra: 'extra',
+};
+let head: header = {
+  req_id: '1234',
+  req_src: 'source',
+  user: 'user',
+  token: 'token',
+};
 
-  const transformData = (inputData: { relation: any; nodes: any; }) => {
-    const { relation, nodes } = inputData;
-    const nodesValue = Object.entries(nodes).map(([id, value]) => ({ id, value: { title: id + " ", items: value } }));
-    return { nodes: nodesValue, edges: relation };
+const IconText = ({ text, icon }: { text: string, icon: React.ReactElement; }) => (
+  <span>
+    <span>{icon} {text}</span>
+  </span>
+);
+
+interface InternalProps {
+  onFilterFinance: (item: any) => void;
+}
+
+const Test: React.FC<InternalProps> = ({ onFilterFinance }) => {
+
+  const [categoryList, setCategoryList] = useState<ListCategoryType>([]);
+  const [originalData, setOriginalData] = useState<ListCategoryType>([]);
+
+  const createData = (titles: string[], description: any[]): ListCategoryType => {
+    if (titles.length !== description.length) {
+      throw new Error('error');
+    }
+    return titles.map((title, index) => ({
+      title,
+      description: description[index] as Description[]
+    }));
+  };
+  const fetchCategoryJson = async () => {
+    try {
+      const response = await categoryJson();
+      const titles = Object.keys(response.result.category);
+      const descriptions = Object.values(response.result.category);
+      const categories = createData(titles, descriptions);
+
+      console.log(categories)
+
+      setCategoryList(categories);
+      setOriginalData(categories);
+    } catch (error) {
+      console.error('fetch data failed', error);
+    }
   };
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const modelValue = searchParams.get('model')!;
-  const factorValue = searchParams.get('factor')!;
-
-  const fetchData = async () => {
-    // 在组件加载时从后端获取数据
-    await getModelData(factorValue, modelValue).then((resp) => {
-      if (resp?.result.ret_code === 0) {
-
-        const transformedData = transformData(resp.result.data.chart)
-        // console.log(transformedData)
-        setData(transformedData);
-      }
-    }).catch((err) => {
-      console.error('Error fetching data:', err);
-    })
+  const handleTriggerEvent = async () => {
+    const dataJson = await modelsJson(head, dataStr);
+    if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
+      onFilterFinance(dataJson?.result?.models);
+    }
   };
+
+
+  const filterFinance = (item: { factor: any; icon?: string; jump_url?: string; }) => {
+    if (item.factor === dataStr.factor) {
+      item.factor = ''
+    }
+    console.log(item.factor)
+    dataStr.factor = item.factor;
+    handleTriggerEvent();
+
+    //更新被选中的因子
+    // setSelectedFactor(item.factor);
+  };
+
+  const colors = ['red', 'blue', 'green', 'yellow', 'orange'];
   useEffect(() => {
-    fetchData();
+    handleTriggerEvent();
+    fetchCategoryJson();
   }, []);
 
-  // console.log(data)
-  if (data === null) {
-    return (
-      <div></div>
-    );
-  }
-  console.log(data)
-  const config = {
-    data: data,
-    nodeCfg: {
-      size: [180, 30],
-      items: {
-        padding: 6,
-        containerStyle: {
-          fill: '#fff',
-        },
-      },
-      customContent: (item: { text: any; value: any; icon: any; trend: any; }, group: { addShape: (arg0: string, arg1: { attrs: { textBaseline: string; x: any; y: any; text: any; fill: string; } | { textBaseline: string; x: any; y: any; text: any; fill: string; } | { x: any; y: any; width: number; height: number; img: any; } | { textBaseline: string; x: any; y: any; text: any; fill: string; }; name: string; }) => any; }, cfg: { startX: any; startY: any; width: any; }) => {
-        const { startX, startY, width } = cfg;
-        const { text, value, icon, trend } = item;
-        text &&
-          group?.addShape('text', {
-            attrs: {
-              textBaseline: 'top',
-              x: startX,
-              y: startY,
-              text,
-              fill: '#aaa',
-            },
-            // group 内唯一字段
-            name: `text-${Math.random()}`,
-          });
-        value &&
-          group?.addShape('text', {
-            attrs: {
-              textBaseline: 'top',
-              x: startX + 60,
-              y: startY,
-              text: value,
-              fill: '#000',
-            },
-            name: `value-${Math.random()}`,
-          });
-        icon &&
-          group?.addShape('image', {
-            attrs: {
-              x: startX + 100,
-              y: startY,
-              width: 8,
-              height: 10,
-              img: icon,
-            },
-            name: `image-${Math.random()}`,
-          });
-        trend &&
-          group?.addShape('text', {
-            attrs: {
-              textBaseline: 'top',
-              x: startX + 110,
-              y: startY,
-              text: trend,
-              fill: '#f00',
-            },
-            name: `value-${Math.random()}`,
-          });
-
-        // 行高
-        return 14;
-      },
-      nodeStateStyles: {
-        hover: {
-          stroke: '#1890ff',
-          lineWidth: 2,
-        },
-      },
-      title: {
-        containerStyle: {
-          fill: 'transparent',
-        },
-        style: {
-          fill: '#000',
-          fontSize: 12,
-        },
-      },
-      style: {
-        fill: '#E6EAF1',
-        stroke: '#B2BED5',
-        radius: 2,
-      },
-    },
-    edgeCfg: {
-      label: {
-        style: {
-          fill: '#aaa',
-          fontSize: 12,
-          fillOpacity: 0.5,
-        },
-      },
-      edgeStateStyles: {
-        hover: {
-          stroke: '#1890ff',
-          lineWidth: 2,
-        },
-      },
-    },
-    markerCfg: (cfg: { id: string; }) => {
-      const { edges } = data;
-      return {
-        position: 'right',
-        show: edges.find((item) => item.source === cfg.id),
-      };
-    },
-    layout: {
-      ranksepFunc: () => 30,
-      nodesepFunc: () => 30,
-    },
-    behaviors: ['drag-canvas', 'zoom-canvas', 'drag-node'],
-  };
-
-  return <FlowAnalysisGraph {...config} />;
+  return (
+    <Collapse accordion>
+      {categoryList.map((item, index) => {
+        const color = colors.find((_, index) => item.title === categoryList[index].title) || 'blue';
+        return (
+          <Panel header={item.title} key={item.title} >
+            {item.description.map(({ factor }, index) => {
+              return <Tag
+                key={index}
+                icon={<StarOutlined />}
+                color={color}
+                onClick={() => filterFinance({ factor })}
+              > {factor} </Tag>
+            })}
+          </Panel>
+        );
+      })}
+    </Collapse >
+  )
 };
 
-export default DemoDecompositionTreeGraph;
+export default Test;

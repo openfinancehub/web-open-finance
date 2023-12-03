@@ -11,63 +11,59 @@ import { history, useModel } from '@umijs/max';
 import _ from 'lodash';
 
 const { Search } = Input;
-const ModelsFigure = () => {
-  //获取请求中的model数据
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const modelValue = searchParams.get('model')!;
-  const factorValue = searchParams.get('factor')!;
+const ModelsFigure = ({ factorValue, modelValue, company, setCompany }) => {
+
   const [stockList, setStockList] = useState<any[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputValue, setInputValue] = useState<string>(company);
 
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
   const {
     initialState: { currentUser }
   } = useModel('@@initialState');
-  const commonHeader = {
-    user: currentUser.username,
-    req_id: currentUser.id,
-    req_src: currentUser.avatarUrl,
-    token: currentUser.token
-  };
   // const commonHeader = {
-  //   user: "124",
-  //   req_id: "124",
-  //   req_src: "124",
-  //   token: "124"
+  //   user: currentUser.username,
+  //   req_id: currentUser.id,
+  //   req_src: currentUser.avatarUrl,
+  //   token: currentUser.token
   // };
+  const commonHeader = {
+    user: "124",
+    req_id: "124",
+    req_src: "124",
+    token: "124"
+  };
+
   const handleCompany = (list: any[]) => {
-
-    if (list.length === 1) {
-      // console.log(list[0].company); 
-      useEval(factorValue, modelValue, list[0].company);
+    if (list.length === 0) {
+      return;  // 如果列表为空，直接返回  
     } else {
-      // list.map((item) => {
-      //   console.log(item.company); 
-      // });
-      useEval(factorValue, modelValue, list[1].company);
+      list.splice(0, list.length - 1);
     }
-
-    // useEval(factorValue, modelValue, list[0].company);
-    // list.splice(0, list.length); // 清空list数组  
-    // while (list.length > 0) {
-    //   list.pop(); // 通过循环删除数组中的元素，直到数组为空  
-    // }
-    list.splice(0, list.length - 1);
+    if (list[0] && list[0].company) {
+      // console.log(list)
+      setCompany(list[0].company);
+      // setInputValue(list[0].company)
+      useEval(factorValue, modelValue, list[0].company)
+    }
   };
 
   const handleSendMessage = () => {
-    if (!inputValue) return;
-    useEval(factorValue, modelValue, inputValue)
-    setInputValue('');
+    if (!company) return;
+    useEval(factorValue, modelValue, company)
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    // setCompany();
+    setCompany(e.target.value);
   };
 
   const [message, setMessage] = useState<any[]>([]);
   const useEval = async (factor: string, model: string, inputValue: string) => {
     try {
+      if (!inputValue) {
+        inputValue = company
+      }
+      // console.log(company, '请求后台company')
+      console.log(inputValue, '请求后台inputValue')
       const evalJson = await getEval('', model, inputValue)
 
       const result = processJson(evalJson?.result);
@@ -156,7 +152,7 @@ const ModelsFigure = () => {
           <Input
             placeholder="Send a companies"
             allowClear
-            value={inputValue}
+            value={company}
             onPressEnter={handleSendMessage}
             onChange={handleInputChange}
           />
