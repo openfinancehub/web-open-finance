@@ -166,13 +166,12 @@ const Factor = () => {
 
     useEffect(() => {
         if (Object.keys(historyData).length !== 0 && inFactor !== '') {
-            setFactorLiData(historyData[inFactor].bins)
+            setFactorLiData(historyData[inFactor].raw)
         }
     }, [lineTimeData, inFactor])
 
     useEffect(() => {
         console.log(111,'第一次');
-        
         const data1 = factorData?.map((item) => {
             delete item.time
             return Object.values(item)
