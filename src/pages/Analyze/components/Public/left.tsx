@@ -1,11 +1,11 @@
 import { useEffect,useState } from 'react'
 import { request } from 'umi';
 import { Button, Space } from 'antd';
-export default function Left({ onDataChange }) {
+export default function left({ onDataChange }) {
     const size = 'large'
     // 股票种类的数据
     const [sotckListData, setsotckList] = useState([])
-    const [selectedButton, setSelectedButton] = useState('平安银行')
+    const [selectedButton, setSelectedButton] = useState('')
     const sotckList = () => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
@@ -17,6 +17,8 @@ export default function Left({ onDataChange }) {
             },
             data: JSON.stringify(data)
         }).then((res) => {
+            const first = res.data[0].split(',')[0]            
+            setSelectedButton(first)
             setsotckList(res.data.map((item) => {
                 return item.split(',')
             }))
@@ -25,6 +27,7 @@ export default function Left({ onDataChange }) {
             console.log(err);
         })
     }
+
     useEffect(() => {
         sotckList()
     }, [])
@@ -35,8 +38,8 @@ export default function Left({ onDataChange }) {
         onDataChange(butttonId,buttonNum)
     };
     return (
-            <div style={{ textAlign: "center", height: "88vh", overflow: "auto" }}>
-                <Space direction="vertical" >
+            <div style={{ textAlign: "center", height: "88vh", overflowY: "auto",width:'100%' }}>
+                <Space direction="vertical" style={{width:'100%',padding:'0 20px'}}>
                     {
                         sotckListData.map((item, index) => {
                             return (

@@ -1,8 +1,7 @@
-// import { Line } from '@ant-design/plots';
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
-import { Button, InputNumber, Space, DatePicker, Radio, } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { Button, InputNumber, Space, DatePicker, Radio, Select } from 'antd';
+import React,{ useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
 import * as echarts from 'echarts/core';
 import { TitleComponent, LegendComponent } from 'echarts/components';
@@ -17,9 +16,8 @@ echarts.use([
     RadarChart,
     LineChart
 ]);
-export default function PublicStrategy() {
-    const demoLine = [10.26, 10.26, 10.26, 10.26, 10.26, 10.28, 10.3, 10.28, 10.27, 10.27, 10.26, 10.28, 10.27, 10.28, 10.27, 10.27, 10.25, 10.25, 10.26, 10.25, 10.26]
-    const demoLineTime = ['2023-11-22 09:30:00', '2023-11-22 09:31:00', '2023-11-22 09:32:00', '2023-11-22 09:33:00', '2023-11-22 09:34:00', '2023-11-22 09:35:00', '2023-11-22 09:36:00', '2023-11-22 09:37:00', '2023-11-22 09:38:00', '2023-11-22 09:39:00', '2023-11-22 09:40:00', '2023-11-22 09:41:00', '2023-11-22 09:42:00', '2023-11-22 09:43:00', '2023-11-22 09:44:00', '2023-11-22 09:45:00', '2023-11-22 09:46:00', '2023-11-22 09:47:00', '2023-11-22 09:48:00', '2023-11-22 09:49:00']
+
+export default function PublicStrategy(props:string) {
     const size = 'large';
     const today = new Date();
     const date = today.getDate();
@@ -46,6 +44,7 @@ export default function PublicStrategy() {
     const [raderData, setRaderData] = useState([{ name: '', max: '' }])
     const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
+    const [minTime,setMinTime] = useState(5)
     const firstKargs: any = []
     let synthesis: any = []
     const strtegylist = () => {
@@ -157,7 +156,7 @@ export default function PublicStrategy() {
                 }
             ],
             configs: {
-                stock_id: '000001',
+                stock_id: props.ButtonId,
                 user_id: '000001',
                 setting_mode: 'p',
                 analysis_flag: 0,
@@ -165,7 +164,8 @@ export default function PublicStrategy() {
                 end_date: dateData,
                 cnt_ops: shopData,
                 test_days: demoDays,
-                mode: 'both'
+                mode: 'both',
+                scale:minTime
             }
         }
         request('http://139.159.205.40:8808/quant/strategy_test', {
@@ -337,7 +337,9 @@ export default function PublicStrategy() {
         console.log(firstKargs);
 
     }
-
+    const minTimeChange = (value) =>{
+        setMinTime(value)
+    }
     return (
         <div>
             <ProCard gutter={16} ghost wrap>
@@ -391,6 +393,33 @@ export default function PublicStrategy() {
                         />
                     </div>
                     <div className="numberSele">
+                        <Select
+                            placeholder="最小时间单位（分钟）"
+                            onChange={minTimeChange}
+                            options={[
+                                {
+                                  value: 1,
+                                  label: '最小时间单位1分钟',
+                                },
+                                {
+                                  value: 5,
+                                  label: '最小时间单位5分钟',
+                                },
+                                {
+                                  value: 15,
+                                  label: '最小时间单位15分钟',
+                                },
+                                {
+                                  value: 30,
+                                  label: '最小时间单位30分钟',
+                                },
+                                {
+                                  value: 60,
+                                  label: '最小时间单位60分钟',
+                                },
+                            ]}
+                        />
+    
                         <DatePicker onChange={dateTime} />
                         是否滚动测评:
                         <Radio.Group onChange={backOrder} value={backData}>

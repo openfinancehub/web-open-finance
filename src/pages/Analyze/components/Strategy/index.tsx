@@ -2,7 +2,7 @@ import { ProCard } from '@ant-design/pro-components';
 import {Tabs,TabsProps, Button } from 'antd';
 import { useState } from 'react';
 import './style.css';
-import Left from './component/left'
+import Left from '../Public/left'
 import Custom from './component/Custom'
 import PublicStrategy from './component/PublicStrategy';
 import OwnStrategy from './component/OwnStrategy';
@@ -25,6 +25,7 @@ const Strategy = () => {
   const handleDataFromChild = (butttonId: string, buttonNum: string) => {
     console.log(buttonNum, butttonId);
     setButtonId(butttonId)
+    
   }
   
   const templateItem: TabsProps['items'] = [
@@ -54,7 +55,7 @@ const Strategy = () => {
     <ProCard gutter={16} ghost wrap>
       <ProCard
         colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 3 }}
-        style={{ height: '100%' }}>
+        style={{ height: '100%',padding:0 }}>
         <Left onDataChange={handleDataFromChild}></Left>
       </ProCard>
       <ProCard
