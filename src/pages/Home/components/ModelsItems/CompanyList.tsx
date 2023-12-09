@@ -43,15 +43,6 @@ const CompanyData = ({ companyChange }) => {
     if (list[0] && list[0].company) {
       companyChange(list[0].company)
     }
-    // if (list.length === 1) {
-    //   companyChange(list[0].company)
-    //   // console.log(list[0].company)
-    //   // useEval(factorValue, modelValue, list[0].company);
-    // } else {
-    //   companyChange(list[1].company)
-    //   // console.log(list[1].company)
-    //   // useEval(factorValue, modelValue, list[1].company);
-    // }
   };
 
   const [message, setMessage] = useState<any[]>([]);
@@ -103,7 +94,7 @@ const CompanyData = ({ companyChange }) => {
   }, []);
 
   return (
-    <div style={{ height: 'calc(100vh - 104px)', width: '120%' }}>
+    <div style={{ height: 'calc(100vh - 140px)', width: '120%', marginLeft: '15px' }}>
       <Search
         placeholder="Search Companies"
         allowClear
@@ -113,7 +104,6 @@ const CompanyData = ({ companyChange }) => {
       />
       <CompanyList list={stockList} handleProps={handleCompany} />
     </div>
-
   );
 };
 

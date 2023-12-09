@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Button, Modal, Form, Input } from 'antd';
 import { ModelsItem, } from '../../data';
 import styles from './style.less';
-
 const HeaderTitle: React.FC<{
   models: ModelsItem[];
   onModelsChange: (data: ModelsItem[]) => void;
@@ -23,6 +22,11 @@ const HeaderTitle: React.FC<{
   const ChangeStyle = () => {
     setActivePage(!isActivePage)
   }
+  const [isDeveloper, setIsDeveloper] = useState(true);
+  const ChangeUser = () => {
+    setIsDeveloper(!isDeveloper);
+  };
+
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -38,6 +42,11 @@ const HeaderTitle: React.FC<{
       <div className={styles.but1Style}>
         <Button key='sort1' onClick={() => ChangeStyle()} type='primary'>
           切换展示
+        </Button>
+      </div>
+      <div className={styles.but1Style}>
+        <Button key='sort1' onClick={() => ChangeUser()} type='primary'>
+          {isDeveloper ? '我是开发者' : '我是新手'}
         </Button>
       </div>
       <div className={styles.but2Style}>

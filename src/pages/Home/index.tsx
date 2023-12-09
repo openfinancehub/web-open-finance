@@ -1,10 +1,10 @@
 import { ProCard } from '@ant-design/pro-components';
 import CategoryItem from './components/FinanceModels/CategoryItem'
 import Models from './components/FinanceModels/Models'
+import TestM from './components/FinanceModels/Test'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import HeaderTitle from './components/FinanceModels/HeaderTitle'
-import Test from './components/ModelsItems/Test'
 import CompanyList from './components/ModelsItems/CompanyList'
 const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);
@@ -31,10 +31,11 @@ const Home: React.FC = () => {
           {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> :
             <div>
               <ProCard title="" headerBordered>
-                <Test onFilterFinance={handleFilterFinance} />
+                <CompanyList companyChange={companyChange} />
+                {/* <Test onFilterFinance={handleFilterFinance} /> */}
               </ProCard>
               <ProCard title="" headerBordered>
-                <CompanyList companyChange={companyChange} />
+                {/* <CategoryItem onFilterFinance={handleFilterFinance} /> */}
               </ProCard>
             </div>
           }
@@ -52,7 +53,8 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container'>
-              <Models data={financeData} company={company} setCompany={companyChange} />
+              {/* <Models data={financeData} company={company} setCompany={companyChange} /> */}
+              <TestM onFilterFinance={handleFilterFinance} data={financeData} company={company} setCompany={companyChange} />
             </div>
           </ProCard>
         </ProCard>

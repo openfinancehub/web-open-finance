@@ -1,48 +1,5 @@
 import { header, modelsData } from "./data";
 
-//关系图形界面
-// export const getModelData = async (factor: string, model: string) => {
-//   try {
-//     let header = {
-//       req_id: '1234',
-//       req_src: 'source',
-//       user: 'user',
-//       token: 'token',
-//     };
-//     let dataStr = {
-//       ip: '127.0.0.1',
-//       factor: factor,
-//       model: model,
-//       time: '',
-//       extra: 'extra',
-//     };
-//     const response = await fetch('/api/eval', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         header: header,
-//         data: dataStr
-//       }),
-//     });
-//     const json = await response.json()
-//     return {
-//       data: json.data,
-//       ret_code: json.ret_code,
-//       msg: json.msg,
-//       extra: json.extra
-//     };
-//   } catch (error) {
-//     console.error('error:', error);
-//     return {
-//       data: null,
-//       ret_code: -1,
-//       msg: 'error',
-//       extra: '',
-//     };
-//   }
-// };
 //上传文件
 export const uploadFileService = async (formData: FormData) => {
   try {

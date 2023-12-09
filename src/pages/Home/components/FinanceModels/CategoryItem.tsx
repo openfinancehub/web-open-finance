@@ -51,20 +51,20 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
       onFilterFinance(dataJson?.result?.models);
     }
   };
+  const fetchCategoryJson = async () => {
+    try {
+      const response = await categoryJson();
+      // console.log(response.data.category)
+      const titles = Object.keys(response?.result?.category);
+      const descriptions = Object.values(response?.result?.category);
+      const categories = createData(titles, descriptions);
+      setCategoryList(categories);
+      setOriginalData(categories);
+    } catch (error) {
+      console.error('fetch data failed', error);
+    }
+  };
   useEffect(() => {
-    const fetchCategoryJson = async () => {
-      try {
-        const response = await categoryJson();
-        // console.log(response.data.category)
-        const titles = Object.keys(response.result.category);
-        const descriptions = Object.values(response.result.category);
-        const categories = createData(titles, descriptions);
-        setCategoryList(categories);
-        setOriginalData(categories);
-      } catch (error) {
-        console.error('fetch data failed', error);
-      }
-    };
     fetchCategoryJson();
     handleTriggerEvent();
   }, []);
@@ -96,7 +96,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
 
   return (
     <div>
-      <div className={styles.containerStyle}>
+      {/* <div className={styles.containerStyle}>
         {menuItems.map((item, index) => {
           const isActive = active === index;
           const labelStyle = {
@@ -114,7 +114,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
             </span>
           );
         })}
-      </div>
+      </div> */}
       <div>
         <Input onChange={changeCategory} placeholder='Filter Task By Name' />
       </div>
@@ -132,7 +132,6 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
                 const color = colors.find((_, index) => item.title === categoryList[index].title) || 'blue';
                 return (
                   item.description.map(({ factor }, index) => (
-                    // <div></div>
                     <Tag key={index} color={color} onClick={() => filterFinance({ factor })} className={selectedFactor === factor ? styles.tag2chick : ''}>
                       <IconText icon={<StarOutlined />} text={factor} key={index} />
                     </Tag>

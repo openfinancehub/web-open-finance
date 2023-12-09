@@ -4,7 +4,6 @@ import { Button, Dropdown } from 'antd';
 import ModelsCode from './ModelsCode';
 import ModelsFiles from './ModelsFiles';
 import ModelsFigure from './ModelsFigure';
-import Test from './Test';
 
 
 function ModelsItems({ modelValue, factorValue, setModelValue,
