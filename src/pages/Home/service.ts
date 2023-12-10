@@ -1,4 +1,3 @@
-import { header, modelsData } from "./data";
 
 //上传文件
 export const uploadFileService = async (formData: FormData) => {
@@ -74,6 +73,24 @@ const performRequest = async (url: string, method: string, header: { req_id?: st
 
 export const modelsJson = async (header, dataStr) => {
 
+  return performRequest('models', 'POST', header, dataStr);
+};
+
+export const getModels = async (factor: string) => {
+  const header = {
+    req_id: '1234',
+    req_src: 'source',
+    user: 'user',
+    token: 'token',
+  };
+
+  const dataStr = {
+    ip: '127.0.0.1',
+    factor: factor,
+    model: 'author',
+    time: '',
+    extra: 'extra',
+  };
   return performRequest('models', 'POST', header, dataStr);
 };
 

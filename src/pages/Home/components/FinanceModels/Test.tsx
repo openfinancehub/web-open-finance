@@ -6,7 +6,7 @@ import './style.less';
 import ModelsItems from '../ModelsItems/ModelsItems';
 import { Collapse } from 'antd';
 import { Button, Input, Tag } from 'antd';
-import { categoryJson, modelsJson } from '../../service';
+import { categoryJson, getModels } from '../../service';
 const { Panel } = Collapse;
 
 interface ModelsProps {
@@ -16,18 +16,6 @@ interface ModelsProps {
     setCompany: (company: React.SetStateAction<never[]>) => void;
     isDeveloper: boolean
 }
-let head: header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-};
-let dataStr: modelsData = {
-    ip: '127.0.0.1',
-    factor: '',
-    time: '',
-    extra: 'extra',
-};
 
 const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCompany, isDeveloper }) => {
     const [filteredModels, setFilteredModels] = useState(data);
@@ -39,7 +27,6 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
     const fetchCategoryJson = async () => {
         try {
             const response = await categoryJson();
-            // console.log(response.data.category)
             const titles = Object.keys(response?.result?.category);
             const descriptions = Object.values(response?.result?.category);
             const categories = createData(titles, descriptions);
@@ -61,23 +48,12 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
         }));
     };
 
-    //点击事件请求后端接口获取因子信息
-    const filterFinance = (factor: string) => {
-        if (factor === dataStr.factor) {
-            factor = ''
-        }
-        dataStr.factor = factor;
-        handleTriggerEvent();
 
-    };
-
-    const handleTriggerEvent = async () => {
-        const dataJson = await modelsJson(head, dataStr);
+    const handleTriggerEvent = async (factor: string) => {
+        const dataJson = await getModels(factor);
         if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
             setFilteredModels(dataJson?.result?.models)
-            // onFilterFinance(dataJson?.result?.models);
         }
-        console.log(dataJson)
     };
     //跳转models详情
     const onRow = (record: any) => {
@@ -120,6 +96,15 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
         );
     };
 
+    const onChange = (key: string | string[]) => {
+        console.log(key);
+        // if (key === dataStr.factor) {
+        //     key = ''
+        // }
+        handleTriggerEvent(key as string);
+
+    };
+
     return (
         <div>
             <div key='model' >
@@ -127,8 +112,8 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
                     {categoryList.map((item, index) => (
                         <Panel header={item.title} key={index}>
                             {item.description.map(({ factor }, index) => (
-                                <Collapse accordion>
-                                    <Panel header={factor} key={`${index}-${factor}`} onClick={() => filterFinance(factor)}>
+                                <Collapse accordion={true} onChange={onChange}>
+                                    <Panel header={factor} key={factor} >
                                         <ProList<ModelsItem>
                                             onRow={onRow}
                                             rowKey='id'

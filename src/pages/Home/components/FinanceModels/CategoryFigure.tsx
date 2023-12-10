@@ -1,21 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import G6 from '@antv/g6';
 import { message } from 'antd';
-import { modelsJson, categoryJson } from '../../service';
-import { header, modelsData } from '../../data';
-
-let head: header = {
-  req_id: '1234',
-  req_src: 'source',
-  user: 'user',
-  token: 'token',
-};
-let dataStr: modelsData = {
-  ip: '127.0.0.1',
-  factor: '',
-  time: '',
-  extra: 'extra',
-};
+import { getModels, categoryJson } from '../../service';
 
 const transformData = (inputData: { [x: string]: any[]; }) => {
   const categories = Object.keys(inputData);
@@ -32,7 +18,7 @@ const transformData = (inputData: { [x: string]: any[]; }) => {
 
 const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeGraph>,
   containerRef: React.RefObject<HTMLDivElement>,
-  handleTriggerEvent: { (): Promise<void>; (): void; }) => {
+  handleTriggerEvent: any) => {
   try {
     const dataJson = await categoryJson();
     const transformedData = transformData(dataJson?.result.category);
@@ -106,12 +92,8 @@ const fetchDataAndCreateGraph = async (graphRef: React.MutableRefObject<G6.TreeG
     graph.on('node:click', (evt) => {
       const nodeValue = evt.item?.getModel();
       if (nodeValue) {
-        // console.log('点击了', nodeValue.value);
-        if (nodeValue.value === dataStr.factor) {
-          nodeValue.value = ''
-        }
-        dataStr.factor = nodeValue.value as string;
-        handleTriggerEvent();
+        console.log('点击了', nodeValue.value);
+        handleTriggerEvent(nodeValue.value as string);
       }
     });
     // 存储图形实例
@@ -128,8 +110,8 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
   const graphRef = useRef<G6.TreeGraph>();
 
   //初始化因子结构数据
-  const handleTriggerEvent = async () => {
-    const dataJson = await modelsJson(head, dataStr);
+  const handleTriggerEvent = async (factor: string) => {
+    const dataJson = await getModels(factor);
     if (dataJson != null) {
       onFilterFinance(dataJson.result.models);
     }

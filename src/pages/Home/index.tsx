@@ -4,7 +4,7 @@ import TestM from './components/FinanceModels/Test'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import HeaderTitle from './components/FinanceModels/HeaderTitle'
-import CompanyList from './components/ModelsItems/CompanyList'
+import CompanyData from './components/ModelsItems/CompanyData'
 const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);
   const [filteredModels, setFilteredModels] = useState([]);
@@ -31,7 +31,7 @@ const Home: React.FC = () => {
           {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> :
             <div>
               <ProCard title="" headerBordered>
-                <CompanyList companyChange={companyChange} />
+                <CompanyData companyChange={companyChange} />
                 {/* <Test onFilterFinance={handleFilterFinance} /> */}
               </ProCard>
             </div>
@@ -51,7 +51,7 @@ const Home: React.FC = () => {
             />
           </ProCard>
           <ProCard title="" headerBordered>
-            <div id='container'>
+            <div id='container' key={'container'}>
               {/* <Models data={financeData} company={company} setCompany={companyChange} /> */}
               <TestM
                 isDeveloper={isDeveloper}

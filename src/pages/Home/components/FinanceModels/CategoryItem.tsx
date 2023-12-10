@@ -3,7 +3,7 @@ import { Button, Input, Tag } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, StarOutlined } from '@ant-design/icons';
 import { Description, ModelsItem, ListCategoryType, header, modelsData } from '../../data';
-import { modelsJson, categoryJson } from '../../service';
+import { getModels, categoryJson } from '../../service';
 import styles from './style.less';
 
 const IconText = ({ text, icon }: { text: string, icon: React.ReactElement; }) => (
@@ -12,12 +12,6 @@ const IconText = ({ text, icon }: { text: string, icon: React.ReactElement; }) =
   </span>
 );
 const menuItems = ['Tasks', 'Libraries', 'Datasets', 'Languages', 'Licenses', 'Other'];
-let head: header = {
-  req_id: '1234',
-  req_src: 'source',
-  user: 'user',
-  token: 'token',
-};
 let dataStr: modelsData = {
   ip: '127.0.0.1',
   factor: '',
@@ -44,8 +38,8 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
 
   const [selectedFactor, setSelectedFactor] = useState(null);
   //初始化因子结构数据
-  const handleTriggerEvent = async () => {
-    const dataJson = await modelsJson(head, dataStr);
+  const handleTriggerEvent = async (factor: string) => {
+    const dataJson = await getModels(factor);
     // console.log(dataJson)
     if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
       onFilterFinance(dataJson?.result?.models);
@@ -66,15 +60,15 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   };
   useEffect(() => {
     fetchCategoryJson();
-    handleTriggerEvent();
+    handleTriggerEvent('');
   }, []);
   //点击事件请求后端接口获取因子信息
   const filterFinance = (item: { factor: any; icon?: string; jump_url?: string; }) => {
     if (item.factor === dataStr.factor) {
       item.factor = ''
     }
-    dataStr.factor = item.factor;
-    handleTriggerEvent();
+    // dataStr.factor = item.factor;
+    handleTriggerEvent(item.factor);
 
     //更新被选中的因子
     setSelectedFactor(item.factor);
