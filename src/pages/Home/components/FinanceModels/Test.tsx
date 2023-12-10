@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ProList } from '@ant-design/pro-components';
 import { HeartTwoTone, CloudDownloadOutlined, CloudTwoTone, FileTextTwoTone } from '@ant-design/icons';
-import { history } from 'umi';
 import { Description, ModelsItem, ListCategoryType, header, modelsData } from '../../data';
 import './style.less';
 import ModelsItems from '../ModelsItems/ModelsItems';
 import { Collapse } from 'antd';
 import { Button, Input, Tag } from 'antd';
-import { StarOutlined } from '@ant-design/icons';
 import { categoryJson, modelsJson } from '../../service';
-import Factor from '@/pages/Analyze/components/Factor';
 const { Panel } = Collapse;
 
 interface ModelsProps {
@@ -17,6 +14,7 @@ interface ModelsProps {
     data: ModelsItem[];
     company: any[];
     setCompany: (company: React.SetStateAction<never[]>) => void;
+    isDeveloper: boolean
 }
 let head: header = {
     req_id: '1234',
@@ -31,7 +29,7 @@ let dataStr: modelsData = {
     extra: 'extra',
 };
 
-const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCompany }) => {
+const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCompany, isDeveloper }) => {
     const [filteredModels, setFilteredModels] = useState(data);
     const [modelValue, setModelValue] = useState('');
     const [factorValue, setFactorValue] = useState('');
@@ -124,49 +122,45 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
 
     return (
         <div>
-            <div >
+            <div key='model' >
                 <Collapse accordion>
-                    {categoryList.map((item, index) => {
-                        return (
-                            <Panel header={item.title} key={index} >
-                                {item.description.map(({ factor }, index) => {
-                                    return (<Collapse accordion>
-                                        <Panel header={factor} key={index} onClick={() => filterFinance(factor)}>
-                                            <ProList<ModelsItem>
-                                                onRow={onRow}
-                                                rowKey='name'
-                                                dataSource={filteredModels}
-                                                // pagination={{
-                                                //     pageSize: 10,
-                                                // }}
-                                                showActions='hover'
-                                                metas={{
-                                                    title: {
-                                                        dataIndex: 'model',
-                                                        title: '模型名称',
-                                                    },
-                                                    avatar: {
-                                                        dataIndex: 'icon',
-                                                        search: false,
-                                                    },
-                                                    description: {
-                                                        dataIndex: 'tag',
-                                                        search: false,
-                                                        render: (_, json) => <DescriptionMeta json={json} />,
-                                                    },
-                                                }}
-                                            />
-                                        </Panel>
-                                    </Collapse>)
-                                })}
-                            </Panel>
-                        );
-                    })}
-                </Collapse >
+                    {categoryList.map((item, index) => (
+                        <Panel header={item.title} key={index}>
+                            {item.description.map(({ factor }, index) => (
+                                <Collapse accordion>
+                                    <Panel header={factor} key={`${index}-${factor}`} onClick={() => filterFinance(factor)}>
+                                        <ProList<ModelsItem>
+                                            onRow={onRow}
+                                            rowKey='id'
+                                            dataSource={filteredModels}
+                                            showActions='hover'
+                                            metas={{
+                                                title: {
+                                                    dataIndex: 'model',
+                                                    title: '模型名称',
+                                                },
+                                                avatar: {
+                                                    dataIndex: 'icon',
+                                                    search: false,
+                                                },
+                                                description: {
+                                                    dataIndex: 'tag',
+                                                    search: false,
+                                                    render: (_, json) => <DescriptionMeta json={json} />,
+                                                },
+                                            }}
+                                        />
+                                    </Panel>
+                                </Collapse>
+                            ))}
+                        </Panel>
+                    ))}
+                </Collapse>
             </div>
 
-            {showModal && <div className='my-modal'>
+            {showModal && <div key='my-modal' className='my-modal'>
                 <ModelsItems
+                    isDeveloper={isDeveloper}
                     modelValue={modelValue}
                     factorValue={factorValue}
                     setModelValue={setModelValue}

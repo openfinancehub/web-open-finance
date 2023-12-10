@@ -10,7 +10,9 @@ const HeaderTitle: React.FC<{
   originalData: ModelsItem[];
   isActivePage: boolean
   setActivePage: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ models, onModelsChange, originalData, isActivePage, setActivePage }) => {
+  isDeveloper: boolean
+  setIsDeveloper: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ models, onModelsChange, originalData, isActivePage, setActivePage, isDeveloper, setIsDeveloper }) => {
   //筛选框过滤，将过滤后的数据交给FinanceModels展示
   const changeModels = (value: string) => {
     const filteredModels = originalData.filter((item) => {
@@ -22,7 +24,7 @@ const HeaderTitle: React.FC<{
   const ChangeStyle = () => {
     setActivePage(!isActivePage)
   }
-  const [isDeveloper, setIsDeveloper] = useState(true);
+  // const [isDeveloper, setIsDeveloper] = useState(true);
   const ChangeUser = () => {
     setIsDeveloper(!isDeveloper);
   };
@@ -46,7 +48,7 @@ const HeaderTitle: React.FC<{
       </div>
       <div className={styles.but1Style}>
         <Button key='sort1' onClick={() => ChangeUser()} type='primary'>
-          {isDeveloper ? '我是开发者' : '我是新手'}
+          {isDeveloper ? '我是新手' : '我是开发者'}
         </Button>
       </div>
       <div className={styles.but2Style}>

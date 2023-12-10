@@ -1,6 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
 import CategoryItem from './components/FinanceModels/CategoryItem'
-import Models from './components/FinanceModels/Models'
 import TestM from './components/FinanceModels/Test'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
@@ -11,6 +10,7 @@ const Home: React.FC = () => {
   const [filteredModels, setFilteredModels] = useState([]);
   const [financeData, setFinanceData] = useState([]);
   const [company, setCompany] = useState([]);
+  const [isDeveloper, setIsDeveloper] = useState(true);
 
   const companyChange = (company: React.SetStateAction<never[]>) => {
     // console.log(company, 'shoudaode')
@@ -34,9 +34,6 @@ const Home: React.FC = () => {
                 <CompanyList companyChange={companyChange} />
                 {/* <Test onFilterFinance={handleFilterFinance} /> */}
               </ProCard>
-              <ProCard title="" headerBordered>
-                {/* <CategoryItem onFilterFinance={handleFilterFinance} /> */}
-              </ProCard>
             </div>
           }
         </ProCard>
@@ -49,12 +46,19 @@ const Home: React.FC = () => {
               originalData={filteredModels}
               isActivePage={isActivePage}
               setActivePage={setActivePage}
+              isDeveloper={isDeveloper}
+              setIsDeveloper={setIsDeveloper}
             />
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container'>
               {/* <Models data={financeData} company={company} setCompany={companyChange} /> */}
-              <TestM onFilterFinance={handleFilterFinance} data={financeData} company={company} setCompany={companyChange} />
+              <TestM
+                isDeveloper={isDeveloper}
+                onFilterFinance={handleFilterFinance}
+                data={financeData}
+                company={company}
+                setCompany={companyChange} />
             </div>
           </ProCard>
         </ProCard>
