@@ -1,5 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import CategoryItem from './components/FinanceModels/CategoryItem'
+import Models from './components/FinanceModels/Models'
 import TestM from './components/FinanceModels/Test'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
@@ -9,10 +10,10 @@ const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);
   const [filteredModels, setFilteredModels] = useState([]);
   const [financeData, setFinanceData] = useState([]);
-  const [company, setCompany] = useState([]);
+  const [company, setCompany] = useState<string>('');
   const [isDeveloper, setIsDeveloper] = useState(true);
 
-  const companyChange = (company: React.SetStateAction<never[]>) => {
+  const companyChange = (company: string) => {
     // console.log(company, 'shoudaode')
     setCompany(company);
   };
@@ -28,11 +29,14 @@ const Home: React.FC = () => {
     <>
       <ProCard split="vertical">
         <ProCard split="horizontal" title="" colSpan="40%" >
+
           {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> :
             <div>
               <ProCard title="" headerBordered>
-                <CompanyData companyChange={companyChange} />
-                {/* <Test onFilterFinance={handleFilterFinance} /> */}
+                {
+                  isDeveloper ? <CompanyData companyChange={companyChange} /> :
+                    <CategoryItem onFilterFinance={handleFilterFinance} />
+                }
               </ProCard>
             </div>
           }
@@ -52,13 +56,21 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container' key={'container'}>
-              {/* <Models data={financeData} company={company} setCompany={companyChange} /> */}
-              <TestM
-                isDeveloper={isDeveloper}
-                onFilterFinance={handleFilterFinance}
-                data={financeData}
-                company={company}
-                setCompany={companyChange} />
+              {
+                isDeveloper ? <TestM
+                  isDeveloper={isDeveloper}
+                  onFilterFinance={handleFilterFinance}
+                  data={financeData}
+                  company={company}
+                  setCompany={companyChange} /> :
+                  <Models
+                    isDeveloper={isDeveloper}
+                    data={financeData}
+                    company={company}
+                    setCompany={companyChange} />
+
+              }
+
             </div>
           </ProCard>
         </ProCard>

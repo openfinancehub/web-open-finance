@@ -48,7 +48,7 @@ const HeaderTitle: React.FC<{
       </div>
       <div className={styles.but1Style}>
         <Button key='sort1' onClick={() => ChangeUser()} type='primary'>
-          {isDeveloper ? '我是新手' : '我是开发者'}
+          {isDeveloper ? '我要开发' : '随便看看'}
         </Button>
       </div>
       <div className={styles.but2Style}>

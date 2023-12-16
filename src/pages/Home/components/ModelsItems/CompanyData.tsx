@@ -11,7 +11,11 @@ import { history, useModel } from '@umijs/max';
 import _ from 'lodash';
 
 const { Search } = Input;
-const CompanyData = ({ companyChange }) => {
+
+
+const CompanyData: React.FC<{
+  companyChange: (company: string) => void;
+}> = ({ companyChange }) => {
   //获取请求中的model数据
   const [stockList, setStockList] = useState<any[]>([]);
   const [inputValue, setInputValue] = useState<string>('');

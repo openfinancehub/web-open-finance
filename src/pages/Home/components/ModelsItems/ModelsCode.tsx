@@ -9,7 +9,13 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/python/python';
 
-function ModelsCode({ modelValue, factorValue, setModelValue, setFactorValue },) {
+
+const ModelsCode: React.FC<{
+  modelValue: string
+  factorValue: string
+  setModelValue: React.Dispatch<React.SetStateAction<string>>;
+  setFactorValue: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ modelValue, factorValue, setModelValue, setFactorValue }) => {
   // const location = useLocation();
   // const searchParams = new URLSearchParams(location.search);
   // const [modelValue, setModelValue] = useState(searchParams.get('model') || '');
@@ -91,7 +97,7 @@ function ModelsCode({ modelValue, factorValue, setModelValue, setFactorValue },)
     toggleLoading(1, true);
     setTimeout(() => {
       setIsEditing(prevIsEditing => !prevIsEditing);
-      
+
       toggleLoading(1, false);
     }, 500);
   };

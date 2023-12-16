@@ -2,7 +2,7 @@ import { ProList } from '@ant-design/pro-components';
 import { Button, Input, Tag } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, StarOutlined } from '@ant-design/icons';
-import { Description, ModelsItem, ListCategoryType, header, modelsData } from '../../data';
+import { Description, ModelsItem, ListCategoryType, modelsData } from '../../data';
 import { getModels, categoryJson } from '../../service';
 import styles from './style.less';
 
@@ -11,7 +11,6 @@ const IconText = ({ text, icon }: { text: string, icon: React.ReactElement; }) =
     <span>{icon} {text}</span>
   </span>
 );
-const menuItems = ['Tasks', 'Libraries', 'Datasets', 'Languages', 'Licenses', 'Other'];
 let dataStr: modelsData = {
   ip: '127.0.0.1',
   factor: '',
@@ -34,7 +33,6 @@ const createData = (titles: string[], description: any[]): ListCategoryType => {
 function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => void }) {
   const [categoryList, setCategoryList] = useState<ListCategoryType>([]);
   const [originalData, setOriginalData] = useState<ListCategoryType>([]);
-  const [active, setActive] = useState(0);
 
   const [selectedFactor, setSelectedFactor] = useState(null);
   //初始化因子结构数据
@@ -67,7 +65,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
     if (item.factor === dataStr.factor) {
       item.factor = ''
     }
-    // dataStr.factor = item.factor;
+    dataStr.factor = item.factor;
     handleTriggerEvent(item.factor);
 
     //更新被选中的因子
@@ -90,25 +88,6 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
 
   return (
     <div>
-      {/* <div className={styles.containerStyle}>
-        {menuItems.map((item, index) => {
-          const isActive = active === index;
-          const labelStyle = {
-            marginRight: 8,
-            borderRadius: 8,
-            padding: '2px 3px',
-            backgroundColor: isActive ? 'black' : 'white',
-            color: isActive ? 'white' : 'black',
-          };
-          return (
-            <span key={index} className={styles.itemStyle}>
-              <label onClick={() => setActive(index)} style={labelStyle}>
-                {item}
-              </label>
-            </span>
-          );
-        })}
-      </div> */}
       <div>
         <Input onChange={changeCategory} placeholder='Filter Task By Name' />
       </div>

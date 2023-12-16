@@ -11,7 +11,13 @@ import { history, useModel } from '@umijs/max';
 import _ from 'lodash';
 
 const { Search } = Input;
-const ModelsFigure = ({ factorValue, modelValue, company, setCompany }) => {
+
+const ModelsFigure: React.FC<{
+  modelValue: string
+  factorValue: string
+  company: string
+  setCompany: (company: string) => void;
+}> = ({ factorValue, modelValue, company, setCompany }) => {
 
   const [stockList, setStockList] = useState<any[]>([]);
   const [inputValue, setInputValue] = useState<string>(company);
@@ -41,19 +47,19 @@ const ModelsFigure = ({ factorValue, modelValue, company, setCompany }) => {
     }
     if (list[0] && list[0].company) {
       // console.log(list)
-      setCompany(list[0].company);
-      // setInputValue(list[0].company)
+      // setCompany(list[0].company);
+      setInputValue(list[0].company)
       useEval(factorValue, modelValue, list[0].company)
     }
   };
 
   const handleSendMessage = () => {
-    if (!company) return;
-    useEval(factorValue, modelValue, company)
+    if (!inputValue) return;
+    useEval(factorValue, modelValue, inputValue)
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setCompany();
-    setCompany(e.target.value);
+    setInputValue(e.target.value)
+    // setCompany(e.target.value);
   };
 
   const [message, setMessage] = useState<any[]>([]);
@@ -63,7 +69,7 @@ const ModelsFigure = ({ factorValue, modelValue, company, setCompany }) => {
         inputValue = company
       }
       // console.log(company, '请求后台company')
-      console.log(inputValue, '请求后台inputValue')
+      // console.log(inputValue, '请求后台inputValue')
       const evalJson = await getEval('', model, inputValue)
 
       const result = processJson(evalJson?.result);

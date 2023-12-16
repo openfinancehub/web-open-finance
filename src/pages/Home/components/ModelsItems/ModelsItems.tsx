@@ -5,26 +5,25 @@ import ModelsCode from './ModelsCode';
 import ModelsFiles from './ModelsFiles';
 import ModelsFigure from './ModelsFigure';
 
-interface Tab {  
-  tab: string;  
-  key: string;  
-  closable: boolean;  
-}  
+interface Tab {
+  tab: string;
+  key: string;
+  closable: boolean;
+}
 const ModelsItems: React.FC<{
   modelValue: string
   factorValue: string
+  showModal: boolean
+  company: string;
   setModelValue: React.Dispatch<React.SetStateAction<string>>;
   setFactorValue: React.Dispatch<React.SetStateAction<string>>;
-  showModal: boolean
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  company: any[];
-  setCompany: (company: React.SetStateAction<never[]>) => void;
+  setCompany: (company: string) => void;
   isDeveloper: boolean
 }> = ({ modelValue, factorValue, setModelValue,
   setFactorValue, showModal, setShowModal, company, setCompany, isDeveloper }) => {
 
     const [currentTab, setCurrentTab] = useState('Code');
-
     const onTabChange = (key: SetStateAction<string>) => {
       setCurrentTab(key);
     };
@@ -33,12 +32,11 @@ const ModelsItems: React.FC<{
       setShowModal(!showModal);
     };
 
-    const [tabList, setTabList] = useState<Tab[]>([]); 
+    const [tabList, setTabList] = useState<Tab[]>([]);
 
     useEffect(() => {
       console.log(currentTab)
       if (isDeveloper) {
-        // setCurrentTab('Code');
         setTabList([
           { tab: 'Model Code', key: 'Code', closable: false },
           { tab: 'Files and versions', key: 'Files', closable: false },

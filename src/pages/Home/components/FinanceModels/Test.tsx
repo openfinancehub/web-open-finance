@@ -12,8 +12,8 @@ const { Panel } = Collapse;
 interface ModelsProps {
     onFilterFinance: any;
     data: ModelsItem[];
-    company: any[];
-    setCompany: (company: React.SetStateAction<never[]>) => void;
+    company: string;
+    setCompany: (company: string) => void;
     isDeveloper: boolean
 }
 
