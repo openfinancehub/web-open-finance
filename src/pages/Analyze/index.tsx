@@ -18,8 +18,8 @@ const HomePage: React.FC = () => {
     },
     // {
     //   key: '3',
-    //   label: `已订阅`,
-    //   children: <Subscribe></Subscribe>,
+    //   label: `demo图表`,
+    //   children: <Demo></Demo>,
     // },
   ];
   const onChange = (key: string) => {
