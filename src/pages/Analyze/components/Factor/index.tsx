@@ -170,8 +170,10 @@ const Factor = () => {
     }, [])
 
     useEffect(() => {
-        if (Object.keys(historyData).length !== 0 && inFactor !== '') {
-            setFactorLiData(historyData[inFactor].raw)
+        if(historyData){
+            if (Object.keys(historyData).length !== 0 && inFactor !== '') {
+                setFactorLiData(historyData[inFactor].raw)
+            }
         }
     }, [lineTimeData, inFactor])
 
