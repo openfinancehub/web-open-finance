@@ -88,7 +88,7 @@ export default function PublicStrategy(props:string) {
                 console.log(stopDemo);
                 return demoTime
             }
-            if (res.code === 300 && demoTime <= 80) {
+            if (res.code === 300 && demoTime <= 140) {
                 setTimeout(() => {
                     GetStrategy(uid,list)
                 }, 2000)
@@ -193,7 +193,6 @@ export default function PublicStrategy(props:string) {
         }).then((res) => {
             console.log(res.uid)
             if (res.uid) {
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 GetStrategy(res.uid,0)
                 handleStopTime()
               
@@ -329,9 +328,11 @@ export default function PublicStrategy(props:string) {
                 }
             }
         }
-        console.log(synthesis);
         strategy_test(synthesis)
         setIsdemoBtn(false)
+        setTimeout(() => {
+            setIsdemoBtn(true)
+        }, 60000);
     }
 
     const demoDaysChange = (value: number) => {
