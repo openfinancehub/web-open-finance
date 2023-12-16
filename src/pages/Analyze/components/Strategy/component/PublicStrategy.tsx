@@ -45,6 +45,8 @@ export default function PublicStrategy(props:string) {
     const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
     const [minTime,setMinTime] = useState(5)
+    // stop 
+    const [stopDemo,setStopDemo] = useState(0)
     const firstKargs: any = []
     let synthesis: any = []
     const strtegylist = () => {
@@ -65,7 +67,7 @@ export default function PublicStrategy(props:string) {
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
-    const GetStrategy = (uid: number) => {
+    const GetStrategy = (uid: number,demoTime:number,) => {
         const data = {
             uid: uid,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
@@ -78,10 +80,18 @@ export default function PublicStrategy(props:string) {
             data: JSON.stringify(data)
         }).then((res) => {
             console.log(res)
-            if (res.code === 300) {
+            const list = demoTime + 20
+            // 当测试时间超过80s时停止测试
+            if(demoTime > 80){        
+              
+                setStopDemo(res.code)
+                console.log(stopDemo);
+                return demoTime
+            }
+            if (res.code === 300 && demoTime <= 80) {
                 setTimeout(() => {
-                    GetStrategy(uid)
-                }, 5000)
+                    GetStrategy(uid,list)
+                }, 2000)
             } else {
                 let destArr = []
                 let raderArr = []
@@ -145,6 +155,12 @@ export default function PublicStrategy(props:string) {
             }
         }).catch(err => { console.log(err) })
     }
+    const handleStopTime = ()=>{
+        setTimeout(()=>{
+            setStopDemo({list:true})
+            console.log(stopDemo);
+        },8000)
+    }
     const strategy_test = (kargs: number[]) => {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8",
@@ -178,7 +194,9 @@ export default function PublicStrategy(props:string) {
             console.log(res.uid)
             if (res.uid) {
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                GetStrategy(res.uid)
+                GetStrategy(res.uid,0)
+                handleStopTime()
+              
             }
         }).catch(err => { console.log(err) })
     }
@@ -314,7 +332,6 @@ export default function PublicStrategy(props:string) {
         console.log(synthesis);
         strategy_test(synthesis)
         setIsdemoBtn(false)
-
     }
 
     const demoDaysChange = (value: number) => {
@@ -436,7 +453,7 @@ export default function PublicStrategy(props:string) {
                         }}
                         onClick={demoBtn}
                     >
-                        测试
+                        {stopDemo?"重新测试":"测试"}
                     </Button>}
                     {
                         !isdemoBtn && <Button
