@@ -39,7 +39,7 @@ const Finchat = () => {
   const [roleList, setRoleList] = useState<any[]>([]);
   const [taskList, setTaskList] = useState<any[]>([]);
   const [stockList, setStockList] = useState<any[]>([]);
-  const [selectedCom, setSelectedCom] = useState<any[]>([]);
+  const [selectedCom, setSelectedCom] = useState<any>([]);
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
@@ -211,26 +211,26 @@ const Finchat = () => {
     </>
   )
   const disabled = !(selectedTask || selectedCom || selectedRole);
+  
   console.log(messageList, 'messageList')
 
   return (
     <div className={styles.wrapFinchat}>
       <div className={styles.left}>
-        <Button
-          style={{ width: '80%', marginTop: '12px' }}
-          icon={<PlusOutlined />}>
-          New Chat
-        </Button>
-      {/* {
-        historyList?.length ? (
-          <>
-          <Text style={{margin: '12px 0', width: '80%', textAlign: 'left', display: 'inline-block'}}>History List</Text>
+       
+        {
+          // historyList?.length
+        true ? (
            <div className={styles.wrapHistory}>
              <HistoryList/>
            </div>
-          </>
         ) : null
-      } */}
+        }
+         <Button
+          style={{ width: '80%' }}
+          icon={<PlusOutlined />}>
+          New Chat
+        </Button>
         <Radio.Group
           defaultValue={activeKey}
           value={activeKey}
