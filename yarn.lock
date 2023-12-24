@@ -5409,6 +5409,11 @@ ext@^1.1.2:
   dependencies:
     type "^2.7.2"
 
+fancy-canvas@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/fancy-canvas/-/fancy-canvas-2.1.0.tgz#44b40e40419ad8ef8304df365e4276767e918552"
+  integrity sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==
+
 fast-deep-equal@3.1.3, fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
   resolved "https://registry.npmmirror.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz"
@@ -6855,6 +6860,13 @@ lightningcss@1.19.0:
     lightningcss-linux-x64-gnu "1.19.0"
     lightningcss-linux-x64-musl "1.19.0"
     lightningcss-win32-x64-msvc "1.19.0"
+
+lightweight-charts@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lightweight-charts/-/lightweight-charts-4.1.1.tgz#69e0e45d2c08a23b4a40241cec0b1748fd3aaafb"
+  integrity sha512-HYjm66NAIOhoLDNaaQsiwOVWiFHL1yrygZeKd4PgdZESnWyp5dPoTe3pH3t2h4ix+Ix5TwLZaNbWroZqQuj6OA==
+  dependencies:
+    fancy-canvas "2.1.0"
 
 lilconfig@2.1.0:
   version "2.1.0"
@@ -10003,6 +10015,11 @@ trim-newlines@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmmirror.com/trim-newlines/-/trim-newlines-3.0.1.tgz"
   integrity sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==
+
+tslib@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.0.tgz"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
 
 tslib@2.3.0:
   version "2.3.0"

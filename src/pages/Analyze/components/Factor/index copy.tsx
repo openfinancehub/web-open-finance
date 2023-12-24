@@ -27,9 +27,8 @@ import {
 } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import Left from "../Public/left"
-
-
+import Left from "./component/left"
+import Loading from "../Loading"
 echarts.use([
     TitleComponent,
     TooltipComponent,
@@ -63,8 +62,6 @@ const Factor = () => {
     const [historyData, setHistoryData] = useState({})
     const [factorLiData, setFactorLiData] = useState([])
     const [lineTimeData, setLineTimeData] = useState([])
-
-
     const stockanalysis = (stock_id: string) => {
         const data = {
             stock_id: stock_id,
@@ -132,9 +129,6 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-
-            console.log(res,'正确的数据');
-            
             setFactorData(res.data)
             let list = []
             res.data.forEach((item)=>{
@@ -162,6 +156,7 @@ const Factor = () => {
             console.log(err)
         })
     };
+
     
     useEffect(() => {
         stockanalysis('000001.SZ')
@@ -170,10 +165,8 @@ const Factor = () => {
     }, [])
 
     useEffect(() => {
-        if(historyData){
-            if (Object.keys(historyData).length !== 0 && inFactor !== '') {
-                setFactorLiData(historyData[inFactor].raw)
-            }
+        if (Object.keys(historyData).length !== 0 && inFactor !== '') {
+            setFactorLiData(historyData[inFactor].raw)
         }
     }, [lineTimeData, inFactor])
 
@@ -380,7 +373,7 @@ const Factor = () => {
         <ProCard gutter={16} ghost wrap>
             <ProCard
                 colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 3 }}
-                style={{ height: "100%",padding: 0 }}
+                style={{ height: "100%" }}
             >
                 <Left onDataChange={handleDataFromChild}></Left>
             </ProCard>
