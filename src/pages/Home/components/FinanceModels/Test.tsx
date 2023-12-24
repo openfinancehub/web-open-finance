@@ -31,9 +31,6 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
             const descriptions = Object.values(response?.result?.category);
             const categories = createData(titles, descriptions);
             setCategoryList(categories);
-
-            console.log(categoryList)
-
         } catch (error) {
             console.error('fetch data failed', error);
         }
@@ -47,7 +44,6 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
             description: description[index] as Description[]
         }));
     };
-
 
     const handleTriggerEvent = async (factor: string) => {
         const dataJson = await getModels(factor);
@@ -74,7 +70,7 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
     };
     useEffect(() => {
         fetchData();
-        fetchCategoryJson()
+        fetchCategoryJson();
     }, [data]);
 
     const DescriptionMeta: React.FC<{ json: ModelsItem }> = ({ json }) => {
@@ -98,9 +94,7 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
 
     const onChange = (key: string | string[]) => {
         console.log(key);
-        // if (key === dataStr.factor) {
-        //     key = ''
-        // }
+
         handleTriggerEvent(key as string);
 
     };
@@ -142,8 +136,7 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
                     ))}
                 </Collapse>
             </div>
-
-            {showModal && <div key='my-modal' className='my-modal'>
+            {showModal && (
                 <ModelsItems
                     isDeveloper={isDeveloper}
                     modelValue={modelValue}
@@ -151,12 +144,12 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
                     setModelValue={setModelValue}
                     setFactorValue={setFactorValue}
                     showModal={showModal}
-                    setShowModal={setShowModal}
+                    setShowModal={showModalChange}
                     company={company}
                     setCompany={setCompany} />
-            </div>}
-        </div >
+            )}
+        </div>
     );
-}
+};
 
 export default Models;

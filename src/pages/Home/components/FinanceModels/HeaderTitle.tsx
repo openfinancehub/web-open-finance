@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProList } from '@ant-design/pro-components';
 import { Link } from 'react-router-dom';
-import { Button, Modal, Form, Input } from 'antd';
+import { Button, Image, Form, Input, Space, Spin } from 'antd';
 import { ModelsItem, } from '../../data';
 import styles from './style.less';
 const HeaderTitle: React.FC<{
@@ -26,17 +26,21 @@ const HeaderTitle: React.FC<{
   }
   // const [isDeveloper, setIsDeveloper] = useState(true);
   const ChangeUser = () => {
+    // setTimeout(() => {
+    //   // setIsDeveloper(!isDeveloper);
+    //   // setLoading(false);  
+    // }, 2000);
     setIsDeveloper(!isDeveloper);
   };
 
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+      {/* <Space size="middle">
+        <Spin size="large" />
+      </Space> */}
       <div className={styles.inpStyle}>
         <h3 className={styles.fountStyle}>Tools</h3>
-      </div>
-      <div className={styles.inpStyle}>
-        {/* <h3 className={styles.figStyle}>{models.length}</h3> */}
       </div>
       <div>
         <Input onChange={(e) => changeModels(e.target.value)} placeholder='Filter by name' />
