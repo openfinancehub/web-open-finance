@@ -1,11 +1,12 @@
 import { ProCard } from '@ant-design/pro-components';
 import CategoryItem from './components/FinanceModels/CategoryItem'
 import Models from './components/FinanceModels/Models'
-import TestM from './components/FinanceModels/Test'
+import DModels from './components/Developer/DModels'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import HeaderTitle from './components/FinanceModels/HeaderTitle'
-import CompanyData from './components/ModelsItems/CompanyData'
+import DCompanyList from './components/Developer/DCompanyList'
+import { useLocation } from 'react-router-dom';
 const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);
   const [filteredModels, setFilteredModels] = useState([]);
@@ -13,8 +14,11 @@ const Home: React.FC = () => {
   const [company, setCompany] = useState<string>('');
   const [isDeveloper, setIsDeveloper] = useState(true);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  // const [isDeveloper, setIsDeveloper] = useState(searchParams.get('isDeveloper') || '');
+
   const companyChange = (company: string) => {
-    // console.log(company, 'shoudaode')
     setCompany(company);
   };
 
@@ -34,7 +38,8 @@ const Home: React.FC = () => {
             <div>
               <ProCard title="" headerBordered>
                 {
-                  isDeveloper ? <CompanyData companyChange={companyChange} /> :
+                  isDeveloper ?
+                    <DCompanyList companyChange={companyChange} /> :
                     <CategoryItem onFilterFinance={handleFilterFinance} />
                 }
               </ProCard>
@@ -57,7 +62,7 @@ const Home: React.FC = () => {
           <ProCard title="" headerBordered>
             <div id='container' key={'container'}>
               {
-                isDeveloper ? <TestM
+                isDeveloper ? <DModels
                   isDeveloper={isDeveloper}
                   onFilterFinance={handleFilterFinance}
                   data={financeData}
@@ -68,7 +73,6 @@ const Home: React.FC = () => {
                     data={financeData}
                     company={company}
                     setCompany={companyChange} />
-
               }
 
             </div>

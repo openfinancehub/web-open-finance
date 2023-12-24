@@ -3,10 +3,8 @@ import { ProList } from '@ant-design/pro-components';
 import { HeartTwoTone, CloudDownloadOutlined, CloudTwoTone, FileTextTwoTone } from '@ant-design/icons';
 import { history } from 'umi';
 import { ModelsItem, } from '../../data';
-import './style.less';
-import ModelsItems from '../ModelsItems/ModelsItems';
 
-//models结展示
+//普通用户models结展示
 const DescriptionMeta: React.FC<{ json: ModelsItem }> = ({ json }) => {
     return (
         <div key={json.tag}>
@@ -37,7 +35,6 @@ const Models: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper 
     const [filteredModels, setFilteredModels] = useState(data);
     const [modelValue, setModelValue] = useState('');
     const [factorValue, setFactorValue] = useState('');
-    const [showModal, setShowModal] = useState(false);
 
     const params = `modelValue=${encodeURIComponent(modelValue)}&factorValue=${encodeURIComponent(factorValue)}`;
 
@@ -53,14 +50,10 @@ const Models: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper 
             onClick: () => {
                 history.push('/home/model/item' + `?${params}`);
                 console.log(modelValue, 'modelValue');
-
-                // showModalChange();
             },
         };
     };
-    const showModalChange = () => {
-        setShowModal((prevShowModal) => !prevShowModal);
-    };
+
     const fetchData = async () => {
         setFilteredModels(data);
     };
@@ -96,18 +89,6 @@ const Models: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper 
                     }}
                 />
             </div>
-            {showModal && <div className='my-modal'>
-                <ModelsItems
-                    isDeveloper={isDeveloper}
-                    modelValue={modelValue}
-                    factorValue={factorValue}
-                    setModelValue={setModelValue}
-                    setFactorValue={setFactorValue}
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    company={company}
-                    setCompany={setCompany} />
-            </div>}
         </div>
     );
 }

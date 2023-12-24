@@ -1,25 +1,25 @@
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { SetStateAction, useState, useEffect } from 'react';
 import { Button, Dropdown } from 'antd';
-import ModelsCode from './ModelsCode';
-import ModelsFiles from './ModelsFiles';
-import ModelsFigure from './ModelsFigure';
+import ModelsCode from '@/pages/Home/components/Public/ModelsCode';
+import ModelsFiles from '@/pages/Home/components/Public/ModelsFiles';
+import ModelsFigure from '@/pages/Home/components/Public/ModelsFigure';
 
 interface Tab {
   tab: string;
   key: string;
   closable: boolean;
 }
-const ModelsItems: React.FC<{
+const DModelsItems: React.FC<{
   modelValue: string
   factorValue: string
-  showModal: boolean
-  company: string;
+  showModal: boolean //是否展示Modal详情界面
+  company: string; //公司
   setModelValue: React.Dispatch<React.SetStateAction<string>>;
   setFactorValue: React.Dispatch<React.SetStateAction<string>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   setCompany: (company: string) => void;
-  isDeveloper: boolean
+  isDeveloper: boolean //是否开发者模式
 }> = ({ modelValue, factorValue, setModelValue,
   setFactorValue, showModal, setShowModal, company, setCompany, isDeveloper }) => {
 
@@ -84,4 +84,4 @@ const ModelsItems: React.FC<{
     );
   }
 
-export default ModelsItems;
+export default DModelsItems;

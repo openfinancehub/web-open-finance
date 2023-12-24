@@ -3,9 +3,8 @@ import { ProList } from '@ant-design/pro-components';
 import { HeartTwoTone, CloudDownloadOutlined, CloudTwoTone, FileTextTwoTone } from '@ant-design/icons';
 import { Description, ModelsItem, ListCategoryType, header, modelsData } from '../../data';
 import './style.less';
-import ModelsItems from '../ModelsItems/ModelsItems';
+import ModelsItems from './component/DModelsItems';
 import { Collapse } from 'antd';
-import { Button, Input, Tag } from 'antd';
 import { categoryJson, getModels } from '../../service';
 const { Panel } = Collapse;
 
@@ -17,7 +16,7 @@ interface ModelsProps {
     isDeveloper: boolean
 }
 
-const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCompany, isDeveloper }) => {
+const DModels: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCompany, isDeveloper }) => {
     const [filteredModels, setFilteredModels] = useState(data);
     const [modelValue, setModelValue] = useState('');
     const [factorValue, setFactorValue] = useState('');
@@ -27,6 +26,7 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
     const fetchCategoryJson = async () => {
         try {
             const response = await categoryJson();
+            console.log(response)
             const titles = Object.keys(response?.result?.category);
             const descriptions = Object.values(response?.result?.category);
             const categories = createData(titles, descriptions);
@@ -102,7 +102,7 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
     return (
         <div>
             <div key='model' >
-                <Collapse accordion>
+                <Collapse >
                     {categoryList.map((item, index) => (
                         <Panel header={item.title} key={index}>
                             {item.description.map(({ factor }, index) => (
@@ -136,7 +136,7 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
                     ))}
                 </Collapse>
             </div>
-            {showModal && (
+            {showModal && <div className='my-modal'>
                 <ModelsItems
                     isDeveloper={isDeveloper}
                     modelValue={modelValue}
@@ -144,12 +144,12 @@ const Models: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setComp
                     setModelValue={setModelValue}
                     setFactorValue={setFactorValue}
                     showModal={showModal}
-                    setShowModal={showModalChange}
+                    setShowModal={setShowModal}
                     company={company}
                     setCompany={setCompany} />
-            )}
+            </div>}
         </div>
     );
 };
 
-export default Models;
+export default DModels;

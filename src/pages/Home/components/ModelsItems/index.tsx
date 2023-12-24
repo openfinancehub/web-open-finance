@@ -3,15 +3,16 @@ import { SetStateAction, useState, useEffect } from 'react';
 import { Button, Dropdown } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { history } from 'umi';
-import ModelsCode from './ModelsCode';
-import ModelsFiles from './ModelsFiles';
-import ModelsFigure from './ModelsFigure';
+import ModelsCode from '@/pages/Home/components/Public/ModelsCode';
+import ModelsFiles from '@/pages/Home/components/Public/ModelsFiles';
+import ModelsFigure from '@/pages/Home/components/Public/ModelsFigure';
 
 interface Tab {
   tab: string;
   key: string;
   closable: boolean;
 }
+// 普通用户模式
 const ModelsItems: React.FC<{
   modelValue: string
   factorValue: string
@@ -20,7 +21,7 @@ const ModelsItems: React.FC<{
   setModelValue: React.Dispatch<React.SetStateAction<string>>;
   setFactorValue: React.Dispatch<React.SetStateAction<string>>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setCompany: React.Dispatch<React.SetStateAction<string>>;
+  setCompany: (company: string) => void;
   isDeveloper: boolean
 }> = ({ showModal, setShowModal, company, setCompany, isDeveloper }) => {
 
@@ -29,12 +30,18 @@ const ModelsItems: React.FC<{
   const [modelValue, setModelValue] = useState(searchParams.get('modelValue') || '');
   const [factorValue, setFactorValue] = useState(searchParams.get('factorValue') || '');
   const [currentTab, setCurrentTab] = useState('Code');
+
+
   const onTabChange = (key: SetStateAction<string>) => {
     setCurrentTab(key);
   };
 
+  const params = `isDeveloper=${encodeURIComponent('false')}`;
+
   const showModalChange = () => {
-    history.back();
+    console.log("是否开发者模式", isDeveloper)
+    history.push('/home' + `?${params}`);
+    // history.back();
   };
 
   const [tabList, setTabList] = useState<Tab[]>([]);

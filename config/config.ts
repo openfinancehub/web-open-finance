@@ -86,12 +86,6 @@ export default defineConfig({
       props: true,
       exact: true
     },
-    // {
-    //   path: '/home/test',
-    //   name: 'test',
-    //   component: './Home/Test',
-    //   exact: true,
-    // },
     {
       name: 'Users',
       path: '/user',

@@ -13,7 +13,7 @@ import _ from 'lodash';
 const { Search } = Input;
 
 
-const CompanyData: React.FC<{
+const DCompanyList: React.FC<{
   companyChange: (company: string) => void;
 }> = ({ companyChange }) => {
   //获取请求中的model数据
@@ -48,8 +48,6 @@ const CompanyData: React.FC<{
       companyChange(list[0].company)
     }
   };
-
-  const [message, setMessage] = useState<any[]>([]);
 
   const fetchSidebar = async () => {
     try {
@@ -111,4 +109,4 @@ const CompanyData: React.FC<{
   );
 };
 
-export default CompanyData;
+export default DCompanyList;

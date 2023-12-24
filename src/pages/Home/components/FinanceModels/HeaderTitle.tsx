@@ -26,11 +26,12 @@ const HeaderTitle: React.FC<{
   }
   // const [isDeveloper, setIsDeveloper] = useState(true);
   const ChangeUser = () => {
-    // setTimeout(() => {
-    //   // setIsDeveloper(!isDeveloper);
-    //   // setLoading(false);  
-    // }, 2000);
-    setIsDeveloper(!isDeveloper);
+    setTimeout(() => {
+      setIsDeveloper(!isDeveloper);
+      // setLoading(false);  
+    }, 500);
+    // setIsDeveloper(!isDeveloper);
+    console.log("是否开发者模式", isActivePage)
   };
 
 

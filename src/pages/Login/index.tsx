@@ -32,14 +32,13 @@ export default () => {
     try {
       const { mobile: username, captcha } = values;
       const res = await LoginServices.login({ username, captcha });
-      history.push('/home');
       if (res?.code === 200 || res?.code === 0) {
-        // await setInitialState(s => ({
-        //   ...s,
-        //   currentUser: res.data
-        // }));
-        // localStorage.setItem('userInfo', JSON.stringify(res.data));
-        // history.push('/home');
+        await setInitialState(s => ({
+          ...s,
+          currentUser: res.data
+        }));
+        localStorage.setItem('userInfo', JSON.stringify(res.data));
+        history.push('/home');
       } else {
         message.error('服务器错误');
       }
