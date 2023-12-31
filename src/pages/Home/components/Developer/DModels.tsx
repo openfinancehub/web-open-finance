@@ -94,9 +94,9 @@ const DModels: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCom
 
     const onChange = (key: string | string[]) => {
         console.log(key);
-
-        handleTriggerEvent(key as string);
-
+        if (key) {
+            handleTriggerEvent(key as string);
+        }
     };
 
     return (
@@ -106,7 +106,7 @@ const DModels: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCom
                     {categoryList.map((item, index) => (
                         <Panel header={item.title} key={index}>
                             {item.description.map(({ factor }, index) => (
-                                <Collapse accordion={true} onChange={onChange}>
+                                <Collapse accordion onChange={onChange}>
                                     <Panel header={factor} key={factor} >
                                         <ProList<ModelsItem>
                                             onRow={onRow}

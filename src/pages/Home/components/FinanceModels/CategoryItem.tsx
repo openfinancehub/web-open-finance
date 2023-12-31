@@ -33,7 +33,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   const [categoryList, setCategoryList] = useState<ListCategoryType>([]);
   const [originalData, setOriginalData] = useState<ListCategoryType>([]);
 
-  const [selectedFactor, setSelectedFactor] = useState(null);
+  const [selectedFactor, setSelectedFactor] = useState('');
   //初始化因子结构数据
   const handleTriggerEvent = async (factor: string) => {
     const dataJson = await getModels(factor);
@@ -60,7 +60,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
     handleTriggerEvent('');
   }, []);
   //点击事件请求后端接口获取因子信息
-  const filterFinance = (item: { factor: any; icon?: string; jump_url?: string; }) => {
+  const filterFinance = (item: { factor: any; icon?: string; jump_url?: string; }, title: string) => {
     if (item.factor === dataStr.factor) {
       item.factor = ''
     }
@@ -68,7 +68,7 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
     handleTriggerEvent(item.factor);
 
     //更新被选中的因子
-    setSelectedFactor(item.factor);
+    setSelectedFactor(title + item.factor);
   };
   //输入框过滤事件
   const changeCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,10 +104,12 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
                 const color = colors.find((_, index) => item.title === categoryList[index].title) || 'blue';
                 return (
                   item.description.map(({ factor }, index) => (
-                    <Tag key={index} color={color} onClick={() => filterFinance({ factor })}
-                      style={selectedFactor === factor ? { backgroundColor: 'lightblue' } : {}}>
-                      <IconText icon={<StarOutlined />} text={factor} key={index} />
-                    </Tag>
+                    <span>
+                      <Tag key={index} color={color} onClick={() => filterFinance({ factor }, item.title)}
+                        style={selectedFactor === item.title + factor ? { backgroundColor: 'lightblue' } : {}}>
+                        <IconText icon={<StarOutlined />} text={factor} key={index} />
+                      </Tag>
+                    </span>
                   ))
                 );
               },

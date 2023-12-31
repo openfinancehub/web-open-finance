@@ -1,18 +1,15 @@
 import { ProCard } from '@ant-design/pro-components';
-import CategoryItem from './components/FinanceModels/CategoryItem'
-import Models from './components/FinanceModels/Models'
-import DModels from './components/Developer/DModels'
-import CategoryFigure from './components/FinanceModels/CategoryFigure'
+import DModels from './DModels'
 import React, { useState } from 'react';
-import HeaderTitle from './components/FinanceModels/HeaderTitle'
-import DCompanyList from './components/Developer/DCompanyList'
+import HeaderTitle from '@/pages/Home/components/FinanceModels/HeaderTitle'
+import DCompanyList from './DCompanyList'
 import { useLocation } from 'react-router-dom';
 const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);
   const [filteredModels, setFilteredModels] = useState([]);
   const [financeData, setFinanceData] = useState([]);
   const [company, setCompany] = useState<string>('');
-  const [isDeveloper, setIsDeveloper] = useState(true);
+  const [isDeveloper, setIsDeveloper] = useState(false);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -33,19 +30,12 @@ const Home: React.FC = () => {
     <>
       <ProCard split="vertical">
         <ProCard split="horizontal" title="" colSpan="40%" >
+          <div>
+            <ProCard title="" headerBordered>
+              <DCompanyList companyChange={companyChange} /> :
+            </ProCard>
+          </div>
 
-          {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> :
-            <div>
-              <ProCard title="" headerBordered>
-                {/* {
-                  isDeveloper ?
-                    <DCompanyList companyChange={companyChange} /> :
-                    <CategoryItem onFilterFinance={handleFilterFinance} />
-                } */}
-                <CategoryItem onFilterFinance={handleFilterFinance} />
-              </ProCard>
-            </div>
-          }
         </ProCard>
 
         <ProCard title="" split="horizontal" headerBordered>
@@ -62,24 +52,14 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container' key={'container'}>
-              {/* {
-                isDeveloper ? <DModels
-                  isDeveloper={isDeveloper}
-                  onFilterFinance={handleFilterFinance}
-                  data={financeData}
-                  company={company}
-                  setCompany={companyChange} /> :
-                  <Models
-                    isDeveloper={isDeveloper}
-                    data={financeData}
-                    company={company}
-                    setCompany={companyChange} />
-              } */}
-              <Models
+
+              <DModels
                 isDeveloper={isDeveloper}
+                onFilterFinance={handleFilterFinance}
                 data={financeData}
                 company={company}
-                setCompany={companyChange} />
+                setCompany={companyChange} /> 
+
             </div>
           </ProCard>
         </ProCard>

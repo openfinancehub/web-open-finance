@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ProList } from '@ant-design/pro-components';
 import { Link } from 'react-router-dom';
 import { Button, Image, Form, Input, Space, Spin } from 'antd';
 import { ModelsItem, } from '../../data';
 import styles from './style.less';
+import { history } from 'umi';
+
 const HeaderTitle: React.FC<{
   models: ModelsItem[];
   onModelsChange: (data: ModelsItem[]) => void;
@@ -26,11 +27,13 @@ const HeaderTitle: React.FC<{
   }
   // const [isDeveloper, setIsDeveloper] = useState(true);
   const ChangeUser = () => {
-    setTimeout(() => {
-      setIsDeveloper(!isDeveloper);
-      // setLoading(false);  
-    }, 500);
     // setIsDeveloper(!isDeveloper);
+    if (isDeveloper) {
+      history.push('/home/developer');
+    } else {
+      history.push('/home');
+    }
+
     console.log("是否开发者模式", isActivePage)
   };
 

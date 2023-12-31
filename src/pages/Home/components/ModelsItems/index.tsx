@@ -50,16 +50,16 @@ const ModelsItems: React.FC<{
     console.log(currentTab)
     if (isDeveloper) {
       setTabList([
-        { tab: 'Model Code', key: 'Code', closable: false },
-        { tab: 'Files and versions', key: 'Files', closable: false },
         { tab: 'Data', key: 'Data', closable: false },
+        { tab: 'Files and versions', key: 'Files', closable: false },
+        { tab: 'Model Code', key: 'Code', closable: false },
       ])
     } else {
       setCurrentTab('Data');
       setTabList([
-        { tab: 'Data', key: 'Data', closable: false },
-        { tab: 'Files and versions', key: 'Files', closable: false },
         { tab: 'Model Code', key: 'Code', closable: false },
+        { tab: 'Files and versions', key: 'Files', closable: false },
+        { tab: 'Data', key: 'Data', closable: false },
       ])
     }
   }, [isDeveloper]);
