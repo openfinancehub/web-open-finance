@@ -28,6 +28,13 @@
       max-height: 50%;
       // overflow-y: auto;
       margin: 16px 0;
+      :global(.ant-list-item){
+        &:hover{
+          cursor: pointer;
+          color: #1890ff;
+        }
+  }
+      
     }
   }
   .right {
@@ -59,10 +66,11 @@
       }
       .tag {
         position: absolute;
-        right: 30px;
+        right: 10px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 16px;
+        color: #1890ff;
       }
       .cursor {
         display: inline-block;
