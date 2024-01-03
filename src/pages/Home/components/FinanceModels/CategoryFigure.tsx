@@ -10,7 +10,7 @@ const transformData = (inputData: { [x: string]: any[]; }) => {
     children: categories.map(category => ({
       id: category,
       value: category,
-      children: inputData[category].map(factor => ({ id: factor.factor, value: factor.factor })),
+      children: inputData[category].map(item => ({ id: category + item.factor, value: item.factor })),
     })),
     value: 'Category'
   };

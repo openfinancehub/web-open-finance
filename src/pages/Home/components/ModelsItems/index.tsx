@@ -55,7 +55,6 @@ const ModelsItems: React.FC<{
         { tab: 'Model Code', key: 'Code', closable: false },
       ])
     } else {
-      setCurrentTab('Data');
       setTabList([
         { tab: 'Model Code', key: 'Code', closable: false },
         { tab: 'Files and versions', key: 'Files', closable: false },
