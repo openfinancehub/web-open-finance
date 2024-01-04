@@ -4,7 +4,7 @@ import { useModel } from 'umi';
 type WebSocketHook = {
   message: any[];
   clearMessage: () => void;
-  sendWebSocketMessage: (message: string, info: any) => void;
+  sendWebSocketMessage: (message: string, info: any, session_id: any) => void;
 };
 
 const useWebSocket = (url: string): WebSocketHook => {
@@ -60,7 +60,7 @@ const useWebSocket = (url: string): WebSocketHook => {
     setMessage([]);
   };
 
-  const sendWebSocketMessage = (message: string, info: any) => {
+  const sendWebSocketMessage = (message: string, info: any, session_id: any) => {
     setMessage(pre => [
       ...pre,
       { sender: 'user', content: message, flag: true }
@@ -84,9 +84,8 @@ const useWebSocket = (url: string): WebSocketHook => {
               : info.company[0]?.company,
           task: info.task,
           // id + username + token的后六位
-          session_id:
-            currentUser.id +
-            currentUser.username 
+          session_id
+            
             // currentUser.token.substr(currentUser.token.length - 4)
         }
       };
