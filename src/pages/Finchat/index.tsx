@@ -338,7 +338,7 @@ const Finchat = () => {
           </div>
           <div className={styles.bottom}>
             <Input
-              placeholder="Send a message"
+              placeholder="@search 中国的GDP是多少"
               allowClear
               disabled={disabled}
               value={inputValue}

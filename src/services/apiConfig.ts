@@ -6,5 +6,5 @@ export const ApiUrl = {
   HISTORY: '/history',
   CREATE_ARTICLE: '/article/createArticle',
   QUERY_COMPANY: '/search',
-
+  SEARCH_AGENT: '/searchAgent',
 };
