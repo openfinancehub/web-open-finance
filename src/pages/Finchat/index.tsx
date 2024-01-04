@@ -54,7 +54,6 @@ const Finchat = () => {
 
   const [messageList, setMessageList] = useState<any[]>(message);
 
-
   const commonHeader = {
     user: currentUser.username,
     req_id: currentUser.id,
@@ -123,6 +122,11 @@ const Finchat = () => {
     setMessageList([...singleList, ...message])
   }, [message]);
 
+  useEffect(() => {
+    console.log(JSON.parse(sessionStorage.getItem("role")), "effect")
+    setSelectedRole(JSON.parse(sessionStorage.getItem("role")))
+  }, []);
+
   const onSearch = async (value: string) => {
     try {
       if (!value) {
@@ -140,8 +144,6 @@ const Finchat = () => {
     }
   };
 
-
-
   const onChange = _.debounce((e: any) => {
     const str = e.target.value;
     if (!str) {
@@ -153,6 +155,7 @@ const Finchat = () => {
   }, 1000);
 
   const handleSendMessage = () => {
+    // console.log(selectedRole);
     if (!inputValue) return;
      let s_id = selectedSessionId;
     if (!s_id) {
@@ -187,7 +190,7 @@ const Finchat = () => {
     setActiveKey(val);
   };
 
-  const handleRole = (item: any) => {
+  const handleRole = (item: any) => {    
     setSelectedRole(item);
     clearMessage();
   };

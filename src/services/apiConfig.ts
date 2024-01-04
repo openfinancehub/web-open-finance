@@ -1,10 +1,10 @@
 export const ApiUrl = {
-  GET_CAPTCHA: '/getCaptcha',
-  MODEL: '/category',
-  LOGIN: '/login',
-  SIDEBAR: '/sidebar',
-  HISTORY: '/history',
+  GET_CAPTCHA: '/app-api/getCaptcha',
+  MODEL: '/api/category',
+  LOGIN: '/app-api/login',
+  SIDEBAR: '/chat-api/sidebar',
+  HISTORY: '/chat-api/history',
   CREATE_ARTICLE: '/article/createArticle',
-  QUERY_COMPANY: '/search',
-  SEARCH_AGENT: '/searchAgent',
+  QUERY_COMPANY: '/chat-api/search',
+  SEARCH_AGENT: '/chat-api/role',
 };

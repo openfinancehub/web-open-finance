@@ -19,7 +19,7 @@ const Store: React.FC = () => {
 
   const [agentList, setAgentList] = useState<any[]>([]);
 
-  const fetchAgent = async () => {
+  const fetchAgents = async () => {
     try {
       const res = await AgentServices.fetchAgent({
         header: {
@@ -27,44 +27,33 @@ const Store: React.FC = () => {
             req_id: currentUser.id,
             req_src: currentUser.avatarUrl,
             token: currentUser.token
-      }});
-
-      const { output } = res;
-      if (output?.result?.length) {
-        const tempList = output.result;
+      }});          
+      if (res.output?.role_list?.length) {
+        const tempList = res.output.role_list;
         const agentlist: any[] = []
         tempList.forEach((v: any) => {
-          console.log(JSON.parse(v));
-          const item = JSON.parse(v);          
-          agentList.push(
+          // console.log(v);   
+          agentlist.push(
             {url: 'https://randomuser.me/api/portraits/men/41.jpg',
-             desc: item.desc, 
-             title:item.title
+             desc: v.desc, 
+             title: v.role
             })
         setAgentList(agentlist);  
         });
       }
-      console.log(res, 'res');
+      // console.log(agentList, 'agentList');
     } catch (error) {
       console.log(error, 'error');
     }
   };
 
   useEffect(() => {
-    fetchAgent();
+    fetchAgents();
   }, []);
 
-  const agents = [
-    {url: "https://randomuser.me/api/portraits/men/41.jpg", desc: "Buffett", title: "Buffett"},
-    {url: "https://randomuser.me/api/portraits/men/41.jpg", desc: "Musk", title: "Musk"},
-    {url: "https://randomuser.me/api/portraits/men/41.jpg", desc: "Wood", title: "Wood"},
-    {url: "https://randomuser.me/api/portraits/men/41.jpg", desc: "Dalio", title: "Dalio"},
-    {url: "https://randomuser.me/api/portraits/men/41.jpg", desc: "Dalio", title: "Dalio"},               
-  ]
-
-  const agentlist = agents.map(
+  const agentlist = agentList.map(
     (agent) => 
-    <AgentCard url={agent.url} desc={agent.desc} title={agent.title}/>
+    <AgentCard icon={agent.url} desc={agent.desc} role={agent.title}/>
   );
 
   return (
