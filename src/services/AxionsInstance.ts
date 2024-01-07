@@ -15,7 +15,7 @@ interface CustomizeConfig extends AxiosRequestConfig {
 // axios config options
 const options: CustomizeConfig = {
   // http://121.37.5.77:5005/api
-  baseURL: 'http://121.37.5.77:5005/api',
+  baseURL: '',
   timeout: 1000 * 60 * 5,
   retry: 0,
   retryDelay: 1000,
@@ -85,7 +85,7 @@ const axiosRequest = async ({
 };
 
 export const REQUEST = ({
-  baseURL = 'http://121.37.5.77:5005/api',
+  baseURL = '',
   method = 'GET',
   url,
   data,
