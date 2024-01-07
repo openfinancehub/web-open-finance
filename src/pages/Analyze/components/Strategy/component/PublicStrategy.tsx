@@ -1,7 +1,7 @@
 import { ProCard } from '@ant-design/pro-components';
-import type { DatePickerProps } from 'antd';
 import { Button, InputNumber, Space, DatePicker, Radio, Select } from 'antd';
-import React,{ useEffect, useRef, useState } from 'react';
+import type { DatePickerProps } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
 import * as echarts from 'echarts/core';
 import { TitleComponent, LegendComponent } from 'echarts/components';
@@ -17,7 +17,7 @@ echarts.use([
     LineChart
 ]);
 
-export default function PublicStrategy(props:string) {
+export default function PublicStrategy(props: string) {
     const size = 'large';
     const today = new Date();
     const date = today.getDate();
@@ -35,18 +35,18 @@ export default function PublicStrategy(props:string) {
     const [listName, setListName] = useState()
     const [indexdetails, setindexDetails] = useState(0)
     const [isdemoBtn, setIsdemoBtn] = useState(true)
-    const [lineDataTime,setlineDataTime] = useState()
+    const [lineDataTime, setlineDataTime] = useState()
     const [lineData, setLineData] = useState()
-    const [lineMax,setLinemax] = useState()
-    const [lineMin,setLinemin] = useState()
-    const [lineIdent,setLineIdent] = useState([])
+    const [lineMax, setLinemax] = useState()
+    const [lineMin, setLinemin] = useState()
+    const [lineIdent, setLineIdent] = useState([])
     const [demoEndData, setDemoEndData] = useState([])
     const [raderData, setRaderData] = useState([{ name: '', max: '' }])
     const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
-    const [minTime,setMinTime] = useState(5)
+    const [minTime, setMinTime] = useState(5)
     // stop 
-    const [stopDemo,setStopDemo] = useState(0)
+    const [stopDemo, setStopDemo] = useState(0)
     const firstKargs: any = []
     let synthesis: any = []
     const strtegylist = () => {
@@ -63,11 +63,18 @@ export default function PublicStrategy(props:string) {
         }).then((res) => {
             setListName(res.data.list[0])
             setSelectedButton(res.data.list[0])
-            setListData(res.data.list)
+            let options = res.data.list.map((item: string) => {
+                return {
+                    value: item,
+                    lable: item,
+                }
+            })
+            setListData(options)
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
-    const GetStrategy = (uid: number,demoTime:number,) => {
+
+    const GetStrategy = (uid: number, demoTime: number,) => {
         const data = {
             uid: uid,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
@@ -82,15 +89,15 @@ export default function PublicStrategy(props:string) {
             console.log(res)
             const list = demoTime + 20
             // 当测试时间超过80s时停止测试
-            if(demoTime > 80){        
-              
+            if (demoTime > 80) {
+
                 setStopDemo(res.code)
                 console.log(stopDemo);
                 return demoTime
             }
             if (res.code === 300 && demoTime <= 140) {
                 setTimeout(() => {
-                    GetStrategy(uid,list)
+                    GetStrategy(uid, list)
                 }, 2000)
             } else {
                 let destArr = []
@@ -111,11 +118,11 @@ export default function PublicStrategy(props:string) {
                     res.data.raw_data.forEach(list => {
                         linedata.push(Object.values(list)[0])
                         lineDataTime.push(Object.keys(list)[0])
-                        for(let i=0;i<res.data.decision_long.length;i++){
-                            if(res.data.decision_long[i] === Object.keys(list)[0]){
+                        for (let i = 0; i < res.data.decision_long.length; i++) {
+                            if (res.data.decision_long[i] === Object.keys(list)[0]) {
                                 longAndshort.push({
                                     coord: [Object.keys(list)[0], Object.values(list)[0]],
-                                    itemStyle: {color: 'red'},
+                                    itemStyle: { color: 'red' },
                                     label: {
                                         formatter: '买入'
                                     }
@@ -123,11 +130,11 @@ export default function PublicStrategy(props:string) {
                                 break;
                             }
                         }
-                        for(let i=0;i<res.data.decision_short.length;i++){
-                            if(res.data.decision_short[i] === Object.keys(list)[0]){
+                        for (let i = 0; i < res.data.decision_short.length; i++) {
+                            if (res.data.decision_short[i] === Object.keys(list)[0]) {
                                 longAndshort.push({
                                     coord: [Object.keys(list)[0], Object.values(list)[0]],
-                                    itemStyle: {color: 'green'},
+                                    itemStyle: { color: 'green' },
                                     label: {
                                         formatter: '卖出'
                                     }
@@ -155,11 +162,11 @@ export default function PublicStrategy(props:string) {
             }
         }).catch(err => { console.log(err) })
     }
-    const handleStopTime = ()=>{
-        setTimeout(()=>{
-            setStopDemo({list:true})
+    const handleStopTime = () => {
+        setTimeout(() => {
+            setStopDemo({ list: true })
             console.log(stopDemo);
-        },8000)
+        }, 8000)
     }
     const strategy_test = (kargs: number[]) => {
         const data = {
@@ -181,7 +188,7 @@ export default function PublicStrategy(props:string) {
                 cnt_ops: shopData,
                 test_days: demoDays,
                 mode: 'both',
-                scale:minTime
+                scale: minTime
             }
         }
         request('http://139.159.205.40:8808/quant/strategy_test', {
@@ -193,16 +200,16 @@ export default function PublicStrategy(props:string) {
         }).then((res) => {
             console.log(res.uid)
             if (res.uid) {
-                GetStrategy(res.uid,0)
+                GetStrategy(res.uid, 0)
                 handleStopTime()
-              
+
             }
         }).catch(err => { console.log(err) })
     }
     useEffect(() => {
         strtegylist()
     }, []);
-
+    // 饼图
     useEffect(() => {
         const option = {
             title: {
@@ -230,7 +237,7 @@ export default function PublicStrategy(props:string) {
         const chart = echarts.init(radarRef.current);
         chart.setOption(option);
     }, [raderValue]);
-
+    // 折线图
     useEffect(() => {
         const option = {
             tooltip: {
@@ -238,19 +245,19 @@ export default function PublicStrategy(props:string) {
                 axisPointer: {
                     type: 'cross'
                 },
-                formatter: function(params) {
-                    let v1  = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:blue;"></span>'
+                formatter: function (params) {
+                    let v1 = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:blue;"></span>'
                     let v2 = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:red;"></span>'
-                    let v3 =  '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:green;"></span>'
-                    if(params[1] && params[1].data !==''){
-                        return v2 + '买入 :'+ params[0].data
+                    let v3 = '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:green;"></span>'
+                    if (params[1] && params[1].data !== '') {
+                        return v2 + '买入 :' + params[0].data
                     }
-                    else if(params[1] && params[2].data !=='' ){
-                        return v3 + '卖出 :'+ params[0].data
-                    }else{
-                        return v1 + '股票 :' + params[0].data ;
+                    else if (params[1] && params[2].data !== '') {
+                        return v3 + '卖出 :' + params[0].data
+                    } else {
+                        return v1 + '股票 :' + params[0].data;
                     }
-                    
+
                 }
             },
             xAxis: {
@@ -336,15 +343,18 @@ export default function PublicStrategy(props:string) {
     }
 
     const demoDaysChange = (value: number) => {
-        console.log('测试天数', value);
         setDemoDays(value)
     }
-
+    console.log(selectedButton);
+    
     const handleValue = (index: number, event: any) => {
         let text = event.target.innerHTML
         setListName(text)
         setindexDetails(index)
         setSelectedButton(text)
+    }
+    const handleChangeValue = () =>{
+
     }
     const nuberOnChange = (name: string, value: number) => {
         console.log(name, value);
@@ -355,7 +365,7 @@ export default function PublicStrategy(props:string) {
         console.log(firstKargs);
 
     }
-    const minTimeChange = (value) =>{
+    const minTimeChange = (value) => {
         setMinTime(value)
     }
     return (
@@ -363,17 +373,28 @@ export default function PublicStrategy(props:string) {
             <ProCard gutter={16} ghost wrap>
                 <ProCard
                     bordered
-                    style={{ textAlign: 'center', height: 225 ,overflowY: 'scroll'}}
+                    style={{ textAlign: 'center', height: 225, overflowY: 'scroll' }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space wrap align="center">
-                        {
+
+                        <Select
+                            defaultValue={selectedButton}
+                            // defaultValue="luck"
+                            style={{
+                                width: 200,
+                            }}
+                            allowClear
+                            onChange={handleChangeValue}
+                            options={listData}
+                        />
+                        {/* {
                             listData.map((item, index) => {
                                 return (
                                     <Button type={selectedButton === item ? 'primary' : 'default'}
                                         key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
                                 )
                             })
-                        }
+                        } */}
                     </Space>
                     <div >
                         {
@@ -388,7 +409,7 @@ export default function PublicStrategy(props:string) {
                     </div>
                 </ProCard>
                 <ProCard
-                    style={{ textAlign: 'center', height: 225}}
+                    style={{ textAlign: 'center', height: 225 }}
                     bordered
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
                     <div className="numberSele">
@@ -416,28 +437,28 @@ export default function PublicStrategy(props:string) {
                             onChange={minTimeChange}
                             options={[
                                 {
-                                  value: 1,
-                                  label: '最小时间单位1分钟',
+                                    value: 1,
+                                    label: '最小时间单位1分钟',
                                 },
                                 {
-                                  value: 5,
-                                  label: '最小时间单位5分钟',
+                                    value: 5,
+                                    label: '最小时间单位5分钟',
                                 },
                                 {
-                                  value: 15,
-                                  label: '最小时间单位15分钟',
+                                    value: 15,
+                                    label: '最小时间单位15分钟',
                                 },
                                 {
-                                  value: 30,
-                                  label: '最小时间单位30分钟',
+                                    value: 30,
+                                    label: '最小时间单位30分钟',
                                 },
                                 {
-                                  value: 60,
-                                  label: '最小时间单位60分钟',
+                                    value: 60,
+                                    label: '最小时间单位60分钟',
                                 },
                             ]}
                         />
-    
+
                         <DatePicker onChange={dateTime} />
                         是否滚动测评:
                         <Radio.Group onChange={backOrder} value={backData}>
@@ -454,7 +475,7 @@ export default function PublicStrategy(props:string) {
                         }}
                         onClick={demoBtn}
                     >
-                        {stopDemo?"重新测试":"测试"}
+                        {stopDemo ? "重新测试" : "测试"}
                     </Button>}
                     {
                         !isdemoBtn && <Button
@@ -479,8 +500,8 @@ export default function PublicStrategy(props:string) {
                         <div>测试结果：</div><br></br>
                         {demoEndData.map((item, index) => {
                             return (
-                                <div style={{fontWeight:'bole'}} key={index}>
-                                      <p > <span>{index +1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
+                                <div style={{ fontWeight: 'bole' }} key={index}>
+                                    <p > <span>{index + 1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
                                     <p>{item.desc}</p>
                                 </div>
                             )

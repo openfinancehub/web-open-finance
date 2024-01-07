@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { request } from 'umi';
 import { Button, Space,Input } from 'antd';
-export default function left({ onDataChange }) {
+export default function left({ onDataChange, onInval}) {
     const size = 'large'
     // 股票种类的数据
     const [sotckListData, setsotckList] = useState([])
     const [selectedButton, setSelectedButton] = useState('') 
+    // const [selectedButtonNum, setSelectedButtonNum] = useState() 
+    // 获取股票的初始值
     // 数据备份用于过滤
     const [filterData,setFilterList] = useState([])
     const sotckList = () => {
@@ -20,7 +22,11 @@ export default function left({ onDataChange }) {
             data: JSON.stringify(data)
         }).then((res) => {
             const first = res.data[0].split(',')[0]
+            const firstid = res.data[0].split(',')[1]
             setSelectedButton(first)
+            onInval(firstid)
+            console.log(first);
+            
             const list = res.data.map((item) => {
                 return item.split(',')
             })
@@ -31,7 +37,9 @@ export default function left({ onDataChange }) {
             console.log(err);
         })
     }
+    const inval = ()=>{
 
+    }
     useEffect(() => {
         sotckList()
     }, [])
@@ -41,7 +49,6 @@ export default function left({ onDataChange }) {
             return item[0].includes(event.target.value)
         })
         console.log(filtered);
-        
         setsotckList(filtered)
     }
     // 点击切换股票数据

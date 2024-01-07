@@ -1,14 +1,14 @@
 import { ProCard } from '@ant-design/pro-components';
 import {Tabs,TabsProps, Button } from 'antd';
-import { useState } from 'react';
-import './style.css';
+import { useEffect, useState } from 'react';
+import './style.less';
 import Left from '../Public/left'
 import Custom from './component/Custom'
 import PublicStrategy from './component/PublicStrategy';
 import OwnStrategy from './component/OwnStrategy';
 const Strategy = () => {
   const size = 'large';
-  const [buttonId,setButtonId] = useState('000001')
+  const [buttonId,setButtonId] = useState('')
   const [seleType, setSeleType] = useState('看涨买入');
   const handleTypeRise = () => {
     setSeleType('看涨买入');
@@ -25,9 +25,10 @@ const Strategy = () => {
   const handleDataFromChild = (butttonId: string, buttonNum: string) => {
     console.log(buttonNum, butttonId);
     setButtonId(butttonId)
-    
   }
-  
+  const handleOnInval = (buttonNum:string) => {
+    setButtonId(buttonNum)
+  }
   const templateItem: TabsProps['items'] = [
       // {
       //   key: '1',
@@ -56,7 +57,7 @@ const Strategy = () => {
       <ProCard
         colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 3 }}
         style={{ height: '100%',padding:0 }}>
-        <Left onDataChange={handleDataFromChild}></Left>
+        <Left onDataChange={handleDataFromChild} onInval={handleOnInval}></Left>
       </ProCard>
       <ProCard
         gutter={[0, 16]}
