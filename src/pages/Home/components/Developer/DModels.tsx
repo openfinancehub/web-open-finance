@@ -101,13 +101,14 @@ const DModels: React.FC<ModelsProps> = ({ onFilterFinance, data, company, setCom
 
     return (
         <div>
-            <div key='model' >
-                <Collapse  >
+            <div>
+                <Collapse accordion >
                     {categoryList.map((item, index) => (
-                        <Panel header={item.title} key={index}>
+                        <Panel header={item.title} key={item.title}>
+                            {/* {item.title} */}
                             {item.description.map(({ factor }, index) => (
-                                <Collapse bordered={false} accordion onChange={onChange}>
-                                    <Panel header={factor} key={factor} >
+                                <Collapse bordered={false} accordion >
+                                    <Panel header={item.title + factor} key={item.title + factor} >
                                         <ProList<ModelsItem>
                                             onRow={onRow}
                                             rowKey='id'

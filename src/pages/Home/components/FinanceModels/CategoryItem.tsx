@@ -104,12 +104,10 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
                 const color = colors.find((_, index) => item.title === categoryList[index].title) || 'blue';
                 return (
                   item.description.map(({ factor }, index) => (
-                    <span>
-                      <Tag key={index} color={color} onClick={() => filterFinance({ factor }, item.title)}
-                        style={selectedFactor === item.title + factor ? { backgroundColor: 'lightblue' } : {}}>
-                        <IconText icon={<StarOutlined />} text={factor} key={index} />
-                      </Tag>
-                    </span>
+                    <Tag key={item.title + factor} color={color} onClick={() => filterFinance({ factor }, item.title)}
+                      style={selectedFactor === item.title + factor ? { backgroundColor: 'lightblue' } : {}}>
+                      <IconText icon={<StarOutlined />} text={factor} key={item.title + factor} />
+                    </Tag>
                   ))
                 );
               },

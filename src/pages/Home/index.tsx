@@ -14,8 +14,8 @@ const Home: React.FC = () => {
   const [company, setCompany] = useState<string>('');
   const [isDeveloper, setIsDeveloper] = useState(true);
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  // const location = useLocation();
+  // const searchParams = new URLSearchParams(location.search);
   // const [isDeveloper, setIsDeveloper] = useState(searchParams.get('isDeveloper') || '');
 
   const companyChange = (company: string) => {

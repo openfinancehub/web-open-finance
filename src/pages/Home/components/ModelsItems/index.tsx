@@ -40,7 +40,7 @@ const ModelsItems: React.FC<{
 
   const showModalChange = () => {
     console.log("是否开发者模式", isDeveloper)
-    history.push('/home' + `?${params}`);
+    history.push('/home');
     // history.back();
   };
 
