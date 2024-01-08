@@ -1,5 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import { Button, InputNumber, Space, DatePicker, Radio, Select } from 'antd';
+const { Option } = Select;
 import type { DatePickerProps } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
@@ -49,6 +50,7 @@ export default function PublicStrategy(props: string) {
     const [stopDemo, setStopDemo] = useState(0)
     const firstKargs: any = []
     let synthesis: any = []
+    let firstdemo:string
     const strtegylist = () => {
         const data = {
             uid: 1,
@@ -63,13 +65,14 @@ export default function PublicStrategy(props: string) {
         }).then((res) => {
             setListName(res.data.list[0])
             setSelectedButton(res.data.list[0])
+            firstdemo = res.data.list[0]
             let options = res.data.list.map((item: string) => {
                 return {
                     value: item,
                     lable: item,
                 }
             })
-            setListData(options)
+            setListData(res.data.list)
             setDetailsData(Object.values(res.data.details))
         }).catch(err => { console.log(err) })
     }
@@ -345,7 +348,6 @@ export default function PublicStrategy(props: string) {
     const demoDaysChange = (value: number) => {
         setDemoDays(value)
     }
-    console.log(selectedButton);
     
     const handleValue = (index: number, event: any) => {
         let text = event.target.innerHTML
@@ -353,8 +355,11 @@ export default function PublicStrategy(props: string) {
         setindexDetails(index)
         setSelectedButton(text)
     }
-    const handleChangeValue = () =>{
-
+    const handleChangeValue = (value) =>{
+        console.log(value);
+        setListName(value)
+        setindexDetails(value)
+        setSelectedButton(value)
     }
     const nuberOnChange = (name: string, value: number) => {
         console.log(name, value);
@@ -377,24 +382,26 @@ export default function PublicStrategy(props: string) {
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space wrap align="center">
 
-                        <Select
+                        {/* <Select
+                            // defaultValue={selectedButton}
+                            // defaultActiveFirstOption
                             defaultValue={selectedButton}
-                            // defaultValue="luck"
                             style={{
                                 width: 200,
+                                textAlign:"center"
                             }}
-                            allowClear
                             onChange={handleChangeValue}
                             options={listData}
-                        />
-                        {/* {
+                        /> */}
+                            
+                        {
                             listData.map((item, index) => {
                                 return (
                                     <Button type={selectedButton === item ? 'primary' : 'default'}
                                         key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
                                 )
                             })
-                        } */}
+                        }
                     </Space>
                     <div >
                         {

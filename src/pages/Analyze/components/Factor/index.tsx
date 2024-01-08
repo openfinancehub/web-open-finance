@@ -19,6 +19,7 @@ import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../Public/left"
 import Linedata from "./stock-DJI"
+import { Space, Select, InputNumber, Button,Table } from 'antd'
 echarts.use([
     ToolboxComponent,
     TooltipComponent,
@@ -91,12 +92,12 @@ const Factor = () => {
         historyfactor(butttonId)
     }
     // 刚进页面时调用
-    const handleOnInval = (buttonNum:string)=>{
+    const handleOnInval = (buttonNum: string) => {
         getstock_kline(buttonNum)
-        historyfactor(buttonNum)  
+        historyfactor(buttonNum)
     }
     // 对图表的数据进行处理
-    const splitData = function (rawData:any) {
+    const splitData = function (rawData: any) {
         let categoryData = [];
         let values = [];
         let volumes = [];
@@ -111,7 +112,7 @@ const Factor = () => {
             volumes: volumes
         };
     }
-    const calculateMA = function (dayCount:number, data:any) {
+    const calculateMA = function (dayCount: number, data: any) {
         let result = [];
         for (let i = 0, len = data.values.length; i < len; i++) {
             if (i < dayCount) {
@@ -131,7 +132,7 @@ const Factor = () => {
         const option = {
             animation: false,
             legend: {
-                bottom: 0,
+                top: 0,
                 left: 'center',
                 data: ['Dow-Jones index', 'MA5', 'MA10', 'MA20', 'MA30']
             },
@@ -204,8 +205,8 @@ const Factor = () => {
                 {
                     left: '00%',
                     right: '0%',
-                    top: '63%',
-                    height: '16%'
+                    top: '70%',
+                    height: '16%'   
                 }
             ],
             xAxis: [
@@ -331,6 +332,72 @@ const Factor = () => {
         };
     }, [])
 
+    const tabledata = [
+        {
+          key: '1',
+          name: 'John Brown',
+          age: 32,
+          address: 'New York No. 1 Lake Park',
+          tags: ['nice', 'developer'],
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          age: 42,
+          address: 'London No. 1 Lake Park',
+          tags: ['loser'],
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          age: 32,
+          address: 'Sydney No. 1 Lake Park',
+          tags: ['cool', 'teacher'],
+        },
+    ];
+    const columns = [
+        {
+          title: '因子分箱值',
+          dataIndex: 'name',
+          key: 'name',
+          render: (text) => <a>{text}</a>,
+        },
+        {
+          title: '因子取值范围',
+          dataIndex: 'age',
+          key: 'age',
+        },
+        {
+          title: '10分位数',
+          dataIndex: 'address',
+          key: 'address',
+        },
+        {
+          title: '50分位数',
+          key: 'tags',
+          dataIndex: 'tags',
+        },
+        {
+          title: '90分位数',
+          key: 'action',
+          render: (_, record) => (
+            <Space size="middle">
+              <a>Invite {record.name}</a>
+              <a>Delete</a>
+            </Space>
+          ),
+        },
+        {
+            title: '均值',
+            key: 'tags',
+            dataIndex: 'tags',
+        },
+        {
+            title: '标准差',
+            key: 'tags',
+            dataIndex: 'tags',
+        },
+      ];
     return (
         <ProCard gutter={16} ghost wrap>
             <ProCard
@@ -340,8 +407,136 @@ const Factor = () => {
                 <Left onDataChange={handleDataFromChild} onInval={handleOnInval}></Left>
             </ProCard>
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
-                <ProCard style={{ height: '75vh' }} bordered>
-                    <div ref={chartRef} style={{ width: "100%", height: "100%", overflow:'hidden' }}></div>
+                <ProCard style={{ height: '70vh' }} bordered>
+                    <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div>
+                </ProCard>
+                <ProCard>
+                    <div style={{ textAlign: "center" }}>因子分析与评估</div>
+                    <hr /><br />
+                    <div style={{ textAlign: "center" }}>测试参数</div>
+                    <br />
+                    <div className='factorli'>
+                        <Select
+                            style={{ width: '20%' }}
+                            placeholder="时间粒度"
+                            // onChange={minTimeChange}
+                            options={[
+                                {
+                                    value: 1,
+                                    label: '1',
+                                },
+                                {
+                                    value: 5,
+                                    label: '5',
+                                },
+                                {
+                                    value: 15,
+                                    label: '15',
+                                },
+                                {
+                                    value: 30,
+                                    label: '30',
+                                },
+                                {
+                                    value: 60,
+                                    label: '60',
+                                },
+                            ]}
+                        />
+                        <InputNumber
+                            // size={size}
+                            min={1}
+                            // max={10}
+                            addonBefore="间隔长度"
+                            // addonAfter="天"
+                            defaultValue={1}
+                        // onChange={demoDaysChange}
+                        />
+                        <InputNumber
+                            // size={size}
+                            min={60}
+                            // max={10}
+                            addonBefore="因子最小计算长度"
+                            // addonAfter="天"
+                            defaultValue={60}
+                        // onChange={demoDaysChange}
+                        />
+                        <InputNumber
+                            // size={size}
+                            min={15}
+                            // max={10}
+                            addonBefore="目标时间长度"
+                            // addonAfter="天"
+                            defaultValue={15}
+                        // onChange={demoDaysChange}
+                        />
+                    </div>
+                    <br />
+                    <div style={{ textAlign: 'center' }}>
+                        <Button >点击测试</Button>
+                    </div>
+                </ProCard>
+                <ProCard>
+                    <div>
+                        <Select
+                            style={{ width: '18%',marginRight:10}}
+                            placeholder="指标VPT"
+                            // onChange={minTimeChange}
+                            options={[
+                                {
+                                    value: 1,
+                                    label: '1',
+                                },
+                                {
+                                    value: 5,
+                                    label: '5',
+                                },
+                                {
+                                    value: 15,
+                                    label: '15',
+                                },
+                                {
+                                    value: 30,
+                                    label: '30',
+                                },
+                                {
+                                    value: 60,
+                                    label: '60',
+                                },
+                            ]}
+                        />
+                        <Select
+                            style={{ width: '18%' }}
+                            placeholder="评估维度"
+                            // onChange={minTimeChange}
+                            options={[
+                                {
+                                    value: 1,
+                                    label: '1',
+                                },
+                                {
+                                    value: 5,
+                                    label: '5',
+                                },
+                                {
+                                    value: 15,
+                                    label: '15',
+                                },
+                                {
+                                    value: 30,
+                                    label: '30',
+                                },
+                                {
+                                    value: 60,
+                                    label: '60',
+                                },
+                            ]}
+                        />
+                    </div>
+                    <br />
+                    <div>
+                    <Table columns={columns} dataSource={tabledata} />
+                    </div>
                 </ProCard>
             </ProCard>
         </ProCard>
