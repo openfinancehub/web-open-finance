@@ -1,0 +1,91 @@
+.wrap-bottom {
+			position: absolute;
+			bottom: 99px;
+			width: 100%;
+			left: 0;
+			z-index: 2;
+			.wrap-card-item {
+				margin: 48px 0 0;
+				.card-item-1 {
+					cursor: pointer;
+					text-align: left;
+					width: 268px;
+					height: 320px;
+					margin-right: 32px;
+					padding: 24px 20px 18px 32px;
+					border-radius: 4px;
+					background: linear-gradient(180deg, rgba(122, 175, 255, 0.2) 0%, rgba(255, 255, 255, 0) 38.58%),
+						#fff;
+					box-shadow: 0px 8.38944px 6.76164px 0px rgba(0, 0, 0, 0.04), 0px 67px 54px 0px rgba(0, 0, 0, 0.07);
+					transition: transform 0.3s;
+					&:hover {
+						transform: scale(1.1); /* 鼠标悬停时添加阴影 */
+					}
+					.title {
+						display: flex;
+						align-items: center;
+						img {
+							width: 32px;
+							height: 31px;
+						}
+						b {
+							font-size: 20px;
+							font-weight: 600;
+							margin: 0 8px;
+						}
+						.tags {
+							padding: 4px 8px;
+							border-radius: 2px;
+							border: 0.5px solid var(--theme-color);
+							color: var(--theme-color);
+							font-size: 10px;
+						}
+					}
+					.extra-info {
+						color: var(--theme-color);
+						font-weight: 500;
+						margin-top: 8px;
+						font-size: 12px;
+						line-height: 24px;
+					}
+					h5 {
+						font-size: 14px;
+						margin: 20px 0 0;
+					}
+					.text {
+						font-size: 12px;
+						margin: 8px 0 0;
+						line-height: 24px;
+						p {
+							display: flex;
+							align-items: center;
+						}
+						svg {
+							width: 8px;
+							height: 8px;
+							margin: 0 8px 0 0;
+						}
+					}
+					&:nth-of-type(2) {
+						background: linear-gradient(180deg, rgba(255, 223, 174, 0.2) 0%, rgba(255, 255, 255, 0) 38.58%),
+							#fff;
+						box-shadow: 0px 12.52155px 10.01724px 0px rgba(0, 0, 0, 0.03),
+							0px 100px 80px 0px rgba(0, 0, 0, 0.06);
+						.tags {
+							color: #f76a2b;
+							border: 0.5px solid #f76a2b;
+						}
+					}
+					&:nth-of-type(3) {
+						background: linear-gradient(180deg, rgba(199, 172, 255, 0.2) 0%, rgba(255, 255, 255, 0) 38.58%),
+							#fff;
+						box-shadow: 0px 8.01379px 11.77026px 0px rgba(0, 0, 0, 0.04),
+							0px 64px 94px 0px rgba(0, 0, 0, 0.08);
+						.tags {
+							color: #9673ff;
+							border: 0.5px solid #9673ff;
+						}
+					}
+				}
+			}
+		}
