@@ -25,9 +25,7 @@ const HeaderTitle: React.FC<{
   const ChangeStyle = () => {
     setActivePage(!isActivePage)
   }
-  // const [isDeveloper, setIsDeveloper] = useState(true);
   const ChangeUser = () => {
-    // setIsDeveloper(!isDeveloper);
     if (isDeveloper) {
       history.push('/home/developer');
     } else {
@@ -40,9 +38,6 @@ const HeaderTitle: React.FC<{
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {/* <Space size="middle">
-        <Spin size="large" />
-      </Space> */}
       <div className={styles.inpStyle}>
         <h3 className={styles.fountStyle}>Tools</h3>
       </div>
@@ -56,7 +51,7 @@ const HeaderTitle: React.FC<{
       </div>
       <div className={styles.but1Style}>
         <Button key='sort1' onClick={() => ChangeUser()} type='primary'>
-          {isDeveloper ? '我要开发' : '随便看看'}
+          {isDeveloper ? '随便看看' : '我要开发'}
         </Button>
       </div>
       <div className={styles.but2Style}>

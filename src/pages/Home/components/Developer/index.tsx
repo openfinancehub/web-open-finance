@@ -11,10 +11,6 @@ const Home: React.FC = () => {
   const [company, setCompany] = useState<string>('');
   const [isDeveloper, setIsDeveloper] = useState(false);
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  // const [isDeveloper, setIsDeveloper] = useState(searchParams.get('isDeveloper') || '');
-
   const companyChange = (company: string) => {
     setCompany(company);
   };
@@ -55,11 +51,9 @@ const Home: React.FC = () => {
 
               <DModels
                 isDeveloper={isDeveloper}
-                onFilterFinance={handleFilterFinance}
                 data={financeData}
                 company={company}
-                setCompany={companyChange} /> 
-
+                setCompany={companyChange} />
             </div>
           </ProCard>
         </ProCard>

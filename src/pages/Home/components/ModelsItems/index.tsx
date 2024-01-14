@@ -12,18 +12,16 @@ interface Tab {
   key: string;
   closable: boolean;
 }
-// 普通用户模式
+
 const ModelsItems: React.FC<{
   modelValue: string
   factorValue: string
-  showModal: boolean
   company: string;
   setModelValue: React.Dispatch<React.SetStateAction<string>>;
   setFactorValue: React.Dispatch<React.SetStateAction<string>>;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   setCompany: (company: string) => void;
   isDeveloper: boolean
-}> = ({ showModal, setShowModal, company, setCompany, isDeveloper }) => {
+}> = ({ company, setCompany, isDeveloper }) => {
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -31,12 +29,9 @@ const ModelsItems: React.FC<{
   const [factorValue, setFactorValue] = useState(searchParams.get('factorValue') || '');
   const [currentTab, setCurrentTab] = useState('Code');
 
-
   const onTabChange = (key: SetStateAction<string>) => {
     setCurrentTab(key);
   };
-
-  const params = `isDeveloper=${encodeURIComponent('false')}`;
 
   const showModalChange = () => {
     console.log("是否开发者模式", isDeveloper)
@@ -89,7 +84,6 @@ const ModelsItems: React.FC<{
           company={company}
           setCompany={setCompany} />}
         {currentTab === 'Files' && <ModelsFiles />}
-        {/* {currentTab === 'Test' && <Test />} */}
       </PageContainer>
     </div >
   );
