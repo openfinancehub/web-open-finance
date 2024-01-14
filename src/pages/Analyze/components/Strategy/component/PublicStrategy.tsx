@@ -32,9 +32,9 @@ export default function PublicStrategy(props: string) {
     const [dateData, setDateData] = useState(todayDate)
     const [shopData, setShopData] = useState(1)
     const [listData, setListData] = useState([])
-    const [detailsData, setDetailsData] = useState([])
+    const [detailsData, setDetailsData] = useState({})
     const [listName, setListName] = useState()
-    const [indexdetails, setindexDetails] = useState(0)
+    const [indexdetails, setindexDetails] = useState("")
     const [isdemoBtn, setIsdemoBtn] = useState(true)
     const [lineDataTime, setlineDataTime] = useState()
     const [lineData, setLineData] = useState()
@@ -50,7 +50,6 @@ export default function PublicStrategy(props: string) {
     const [stopDemo, setStopDemo] = useState(0)
     const firstKargs: any = []
     let synthesis: any = []
-    let firstdemo:string
     const strtegylist = () => {
         const data = {
             uid: 1,
@@ -65,15 +64,18 @@ export default function PublicStrategy(props: string) {
         }).then((res) => {
             setListName(res.data.list[0])
             setSelectedButton(res.data.list[0])
-            firstdemo = res.data.list[0]
-            let options = res.data.list.map((item: string) => {
+            let options = res.data.list.map((item: string,index:number) => {
                 return {
                     value: item,
                     lable: item,
+                    index: index,
                 }
             })
-            setListData(res.data.list)
-            setDetailsData(Object.values(res.data.details))
+            setListData(options)   
+            // setListData(res.data.list)
+            setDetailsData(res.data.details)
+            console.log(detailsData,"选择项");
+            
         }).catch(err => { console.log(err) })
     }
 
@@ -349,16 +351,17 @@ export default function PublicStrategy(props: string) {
         setDemoDays(value)
     }
     
-    const handleValue = (index: number, event: any) => {
-        let text = event.target.innerHTML
-        setListName(text)
-        setindexDetails(index)
-        setSelectedButton(text)
-    }
-    const handleChangeValue = (value) =>{
-        console.log(value);
+    // const handleValue = (index: number, event: any) => {
+    //     let text = event.target.innerHTML
+    //     setListName(text)
+    //     setindexDetails(index)
+    //     setSelectedButton(text)
+    // }
+    const handleChangeValue = (value:any,option:any) =>{
+        console.log(option.index);
         setListName(value)
-        setindexDetails(value)
+        setindexDetails(option.index)
+        console.log(indexdetails,"选择的键值");
         setSelectedButton(value)
     }
     const nuberOnChange = (name: string, value: number) => {
@@ -373,6 +376,7 @@ export default function PublicStrategy(props: string) {
     const minTimeChange = (value) => {
         setMinTime(value)
     }
+    console.log(selectedButton,"选择框的初始值");
     return (
         <div>
             <ProCard gutter={16} ghost wrap>
@@ -381,31 +385,27 @@ export default function PublicStrategy(props: string) {
                     style={{ textAlign: 'center', height: 225, overflowY: 'scroll' }}
                     colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
                     <Space wrap align="center">
-
-                        {/* <Select
-                            // defaultValue={selectedButton}
-                            // defaultActiveFirstOption
-                            defaultValue={selectedButton}
+                        <Select
+                            value={selectedButton}
                             style={{
                                 width: 200,
                                 textAlign:"center"
                             }}
                             onChange={handleChangeValue}
                             options={listData}
-                        /> */}
-                            
-                        {
+                        />   
+                        {/* {
                             listData.map((item, index) => {
                                 return (
                                     <Button type={selectedButton === item ? 'primary' : 'default'}
                                         key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
                                 )
                             })
-                        }
+                        } */}
                     </Space>
-                    <div >
+                    <div>
                         {
-                            detailsData[indexdetails] && detailsData[indexdetails].map((item, index) => {
+                            detailsData[selectedButton] && detailsData[selectedButton].map((item, index) => {
                                 return (
                                     <div style={{ marginTop: '20px' }} key={index} data-name={item.name}>{item.desc} : <InputNumber min={1} defaultValue={item.value}
                                         onChange={(value) => { nuberOnChange(item.name, value) }}

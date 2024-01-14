@@ -44,6 +44,31 @@ const Factor = () => {
     const [factorData, setFactorData] = useState([])
     const [historyData, setHistoryData] = useState({})
     const [lineTimeData, setLineTimeData] = useState([])
+    const [scale,setScale] = useState(1)
+    const [step,setStep] = useState(1)
+    const [dataSpan,setDataSpan] = useState(60)
+    const [targetSpan,setTargerSpan] = useState(15)
+    const [allTabledata,setAllTabledata] = useState([])
+    const [tableDataLi,setTableDataLi] = useState([])
+    const [targetSelect,setTargetSelect] = useState([])
+    const [targetSelectLi,setTargetSelectLi] = useState('')
+    const [ratedisSelectLi,setRatedisSelectLi] = useState('max_dd')
+    // 保存股票id
+    const [stockid,setStockid] = useState('')
+    // 对数据进行筛选的方法
+    function filterTableData(allTableData,targerSelectli,ratedisSelectLi){
+        // if(allTableData.length>0){
+            allTableData.filter((item:any) => item.name === targerSelectli) 
+            .map((item:any) =>
+                item.measures.forEach(element => {
+                    if(element.name === ratedisSelectLi){
+                        let list = JSON.parse(element.value)
+                        console.log(list,"表格的数据");
+                        setTableDataLi(list)
+                    } 
+                }))
+        // }
+    }
     // k线的接口
     const getstock_kline = (stock_id: string) => {
         const data = {
@@ -86,15 +111,64 @@ const Factor = () => {
             console.log(err)
         })
     };
+    // 拿到uid后
+    const beforGetUid = (uid:number) =>{
+        const data = {
+            uid:uid,    
+            key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+        }
+        request('http://139.159.205.40:8808/quant/get_factor_profile_test_result', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: JSON.stringify(data)
+        }).then((res) => {
+            if (res.code === 300) {
+                setTimeout(() => {
+                    beforGetUid(uid)
+                }, 3000)
+            }else{
+                let targetSelectData = res.data.factors.map( (item:any) =>( {value:item.name,lable:item.name}))
+                let firstTargetLi = res.data.factors[0].name
+                setTargetSelect(targetSelectData)
+                setAllTabledata(res.data.factors)
+                filterTableData(res.data.factors,firstTargetLi,ratedisSelectLi)
+            }
+        }).catch(err => { console.log(err) })
+    }
+    // 提交测试数据的接口
+    const subInterface = (stock_id:string) =>{
+        const data = {
+            stock_id: stock_id,
+            user_id:"0001",
+            scale,
+            data_span:dataSpan,
+            target_span:targetSpan,
+            step,
+            key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
+        }
+        request('http://139.159.205.40:8808/quant/factor_profile_test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: JSON.stringify(data)
+        }).then((res) => {
+           beforGetUid(res.uid)
+        }).catch(err => { console.log(err) })
+    }
     // 切换股票
     const handleDataFromChild = (butttonId: string, buttonNum: string) => {
         getstock_kline(butttonId)
         historyfactor(butttonId)
+        setStockid(butttonId)
     }
     // 刚进页面时调用
     const handleOnInval = (buttonNum: string) => {
         getstock_kline(buttonNum)
         historyfactor(buttonNum)
+        setStockid(buttonNum)
     }
     // 对图表的数据进行处理
     const splitData = function (rawData: any) {
@@ -331,73 +405,68 @@ const Factor = () => {
             chart.dispose();
         };
     }, [])
-
-    const tabledata = [
-        {
-          key: '1',
-          name: 'John Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park',
-          tags: ['nice', 'developer'],
-        },
-        {
-          key: '2',
-          name: 'Jim Green',
-          age: 42,
-          address: 'London No. 1 Lake Park',
-          tags: ['loser'],
-        },
-        {
-          key: '3',
-          name: 'Joe Black',
-          age: 32,
-          address: 'Sydney No. 1 Lake Park',
-          tags: ['cool', 'teacher'],
-        },
-    ];
     const columns = [
         {
           title: '因子分箱值',
-          dataIndex: 'name',
-          key: 'name',
-          render: (text) => <a>{text}</a>,
+          dataIndex: 'bin',
+          key: 'bin',
         },
         {
           title: '因子取值范围',
-          dataIndex: 'age',
-          key: 'age',
+          dataIndex: 'quantile',
+          key: 'quantile',
         },
         {
           title: '10分位数',
-          dataIndex: 'address',
-          key: 'address',
+          dataIndex: 'quantile_10',
+          key: 'quantile_10',
         },
         {
           title: '50分位数',
-          key: 'tags',
-          dataIndex: 'tags',
+          key: 'quantile_50',
+          dataIndex: 'quantile_50',
         },
         {
           title: '90分位数',
-          key: 'action',
-          render: (_, record) => (
-            <Space size="middle">
-              <a>Invite {record.name}</a>
-              <a>Delete</a>
-            </Space>
-          ),
+          key: 'quantile_90',
+          dataIndex:'quantile_90'
         },
         {
             title: '均值',
-            key: 'tags',
-            dataIndex: 'tags',
+            key: 'mean',
+            dataIndex: 'mean',
         },
         {
             title: '标准差',
-            key: 'tags',
-            dataIndex: 'tags',
+            key: 'sigma',
+            dataIndex: 'sigma',
         },
-      ];
+    ];
+    const handleScale = (value:any) => {
+        setScale(value)
+    }
+    const handleStep = (value:any) =>{
+        setStep(value)
+    }
+    const handleDataSpan = (value:any) => {
+        setDataSpan(value)
+    }
+    const handleTargetSpan = (value:any) =>{
+        setTargerSpan(value)
+    }
+    const subBtn = () =>{
+        subInterface(stockid)
+    }
+    const handleTargerChange = (value:any) =>{
+        console.log(value);
+        setTargetSelectLi(value)
+        filterTableData(allTabledata,value,ratedisSelectLi)
+    }
+    const handleRatedisChange = (value:any) => {
+        console.log(value);
+        setRatedisSelectLi(value)
+        filterTableData(allTabledata,targetSelectLi,value)
+    }
     return (
         <ProCard gutter={16} ghost wrap>
             <ProCard
@@ -419,7 +488,7 @@ const Factor = () => {
                         <Select
                             style={{ width: '20%' }}
                             placeholder="时间粒度"
-                            // onChange={minTimeChange}
+                            onChange={handleScale}
                             options={[
                                 {
                                     value: 1,
@@ -444,98 +513,68 @@ const Factor = () => {
                             ]}
                         />
                         <InputNumber
-                            // size={size}
                             min={1}
-                            // max={10}
                             addonBefore="间隔长度"
-                            // addonAfter="天"
                             defaultValue={1}
-                        // onChange={demoDaysChange}
+                            onChange={handleStep}
                         />
                         <InputNumber
-                            // size={size}
                             min={60}
-                            // max={10}
                             addonBefore="因子最小计算长度"
-                            // addonAfter="天"
                             defaultValue={60}
-                        // onChange={demoDaysChange}
+                            onChange={handleDataSpan}
                         />
                         <InputNumber
-                            // size={size}
                             min={15}
-                            // max={10}
                             addonBefore="目标时间长度"
-                            // addonAfter="天"
                             defaultValue={15}
-                        // onChange={demoDaysChange}
+                            onChange={handleTargetSpan}
                         />
                     </div>
                     <br />
                     <div style={{ textAlign: 'center' }}>
-                        <Button >点击测试</Button>
+                        <Button onClick={subBtn}>点击测试</Button>
                     </div>
                 </ProCard>
                 <ProCard>
                     <div>
                         <Select
                             style={{ width: '18%',marginRight:10}}
-                            placeholder="指标VPT"
-                            // onChange={minTimeChange}
-                            options={[
-                                {
-                                    value: 1,
-                                    label: '1',
-                                },
-                                {
-                                    value: 5,
-                                    label: '5',
-                                },
-                                {
-                                    value: 15,
-                                    label: '15',
-                                },
-                                {
-                                    value: 30,
-                                    label: '30',
-                                },
-                                {
-                                    value: 60,
-                                    label: '60',
-                                },
-                            ]}
+                            placeholder="指标"
+                            onChange={handleTargerChange}
+                            options={targetSelect}
                         />
                         <Select
                             style={{ width: '18%' }}
                             placeholder="评估维度"
-                            // onChange={minTimeChange}
+                            onChange={handleRatedisChange}
                             options={[
                                 {
-                                    value: 1,
-                                    label: '1',
+                                    value: 'max_dd',
+                                    label: 'max_dd',
                                 },
                                 {
-                                    value: 5,
-                                    label: '5',
+                                    value: 'max_cu',
+                                    label: 'max_cu',
                                 },
                                 {
-                                    value: 15,
-                                    label: '15',
+                                    value: 'sf_std',
+                                    label: 'sf_std',
                                 },
                                 {
-                                    value: 30,
-                                    label: '30',
+                                    value: 'period_return',
+                                    label: 'period_return',
                                 },
                                 {
-                                    value: 60,
-                                    label: '60',
+                                    value: 'mean_return',
+                                    label: 'mean_return',
                                 },
                             ]}
                         />
                     </div>
                     <br />
                     <div>
-                    <Table columns={columns} dataSource={tabledata} />
+                    <Table columns={columns} dataSource={tableDataLi} />
                     </div>
                 </ProCard>
             </ProCard>
