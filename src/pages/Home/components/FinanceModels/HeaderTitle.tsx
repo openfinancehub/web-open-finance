@@ -6,14 +6,13 @@ import styles from './style.less';
 import { history } from 'umi';
 
 const HeaderTitle: React.FC<{
-  models: ModelsItem[];
   onModelsChange: (data: ModelsItem[]) => void;
   originalData: ModelsItem[];
   isActivePage: boolean
   setActivePage: React.Dispatch<React.SetStateAction<boolean>>;
   isDeveloper: boolean
   setIsDeveloper: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ models, onModelsChange, originalData, isActivePage, setActivePage, isDeveloper, setIsDeveloper }) => {
+}> = ({ onModelsChange, originalData, isActivePage, setActivePage, isDeveloper, setIsDeveloper }) => {
   //筛选框过滤，将过滤后的数据交给FinanceModels展示
   const changeModels = (value: string) => {
     const filteredModels = originalData.filter((item) => {
@@ -45,9 +44,9 @@ const HeaderTitle: React.FC<{
         <Input onChange={(e) => changeModels(e.target.value)} placeholder='Filter by name' />
       </div>
       <div className={styles.but1Style}>
-        <Button key='sort1' onClick={() => ChangeStyle()} type='primary'>
+        {isDeveloper ? <Button key='sort1' onClick={() => ChangeStyle()} type='primary'>
           切换展示
-        </Button>
+        </Button> : null}
       </div>
       <div className={styles.but1Style}>
         <Button key='sort1' onClick={() => ChangeUser()} type='primary'>

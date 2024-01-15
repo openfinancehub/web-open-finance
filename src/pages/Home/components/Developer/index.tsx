@@ -25,19 +25,16 @@ const Home: React.FC = () => {
   return (
     <>
       <ProCard split="vertical">
+        {/* 卡片左侧 */}
         <ProCard split="horizontal" title="" colSpan="40%" >
-          <div>
-            <ProCard title="" headerBordered>
-              <DCompanyList companyChange={companyChange} /> :
-            </ProCard>
-          </div>
-
+          <ProCard title="" headerBordered>
+            <DCompanyList companyChange={companyChange} /> :
+          </ProCard>
         </ProCard>
-
+        {/* 卡片右侧 */}
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
             <HeaderTitle
-              models={financeData}
               onModelsChange={handleModelsChange}
               originalData={filteredModels}
               isActivePage={isActivePage}
@@ -48,7 +45,6 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container' key={'container'}>
-
               <DModels
                 isDeveloper={isDeveloper}
                 data={financeData}
