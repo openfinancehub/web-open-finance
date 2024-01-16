@@ -24,7 +24,7 @@ export default function left({ onDataChange, onInval}) {
             const first = res.data[0].split(',')[0]
             const firstid = res.data[0].split(',')[1]
             setSelectedButton(first)
-            onInval(firstid)
+            onInval(firstid,first)
             console.log(first);
             
             const list = res.data.map((item) => {
@@ -54,7 +54,7 @@ export default function left({ onDataChange, onInval}) {
     // 点击切换股票数据
     const handleButtonChange = (buttonStr: React.SetStateAction<string>, butttonId: string, buttonNum: any) => {
         setSelectedButton(buttonStr);
-        onDataChange(butttonId, buttonNum)
+        onDataChange(butttonId, buttonNum,buttonStr)
     };
     return (
         <div style={{ textAlign: "center", height: "88vh", overflowY: "auto", width: '100%' }}>

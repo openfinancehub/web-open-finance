@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProCard } from '@ant-design/pro-components';
+import { PoweroffOutlined } from '@ant-design/icons';
 import { Link, request } from 'umi';
 import './style.less'
 import * as echarts from 'echarts/core';
@@ -37,10 +38,11 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 1
+    const Day = 3
     const upColor = '#00da3c';
     const downColor = '#ec0000';
     const chartRef = useRef(null);
+    let   chart: any
     const [factorData, setFactorData] = useState([])
     const [historyData, setHistoryData] = useState({})
     const [lineTimeData, setLineTimeData] = useState([])
@@ -53,6 +55,9 @@ const Factor = () => {
     const [targetSelect,setTargetSelect] = useState([])
     const [targetSelectLi,setTargetSelectLi] = useState('')
     const [ratedisSelectLi,setRatedisSelectLi] = useState('max_dd')
+    const [endSeek,setEndSeek] = useState(false)
+    const [seekbtnText,setSeekbtnText] = useState('开始测试')
+    const [stockName,setStockName] = useState('')
     // 保存股票id
     const [stockid,setStockid] = useState('')
     // 对数据进行筛选的方法
@@ -90,6 +95,7 @@ const Factor = () => {
                 list.push(item.time)
             })
             setLineTimeData(list)
+            chart.refresh()
         }).catch(err => { console.log(err) })
     };
     // 折线的接口
@@ -106,13 +112,14 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            setHistoryData(res.data[60].factors)
+            const data = JSON.parse(res.data)[60].factors
+            setHistoryData(data)
         }).catch(err => {
             console.log(err)
         })
     };
     // 拿到uid后
-    const beforGetUid = (uid:number) =>{
+    const beforGetUid = (uid:number,time:number) =>{
         const data = {
             uid:uid,    
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
@@ -124,15 +131,19 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
+            let list = time + 1
             if (res.code === 300) {
-                setTimeout(() => {
-                    beforGetUid(uid)
-                }, 3000)
+                if(time<=20){
+                    setTimeout(() => {
+                        beforGetUid(uid,list)
+                    }, 3000)
+                }
             }else{
                 let targetSelectData = res.data.factors.map( (item:any) =>( {value:item.name,lable:item.name}))
                 let firstTargetLi = res.data.factors[0].name
                 setTargetSelect(targetSelectData)
                 setAllTabledata(res.data.factors)
+                setEndSeek(false)
                 filterTableData(res.data.factors,firstTargetLi,ratedisSelectLi)
             }
         }).catch(err => { console.log(err) })
@@ -155,20 +166,22 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-           beforGetUid(res.uid)
+           beforGetUid(res.uid,1)
         }).catch(err => { console.log(err) })
     }
     // 切换股票
-    const handleDataFromChild = (butttonId: string, buttonNum: string) => {
+    const handleDataFromChild = (butttonId: string, buttonNum: string,buttonStr:string) => {
         getstock_kline(butttonId)
         historyfactor(butttonId)
         setStockid(butttonId)
+        setStockName(buttonStr)
     }
     // 刚进页面时调用
-    const handleOnInval = (buttonNum: string) => {
+    const handleOnInval = (buttonNum: string,buttonName) => {
         getstock_kline(buttonNum)
         historyfactor(buttonNum)
         setStockid(buttonNum)
+        setStockName(buttonName)
     }
     // 对图表的数据进行处理
     const splitData = function (rawData: any) {
@@ -203,12 +216,27 @@ const Factor = () => {
     }
     useEffect(() => {
         const data = splitData(Linedata)
+        // console.log(data.values,"股票的数据");
+        // console.log(calculateMA(5, data),'折线的数据');
+        // 股票的数据
+        const data1 = factorData?.map((item) => {
+            delete item.time
+            return Object.values(item)
+        })
+        // 折线的数据
+        const lineKeys = Object.keys(historyData)
+        const lineData = Object.values(historyData)
+        console.log(lineKeys,"因子");
+        console.log(lineData,"数据");
+        let serveris = lineKeys.forEach((item,index)=>{
+
+        })
         const option = {
             animation: false,
             legend: {
                 top: 0,
                 left: 'center',
-                data: ['Dow-Jones index', 'MA5', 'MA10', 'MA20', 'MA30']
+                // data: ['k线', 'MA5', 'MA10', 'MA20', 'MA30']
             },
             tooltip: {
                 trigger: 'axis',
@@ -220,13 +248,6 @@ const Factor = () => {
                 textStyle: {
                     color: '#000'
                 },
-                position: function (pos, params, el, elRect, size) {
-                    const obj = {
-                        top: 10
-                    };
-                    obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
-                    return obj;
-                }
             },
             axisPointer: {
                 link: [
@@ -286,7 +307,8 @@ const Factor = () => {
             xAxis: [
                 {
                     type: 'category',
-                    data: data.categoryData,
+                    // data: data.categoryData,
+                    data: lineTimeData,
                     boundaryGap: false,
                     axisLine: { onZero: false },
                     splitLine: { show: false },
@@ -299,7 +321,8 @@ const Factor = () => {
                 {
                     type: 'category',
                     gridIndex: 1,
-                    data: data.categoryData,
+                    // data: data.categoryData,
+                    data: lineTimeData,
                     boundaryGap: false,
                     axisLine: { onZero: false },
                     axisTick: { show: false },
@@ -344,9 +367,10 @@ const Factor = () => {
             ],
             series: [
                 {
-                    name: 'Dow-Jones index',
+                    name: stockName,
                     type: 'candlestick',
-                    data: data.values,
+                    // data: data.values,
+                    data: data1,
                     itemStyle: {
                         color: upColor,
                         color0: downColor,
@@ -354,57 +378,61 @@ const Factor = () => {
                         borderColor0: undefined
                     }
                 },
-                {
-                    name: 'MA5',
-                    type: 'line',
-                    data: calculateMA(5, data),
-                    smooth: true,
-                    lineStyle: {
-                        opacity: 0.5
-                    }
-                },
-                {
-                    name: 'MA10',
-                    type: 'line',
-                    data: calculateMA(10, data),
-                    smooth: true,
-                    lineStyle: {
-                        opacity: 0.5
-                    }
-                },
-                {
-                    name: 'MA20',
-                    type: 'line',
-                    data: calculateMA(20, data),
-                    smooth: true,
-                    lineStyle: {
-                        opacity: 0.5
-                    }
-                },
-                {
-                    name: 'MA30',
-                    type: 'line',
-                    data: calculateMA(30, data),
-                    smooth: true,
-                    lineStyle: {
-                        opacity: 0.5
-                    }
-                },
-                {
-                    name: 'Volume',
-                    type: 'bar',
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
-                    data: data.volumes
-                }
+                // {
+                //     name: 'MA5',
+                //     type: 'line',
+                //     data: calculateMA(5, data),
+                //     smooth: true,
+                //     lineStyle: {
+                //         opacity: 0.5
+                //     }
+                // },
+                // {
+                //     name: 'MA10',
+                //     type: 'line',
+                //     data: calculateMA(10, data),
+                //     smooth: true,
+                //     lineStyle: {
+                //         opacity: 0.5
+                //     }
+                // },
+                // {
+                //     name: 'MA20',
+                //     type: 'line',
+                //     data: calculateMA(20, data),
+                //     smooth: true,
+                //     lineStyle: {
+                //         opacity: 0.5
+                //     }
+                // },
+                // {
+                //     name: 'MA30',
+                //     type: 'line',
+                //     data: calculateMA(30, data),
+                //     smooth: true,
+                //     lineStyle: {
+                //         opacity: 0.5
+                //     }
+                // },
+                // {
+                //     name: 'Volume',
+                //     type: 'bar',
+                //     xAxisIndex: 1,
+                //     yAxisIndex: 1,
+                //     data: data.values,
+                //     // data: data1,
+                // }
             ]
         };
-        const chart = echarts.init(chartRef.current);
+        chart = echarts.init(chartRef.current);
         chart.setOption(option);
         return () => {
             chart.dispose();
         };
-    }, [])
+    }, [lineTimeData,historyData])
+    // useEffect(()=>{
+        
+    // },[lineTimeData])
     const columns = [
         {
           title: '因子分箱值',
@@ -456,6 +484,8 @@ const Factor = () => {
     }
     const subBtn = () =>{
         subInterface(stockid)
+        setEndSeek(true)
+        setSeekbtnText('重新测试')
     }
     const handleTargerChange = (value:any) =>{
         console.log(value);
@@ -533,7 +563,12 @@ const Factor = () => {
                     </div>
                     <br />
                     <div style={{ textAlign: 'center' }}>
-                        <Button onClick={subBtn}>点击测试</Button>
+                        {
+                            endSeek?   <Button loading  style={{
+                                background: 'rgb(1,108,102)',
+                                color: '#fff',
+                            }}  icon={<PoweroffOutlined />}>正在测试</Button>:<Button type="primary" onClick={subBtn}>{seekbtnText}</Button>
+                        }
                     </div>
                 </ProCard>
                 <ProCard>
