@@ -9,11 +9,17 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/python/python';
 
-function ModelsCode() {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const [modelValue, setModelValue] = useState(searchParams.get('model') || '');
-  const [factorValue, setFactorValue] = useState(searchParams.get('factor') || '');
+
+const ModelsCode: React.FC<{
+  modelValue: string
+  factorValue: string
+  setModelValue: React.Dispatch<React.SetStateAction<string>>;
+  setFactorValue: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ modelValue, factorValue, setModelValue, setFactorValue }) => {
+  // const location = useLocation();
+  // const searchParams = new URLSearchParams(location.search);
+  // const [modelValue, setModelValue] = useState(searchParams.get('model') || '');
+  // const [factorValue, setFactorValue] = useState(searchParams.get('factor') || '');
 
   const [isEditing, setIsEditing] = useState(false);
   const [loadings, setLoadings] = useState<boolean[]>([false, false]);
@@ -44,13 +50,12 @@ function ModelsCode() {
         // 开始加载  
         toggleLoading(0, true);
         const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
-        console.log(response);
+        // console.log(response);
         // 处理响应数据  
-        console.log(response && response.result && response.result.ret_code === 0);
         if (response && response.result && response.result.ret_code === 0) {
           // 更新模型代码和文本  
-          setModelCode(response.result.data.code);
-          setModelText(response.result.data.text);
+          setModelCode(response.result.models.data.code);
+          setModelText(response.result.models.data.text);
           // 显示提交成功的消息  
           message.success('提交成功');
         } else {
@@ -67,11 +72,13 @@ function ModelsCode() {
       message.error('当前正在编辑，提交失败');
     }
   };
-
+  //初始化数据
   const handleTriggerEvent = async () => {
     if (modelValue && factorValue) {
       const dataJson = await getCode(factorValue, modelValue);
-      dataJson?.result
+      // dataJson?.result
+      // console.log(dataJson)
+      // console.log(dataJson?.result.data)
       setModelCode(dataJson?.result.models.code);
       setModelText(dataJson?.result.models.text);
     } else {
@@ -90,6 +97,7 @@ function ModelsCode() {
     toggleLoading(1, true);
     setTimeout(() => {
       setIsEditing(prevIsEditing => !prevIsEditing);
+
       toggleLoading(1, false);
     }, 500);
   };

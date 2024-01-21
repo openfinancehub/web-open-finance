@@ -35,13 +35,17 @@ const Finchat = () => {
 
   const [inputValue, setInputValue] = useState<string>('');
   const [activeKey, setActiveKey] = useState<string>('a');
+  // 左边历史记录
   const [historyList, setHistoryList] = useState<any[]>([]);
+  // 单条历史记录
+  const [singleList, setSingleList] = useState<any[]>([]);
   const [roleList, setRoleList] = useState<any[]>([]);
   const [taskList, setTaskList] = useState<any[]>([]);
   const [stockList, setStockList] = useState<any[]>([]);
-  const [selectedCom, setSelectedCom] = useState<any[]>([]);
+  const [selectedCom, setSelectedCom] = useState<any>([]);
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<any>(null);
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
   // ws://121.37.5.77:5004
   const { message, sendWebSocketMessage, clearMessage } = useWebSocket(
@@ -49,7 +53,6 @@ const Finchat = () => {
   );
 
   const [messageList, setMessageList] = useState<any[]>(message);
-
 
   const commonHeader = {
     user: currentUser.username,
@@ -80,35 +83,32 @@ const Finchat = () => {
       setInitCompanyList(stock_list);
       setStockList(stock_list);
       setTaskList(task_list);
-      console.log(res, 'res');
     } catch (error) {
       console.log(error, 'error');
     }
   };
 
-  const fetchHistoryList = async () => {
+  const fetchHistoryList = async (session_id: any) => {
     try {
       const res = await FinchatServices.fetchHistoryList({
         header: commonHeader,
-         data:{ session_id:currentUser.id + currentUser.username }
+         data:{ session_id}
       });
       const { output } = res;
       if (output?.result?.length) {
         const tempList = output.result;
         const chatList: any[] = []
-        tempList.forEach((v: any) => {
-          console.log(JSON.parse(v));
-          const item = JSON.parse(v);
+        tempList.forEach((item: any) => {
           chatList.push( { sender: 'user', content: item.input })
           chatList.push({
              sender: 'bot', content: item.output, chartData: item.chartData?.type ? item.chartData : null 
          })
         })   
-        setHistoryList(chatList)
+        setSingleList(chatList)
         setMessageList(chatList)
       }
+      setSelectedSessionId(session_id)
        
-      console.log(res, 'res');
     } catch (error) {
       console.log(error, 'error');
     }
@@ -119,8 +119,13 @@ const Finchat = () => {
   }, []);
 
   useEffect(() => {
-    setMessageList([...historyList, ...message])
+    setMessageList([...singleList, ...message])
   }, [message]);
+
+  useEffect(() => {
+    console.log(JSON.parse(sessionStorage.getItem("role")), "effect")
+    setSelectedRole(JSON.parse(sessionStorage.getItem("role")))
+  }, []);
 
   const onSearch = async (value: string) => {
     try {
@@ -139,8 +144,6 @@ const Finchat = () => {
     }
   };
 
-
-
   const onChange = _.debounce((e: any) => {
     const str = e.target.value;
     if (!str) {
@@ -152,12 +155,20 @@ const Finchat = () => {
   }, 1000);
 
   const handleSendMessage = () => {
+    // console.log(selectedRole);
     if (!inputValue) return;
+     let s_id = selectedSessionId;
+    if (!s_id) {
+     s_id = (currentUser.id +
+        currentUser.username + new Date().getTime())
+      setSelectedSessionId(s_id);
+      
+    }
     sendWebSocketMessage(inputValue, {
       company: selectedCom,
       ...selectedRole,
       task: selectedTask
-    });
+    }, s_id);
     setInputValue('');
   };
 
@@ -179,7 +190,7 @@ const Finchat = () => {
     setActiveKey(val);
   };
 
-  const handleRole = (item: any) => {
+  const handleRole = (item: any) => {    
     setSelectedRole(item);
     clearMessage();
   };
@@ -196,12 +207,23 @@ const Finchat = () => {
     setActiveKey('b');
   };
 
+  const handleViewLists = (item) => {
+    fetchHistoryList(item.session_id)
+    
+  }
+
   const handlePublish = () => {
-    sessionStorage.setItem('content', JSON.stringify(message));
+    sessionStorage.setItem('content', JSON.stringify(messageList));
     history.push({
       pathname: `/user/user/content`
     });
   };
+
+  const handleNewChat = () => {
+    setMessageList([]);
+    setSingleList([])
+    setSelectedSessionId(null)
+  }
 
   const histotyTmp = (
     <>
@@ -211,26 +233,23 @@ const Finchat = () => {
     </>
   )
   const disabled = !(selectedTask || selectedCom || selectedRole);
-  console.log(messageList, 'messageList')
-
+  
   return (
     <div className={styles.wrapFinchat}>
       <div className={styles.left}>
-        <Button
-          style={{ width: '80%', marginTop: '12px' }}
-          icon={<PlusOutlined />}>
+       
+        {
+        historyList?.length ? (
+           <div className={styles.wrapHistory}>
+              <HistoryList data={historyList} handleViewList={ handleViewLists} />
+           </div>
+        ) : null
+        }
+         <Button
+          style={{ width: '80%' }}
+          icon={<PlusOutlined />} onClick={handleNewChat}>
           New Chat
         </Button>
-      {/* {
-        historyList?.length ? (
-          <>
-          <Text style={{margin: '12px 0', width: '80%', textAlign: 'left', display: 'inline-block'}}>History List</Text>
-           <div className={styles.wrapHistory}>
-             <HistoryList/>
-           </div>
-          </>
-        ) : null
-      } */}
         <Radio.Group
           defaultValue={activeKey}
           value={activeKey}
@@ -332,13 +351,13 @@ const Finchat = () => {
         <div className={styles.wrapTxt}>
           <div className={styles.top}>
             <Button>Regenerate</Button>
-            <Button icon={<PlusOutlined />} style={{ margin: '0 0 0 20px' }}>
+            <Button icon={<PlusOutlined />} style={{ margin: '0 0 0 20px' }} onClick={handleNewChat}>
               New Chat
             </Button>
           </div>
           <div className={styles.bottom}>
             <Input
-              placeholder="Send a message"
+              placeholder="@search 中国的GDP是多少"
               allowClear
               disabled={disabled}
               value={inputValue}

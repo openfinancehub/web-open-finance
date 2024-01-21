@@ -3,6 +3,7 @@ import { resolve } from 'path';
 import defaultSettings from './defaultSettings';
 
 export default defineConfig({
+  esbuildMinifyIIFE: true,  
   antd: {},
   access: {},
   model: {},
@@ -27,10 +28,15 @@ export default defineConfig({
     '/quant': {
       target: 'http://139.159.205.40:8808/',
       changeOrigin: true,
-      pathRewrite: { '^/api': '/quant' }
+      pathRewrite: { '^/quant': '/quant' }
     },
+    '/chat-api': {
+      target: 'http://121.37.5.77:5005/',
+      changeOrigin: true,
+      pathRewrite: { '^/chat-api': '/api' }
+    },    
     '/app-api': {
-      target: 'http://39.101.71.109',
+      target: 'http://39.101.71.109/',
       changeOrigin: true,
       pathRewrite: { '^/app-api': '/app-api' }
     }
@@ -58,39 +64,32 @@ export default defineConfig({
       component: './Home'
     },
     {
+      path: '/store',
+      name: 'Store',
+      component: './Store',
+    },    
+    {
       name: 'Quant',
       path: '/analyze',
       component: './Analyze'
-      // routes: [
-      //   {
-      //     name: '风险模型数据应用',
-      //     path: '/quant/model',
-      //     routes: [
-      //       {
-      //         path: '/quant/model/analyze',
-      //         name: '风险分析',
-      //         component: './Analyze'
-      //       }
-      //     ]
-      //   }
-      // ]
     },
     {
-      name: ' FinChat',
+      name: 'FinChat',
       path: '/finchat',
       component: './Finchat'
     },
     {
       path: '/home/model/item',
       component: './Home/components/ModelsItems/',
+      props: true,
       exact: true
     },
-    // {
-    //   path: '/home/test',
-    //   name: 'test',
-    //   component: './Home/Test',
-    //   exact: true,
-    // },
+    {
+      path: '/home/developer',
+      component: './Home/components/Developer',
+      props: true,
+      exact: true
+    },
     {
       name: 'Users',
       path: '/user',

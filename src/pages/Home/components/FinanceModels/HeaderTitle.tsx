@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { ProList } from '@ant-design/pro-components';
 import { Link } from 'react-router-dom';
-import { Button, Modal, Form, Input } from 'antd';
+import { Button, Image, Form, Input, Space, Spin } from 'antd';
 import { ModelsItem, } from '../../data';
 import styles from './style.less';
+import { history } from 'umi';
 
 const HeaderTitle: React.FC<{
   models: ModelsItem[];
@@ -11,7 +11,9 @@ const HeaderTitle: React.FC<{
   originalData: ModelsItem[];
   isActivePage: boolean
   setActivePage: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ models, onModelsChange, originalData, isActivePage, setActivePage }) => {
+  isDeveloper: boolean
+  setIsDeveloper: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ models, onModelsChange, originalData, isActivePage, setActivePage, isDeveloper, setIsDeveloper }) => {
   //筛选框过滤，将过滤后的数据交给FinanceModels展示
   const changeModels = (value: string) => {
     const filteredModels = originalData.filter((item) => {
@@ -23,14 +25,26 @@ const HeaderTitle: React.FC<{
   const ChangeStyle = () => {
     setActivePage(!isActivePage)
   }
+  // const [isDeveloper, setIsDeveloper] = useState(true);
+  const ChangeUser = () => {
+    // setIsDeveloper(!isDeveloper);
+    if (isDeveloper) {
+      history.push('/home/developer');
+    } else {
+      history.push('/home');
+    }
+
+    console.log("是否开发者模式", isActivePage)
+  };
+
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+      {/* <Space size="middle">
+        <Spin size="large" />
+      </Space> */}
       <div className={styles.inpStyle}>
         <h3 className={styles.fountStyle}>Tools</h3>
-      </div>
-      <div className={styles.inpStyle}>
-        {/* <h3 className={styles.figStyle}>{models.length}</h3> */}
       </div>
       <div>
         <Input onChange={(e) => changeModels(e.target.value)} placeholder='Filter by name' />
@@ -38,6 +52,11 @@ const HeaderTitle: React.FC<{
       <div className={styles.but1Style}>
         <Button key='sort1' onClick={() => ChangeStyle()} type='primary'>
           切换展示
+        </Button>
+      </div>
+      <div className={styles.but1Style}>
+        <Button key='sort1' onClick={() => ChangeUser()} type='primary'>
+          {isDeveloper ? '我要开发' : '随便看看'}
         </Button>
       </div>
       <div className={styles.but2Style}>

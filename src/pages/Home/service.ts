@@ -1,48 +1,4 @@
-import { header, modelsData } from "./data";
 
-//关系图形界面
-// export const getModelData = async (factor: string, model: string) => {
-//   try {
-//     let header = {
-//       req_id: '1234',
-//       req_src: 'source',
-//       user: 'user',
-//       token: 'token',
-//     };
-//     let dataStr = {
-//       ip: '127.0.0.1',
-//       factor: factor,
-//       model: model,
-//       time: '',
-//       extra: 'extra',
-//     };
-//     const response = await fetch('/api/eval', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         header: header,
-//         data: dataStr
-//       }),
-//     });
-//     const json = await response.json()
-//     return {
-//       data: json.data,
-//       ret_code: json.ret_code,
-//       msg: json.msg,
-//       extra: json.extra
-//     };
-//   } catch (error) {
-//     console.error('error:', error);
-//     return {
-//       data: null,
-//       ret_code: -1,
-//       msg: 'error',
-//       extra: '',
-//     };
-//   }
-// };
 //上传文件
 export const uploadFileService = async (formData: FormData) => {
   try {
@@ -79,9 +35,30 @@ export const uploadFileService = async (formData: FormData) => {
 };
 
 const apiUrl = 'http://121.37.5.77:5003/api';
-// const apiUrl = '/api';
+// get通用请求
+const performGETRequest = async (url: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }) => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-const performRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
+    const response = await fetch(`${apiUrl}/${url}`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    let result = await response.json();
+
+    return { result };
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+// post通用请求
+const performPostRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
   try {
     let requestConfig = {
       method,
@@ -99,7 +76,6 @@ const performRequest = async (url: string, method: string, header: { req_id?: st
     }
 
     const response = await fetch(`${apiUrl}/${url}`, requestConfig);
-    // const response = await fetch(`${apiUrl}/${url}`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -115,13 +91,26 @@ const performRequest = async (url: string, method: string, header: { req_id?: st
   }
 };
 
-export const modelsJson = async (header, dataStr) => {
+export const getModels = async (factor: string) => {
+  const header = {
+    req_id: '1234',
+    req_src: 'source',
+    user: 'user',
+    token: 'token',
+  };
 
-  return performRequest('models', 'POST', header, dataStr);
+  const dataStr = {
+    ip: '127.0.0.1',
+    factor: factor,
+    model: 'author',
+    time: '',
+    extra: 'extra',
+  };
+  return performPostRequest('models', 'POST', header, dataStr);
 };
 
 export const categoryJson = async () => {
-  return performRequest('category', 'GET', {}, {});
+  return performGETRequest('category', {});
 };
 // 获取models代码
 export const getCode = async (factor: string, model: string) => {
@@ -140,7 +129,7 @@ export const getCode = async (factor: string, model: string) => {
     extra: 'extra',
   };
 
-  return performRequest('getCode', 'POST', header, dataStr);
+  return performPostRequest('getCode', 'POST', header, dataStr);
 };
 // 更新models
 export const updateCode = async (factor: string, model: string, code: string, text: string, extra: string) => {
@@ -161,7 +150,7 @@ export const updateCode = async (factor: string, model: string, code: string, te
     extra,
   };
 
-  return performRequest('updateCode', 'POST', header, dataStr);
+  return performPostRequest('updateCode', 'POST', header, dataStr);
 };
 // models详情页图形
 export const getModelData = async (factor: string, model: string) => {
@@ -178,7 +167,7 @@ export const getModelData = async (factor: string, model: string) => {
     time: '',
     extra: 'extra',
   };
-  return performRequest('test', 'POST', header, dataStr);
+  return performPostRequest('test', 'POST', header, dataStr);
 };
 
 export const getEval = async (factor: string, model: string, inputValue: string) => {
@@ -196,7 +185,7 @@ export const getEval = async (factor: string, model: string, inputValue: string)
     time: '',
     extra: 'extra',
   };
-  return performRequest('eval', 'POST', header, dataStr);
+  return performPostRequest('eval', 'POST', header, dataStr);
 };
 
 //上传文件
@@ -208,5 +197,5 @@ export const getEval = async (factor: string, model: string, inputValue: string)
 //     token: 'token',
 //   };
 
-//   return performRequest('upload', 'POST', header, formData);
+//   return performPostRequest('upload', 'POST', header, formData);
 // };

@@ -48,7 +48,7 @@ const FileUploadDownloadPage = () => {
   };
 
   return (
-    <div>
+    <div >
       <h2>文件上传和下载界面</h2>
       <Dragger
         name="file"
@@ -78,7 +78,10 @@ const FileUploadDownloadPage = () => {
           ))}
         </ul>
       </div>
-    </div>
+      <div style={{ height: '120px' }}>
+
+      </div>
+    </div >
   );
 };
 
