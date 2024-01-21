@@ -40,7 +40,6 @@ export default () => {
         localStorage.setItem('userInfo', JSON.stringify(res.data));
         history.push('/home');
       } else {
-        history.push('/home');
         message.error('服务器错误');
       }
     } catch (error: any) {

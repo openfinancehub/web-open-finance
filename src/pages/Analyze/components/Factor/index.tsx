@@ -19,7 +19,7 @@ import {
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../Public/left"
-import Linedata from "./stock-DJI"
+import {Linedata,lineType,linealldata} from "./stock-DJI"
 import { Space, Select, InputNumber, Button,Table } from 'antd'
 echarts.use([
     ToolboxComponent,
@@ -38,7 +38,7 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 3
+    const Day = 2
     const upColor = '#00da3c';
     const downColor = '#ec0000';
     const chartRef = useRef(null);
@@ -137,14 +137,16 @@ const Factor = () => {
                     setTimeout(() => {
                         beforGetUid(uid,list)
                     }, 3000)
+                }else{
+                    setEndSeek(false)
                 }
             }else{
                 let targetSelectData = res.data.factors.map( (item:any) =>( {value:item.name,lable:item.name}))
                 let firstTargetLi = res.data.factors[0].name
                 setTargetSelect(targetSelectData)
                 setAllTabledata(res.data.factors)
-                setEndSeek(false)
                 filterTableData(res.data.factors,firstTargetLi,ratedisSelectLi)
+                setEndSeek(false)
             }
         }).catch(err => { console.log(err) })
     }
@@ -219,24 +221,43 @@ const Factor = () => {
         // console.log(data.values,"股票的数据");
         // console.log(calculateMA(5, data),'折线的数据');
         // 股票的数据
-        const data1 = factorData?.map((item) => {
+        const data2 = factorData?.map((item) => {
             delete item.time
             return Object.values(item)
+            // return item
+        })
+        console.log(data2,"list");
+        
+        const data1 = data2?.map((item)=>{
+            return[item[3],item[0],item[2],item[1]]
         })
         // 折线的数据
         const lineKeys = Object.keys(historyData)
         const lineData = Object.values(historyData)
         console.log(lineKeys,"因子");
         console.log(lineData,"数据");
-        let serveris = lineKeys.forEach((item,index)=>{
-
+        let serveris = lineKeys.map((item,index)=>{
+            return{
+                name:item,
+                type: 'line',
+                data:lineData[index].raw,
+                smooth: true,
+                lineStyle: {
+                    opacity: 0.5
+                }
+            }
         })
         const option = {
             animation: false,
             legend: {
                 top: 0,
                 left: 'center',
+                width:"80%"
                 // data: ['k线', 'MA5', 'MA10', 'MA20', 'MA30']
+            },
+            dataset:{
+                source:data1,
+                dimensions: ['close', 'highest','lowest','open']
             },
             tooltip: {
                 trigger: 'axis',
@@ -353,24 +374,24 @@ const Factor = () => {
                 {
                     type: 'inside',
                     xAxisIndex: [0, 1],
-                    start: 98,
-                    end: 100
+                    start: 0,
+                    end: 10
                 },
                 {
                     show: true,
                     xAxisIndex: [0, 1],
                     type: 'slider',
                     top: '85%',
-                    start: 98,
-                    end: 100
+                    start: 0,
+                    end: 10
                 }
             ],
             series: [
                 {
                     name: stockName,
                     type: 'candlestick',
-                    // data: data.values,
                     data: data1,
+                    // dimensions: ['close', 'highest','lowest','open'],
                     itemStyle: {
                         color: upColor,
                         color0: downColor,
@@ -378,6 +399,14 @@ const Factor = () => {
                         borderColor0: undefined
                     }
                 },
+                // {
+                //     name: stockName,
+                //     type: 'bar',
+                //     xAxisIndex: 1,
+                //     yAxisIndex: 1,
+                //     data: data1,
+                // },
+                ...serveris 
                 // {
                 //     name: 'MA5',
                 //     type: 'line',
@@ -414,14 +443,7 @@ const Factor = () => {
                 //         opacity: 0.5
                 //     }
                 // },
-                // {
-                //     name: 'Volume',
-                //     type: 'bar',
-                //     xAxisIndex: 1,
-                //     yAxisIndex: 1,
-                //     data: data.values,
-                //     // data: data1,
-                // }
+              
             ]
         };
         chart = echarts.init(chartRef.current);
@@ -486,6 +508,7 @@ const Factor = () => {
         subInterface(stockid)
         setEndSeek(true)
         setSeekbtnText('重新测试')
+
     }
     const handleTargerChange = (value:any) =>{
         console.log(value);
