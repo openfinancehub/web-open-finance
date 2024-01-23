@@ -58,9 +58,12 @@ const Factor = () => {
     const [endSeek,setEndSeek] = useState(false)
     const [seekbtnText,setSeekbtnText] = useState('开始测试')
     const [stockName,setStockName] = useState('')
+    const [factorKey,setFactorKey] = useState('')
+    const [factorValue,setFactorValue] = useState([])
+    const [factorSelect,setFactorSelect] = useState([])
     // 保存股票id
     const [stockid,setStockid] = useState('')
-    // 对数据进行筛选的方法
+    // 对表格数据进行筛选的方法
     function filterTableData(allTableData,targerSelectli,ratedisSelectLi){
         // if(allTableData.length>0){
             allTableData.filter((item:any) => item.name === targerSelectli) 
@@ -68,7 +71,6 @@ const Factor = () => {
                 item.measures.forEach(element => {
                     if(element.name === ratedisSelectLi){
                         let list = JSON.parse(element.value)
-                        console.log(list,"表格的数据");
                         setTableDataLi(list)
                     } 
                 }))
@@ -88,10 +90,9 @@ const Factor = () => {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(res, '正确的数据');
             setFactorData(res.data)
-            let list = []
-            res.data.forEach((item) => {
+            let list:any = []
+            res.data.forEach((item:any) => {
                 list.push(item.time)
             })
             setLineTimeData(list)
@@ -114,6 +115,16 @@ const Factor = () => {
         }).then((res) => {
             const data = JSON.parse(res.data)[60].factors
             setHistoryData(data)
+            let dataFactorkey = Object.keys(data)
+            let selectFcatorKeys:any = dataFactorkey.map((item)=>{
+                return{
+                    value:item,
+                    label:item
+                }
+            })
+            setFactorSelect(selectFcatorKeys)
+            setFactorKey(dataFactorkey[0])
+            setFactorValue(data[dataFactorkey[0]].raw)
         }).catch(err => {
             console.log(err)
         })
@@ -179,12 +190,13 @@ const Factor = () => {
         setStockName(buttonStr)
     }
     // 刚进页面时调用
-    const handleOnInval = (buttonNum: string,buttonName) => {
+    const handleOnInval = (buttonNum: string,buttonName:string) => {
         getstock_kline(buttonNum)
         historyfactor(buttonNum)
         setStockid(buttonNum)
         setStockName(buttonName)
     }
+
     // 对图表的数据进行处理
     const splitData = function (rawData: any) {
         let categoryData = [];
@@ -216,48 +228,40 @@ const Factor = () => {
         }
         return result;
     }
+
     useEffect(() => {
         const data = splitData(Linedata)
-        // console.log(data.values,"股票的数据");
-        // console.log(calculateMA(5, data),'折线的数据');
         // 股票的数据
+        console.log("柱状图的数据",data.volumes);
+        console.log("原始数据",Linedata);
+        console.log("股票的数据",data.values);     
         const data2 = factorData?.map((item) => {
             delete item.time
             return Object.values(item)
-            // return item
         })
-        console.log(data2,"list");
-        
         const data1 = data2?.map((item)=>{
             return[item[3],item[0],item[2],item[1]]
         })
-        // 折线的数据
-        const lineKeys = Object.keys(historyData)
-        const lineData = Object.values(historyData)
-        console.log(lineKeys,"因子");
-        console.log(lineData,"数据");
-        let serveris = lineKeys.map((item,index)=>{
-            return{
-                name:item,
-                type: 'line',
-                data:lineData[index].raw,
-                smooth: true,
-                lineStyle: {
-                    opacity: 0.5
-                }
-            }
-        })
+        // // 折线的数据
+        // const lineKeys = Object.keys(historyData)
+        // const lineData = Object.values(historyData)
+        // let serveris = lineKeys.map((item,index)=>{
+        //     return{
+        //         name:item,
+        //         type: 'line',
+        //         data:lineData[index].raw,
+        //         smooth: true,
+        //         lineStyle: {
+        //             opacity: 0.5
+        //         }
+        //     }
+        // })
         const option = {
             animation: false,
             legend: {
                 top: 0,
                 left: 'center',
                 width:"80%"
-                // data: ['k线', 'MA5', 'MA10', 'MA20', 'MA30']
-            },
-            dataset:{
-                source:data1,
-                dimensions: ['close', 'highest','lowest','open']
             },
             tooltip: {
                 trigger: 'axis',
@@ -318,17 +322,16 @@ const Factor = () => {
                     right: '0%',
                     height: '60%'
                 },
-                {
-                    left: '00%',
-                    right: '0%',
-                    top: '70%',
-                    height: '16%'   
-                }
+                // {
+                //     left: '0%',
+                //     right: '0%',
+                //     top: '70%',
+                //     height: '16%'   
+                // }
             ],
             xAxis: [
                 {
                     type: 'category',
-                    // data: data.categoryData,
                     data: lineTimeData,
                     boundaryGap: false,
                     axisLine: { onZero: false },
@@ -339,36 +342,41 @@ const Factor = () => {
                         z: 100
                     }
                 },
-                {
-                    type: 'category',
-                    gridIndex: 1,
-                    // data: data.categoryData,
-                    data: lineTimeData,
-                    boundaryGap: false,
-                    axisLine: { onZero: false },
-                    axisTick: { show: false },
-                    splitLine: { show: false },
-                    axisLabel: { show: false },
-                    min: 'dataMin',
-                    max: 'dataMax'
-                }
+                // {
+                //     type: 'category',
+                //     gridIndex: 1,
+                //     data: lineTimeData,
+                //     boundaryGap: false,
+                //     axisLine: { onZero: false },
+                //     axisTick: { show: false },
+                //     splitLine: { show: false },
+                //     axisLabel: { show: false },
+                //     min: 'dataMin',
+                //     max: 'dataMax'
+                // }
             ],
             yAxis: [
                 {
+                    type: 'value',
                     scale: true,
                     splitArea: {
                         show: true
                     }
                 },
                 {
+                    type:'value',
                     scale: true,
-                    gridIndex: 1,
-                    splitNumber: 2,
-                    axisLabel: { show: false },
-                    axisLine: { show: false },
-                    axisTick: { show: false },
-                    splitLine: { show: false }
-                }
+                },
+                // {
+                //     scale: true,
+                //     gridIndex: 1,
+                //     splitNumber: 2,
+                //     axisLabel: { show: false },
+                //     axisLine: { show: false },
+                //     axisTick: { show: false },
+                //     splitLine: { show: false }
+                // }
+               
             ],
             dataZoom: [
                 {
@@ -382,6 +390,7 @@ const Factor = () => {
                     xAxisIndex: [0, 1],
                     type: 'slider',
                     top: '85%',
+                    // top:'80%',
                     start: 0,
                     end: 10
                 }
@@ -389,9 +398,10 @@ const Factor = () => {
             series: [
                 {
                     name: stockName,
+                    // name: "龙头股份",
                     type: 'candlestick',
                     data: data1,
-                    // dimensions: ['close', 'highest','lowest','open'],
+                    yAxisIndex: 0,
                     itemStyle: {
                         color: upColor,
                         color0: downColor,
@@ -399,6 +409,18 @@ const Factor = () => {
                         borderColor0: undefined
                     }
                 },
+                {
+                    name:factorKey,
+                    type:'line',
+                    data:factorValue,
+                    yAxisIndex: 1,  // 关联第一个 y 轴
+                    smooth: true,
+                    // yAxisIndex: 1,
+                    // xAxisIndex: 1,
+                    lineStyle: {
+                        opacity: 0.5
+                    }
+                }
                 // {
                 //     name: stockName,
                 //     type: 'bar',
@@ -406,43 +428,7 @@ const Factor = () => {
                 //     yAxisIndex: 1,
                 //     data: data1,
                 // },
-                ...serveris 
-                // {
-                //     name: 'MA5',
-                //     type: 'line',
-                //     data: calculateMA(5, data),
-                //     smooth: true,
-                //     lineStyle: {
-                //         opacity: 0.5
-                //     }
-                // },
-                // {
-                //     name: 'MA10',
-                //     type: 'line',
-                //     data: calculateMA(10, data),
-                //     smooth: true,
-                //     lineStyle: {
-                //         opacity: 0.5
-                //     }
-                // },
-                // {
-                //     name: 'MA20',
-                //     type: 'line',
-                //     data: calculateMA(20, data),
-                //     smooth: true,
-                //     lineStyle: {
-                //         opacity: 0.5
-                //     }
-                // },
-                // {
-                //     name: 'MA30',
-                //     type: 'line',
-                //     data: calculateMA(30, data),
-                //     smooth: true,
-                //     lineStyle: {
-                //         opacity: 0.5
-                //     }
-                // },
+                // ...serveris 
               
             ]
         };
@@ -451,10 +437,9 @@ const Factor = () => {
         return () => {
             chart.dispose();
         };
-    }, [lineTimeData,historyData])
-    // useEffect(()=>{
-        
-    // },[lineTimeData])
+    }, [lineTimeData,factorKey])
+  
+
     const columns = [
         {
           title: '因子分箱值',
@@ -492,6 +477,13 @@ const Factor = () => {
             dataIndex: 'sigma',
         },
     ];
+
+
+    const handleFactorChange = (value:any) =>{
+        console.log(value);
+        setFactorKey(value)
+        setFactorValue(historyData[value].raw)
+    } 
     const handleScale = (value:any) => {
         setScale(value)
     }
@@ -520,6 +512,8 @@ const Factor = () => {
         setRatedisSelectLi(value)
         filterTableData(allTabledata,targetSelectLi,value)
     }
+    
+
     return (
         <ProCard gutter={16} ghost wrap>
             <ProCard
@@ -528,7 +522,16 @@ const Factor = () => {
             >
                 <Left onDataChange={handleDataFromChild} onInval={handleOnInval}></Left>
             </ProCard>
+
             <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
+                <div>
+                    <Select
+                        placeholder="因子"
+                        style={{ width: 120 }}
+                        onChange={handleFactorChange}
+                        options={factorSelect}
+                        />
+                </div>
                 <ProCard style={{ height: '70vh' }} bordered>
                     <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div>
                 </ProCard>
