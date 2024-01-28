@@ -61,10 +61,11 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   }, []);
   //点击事件请求后端接口获取因子信息
   const filterFinance = (item: { factor: any; icon?: string; jump_url?: string; }, title: string) => {
-    if (item.factor === dataStr.factor) {
+    console.log(item.factor, title)
+    if (title + item.factor === dataStr.factor) {
       item.factor = ''
     }
-    dataStr.factor = item.factor;
+    dataStr.factor = title + item.factor;
     handleTriggerEvent(item.factor);
 
     //更新被选中的因子

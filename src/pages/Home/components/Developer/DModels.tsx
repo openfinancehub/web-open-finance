@@ -107,6 +107,9 @@ const DModels: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper
                 rowKey='id'
                 dataSource={filteredModelsMap.get(factor)}
                 showActions='hover'
+                // pagination={{
+                //     pageSize: 10,
+                // }}
                 metas={{
                     title: {
                         dataIndex: 'model',
