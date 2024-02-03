@@ -20,7 +20,7 @@ import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../Public/left"
 import {Linedata,lineType,linealldata} from "./stock-DJI"
-import { Space, Select, InputNumber, Button,Table } from 'antd'
+import { Space, Select, InputNumber, Button,Table,Spin } from 'antd'
 echarts.use([
     ToolboxComponent,
     TooltipComponent,
@@ -38,7 +38,7 @@ echarts.use([
 
 const Factor = () => {
     // 天数
-    const Day = 2
+    const Day = 1
     const upColor = '#00da3c';
     const downColor = '#ec0000';
     const chartRef = useRef(null);
@@ -61,6 +61,7 @@ const Factor = () => {
     const [factorKey,setFactorKey] = useState('')
     const [factorValue,setFactorValue] = useState([])
     const [factorSelect,setFactorSelect] = useState([])
+    const [factorTime,setFactorTime] = useState([])
     // 保存股票id
     const [stockid,setStockid] = useState('')
     // 对表格数据进行筛选的方法
@@ -96,6 +97,7 @@ const Factor = () => {
                 list.push(item.time)
             })
             setLineTimeData(list)
+            chart.hideLoading();
             chart.refresh()
         }).catch(err => { console.log(err) })
     };
@@ -114,6 +116,10 @@ const Factor = () => {
             data: JSON.stringify(data)
         }).then((res) => {
             const data = JSON.parse(res.data)[60].factors
+            const data1 = JSON.parse(res.data)[60].time
+
+            console.log(data1,"折线的数据");
+            setFactorTime(data1)
             setHistoryData(data)
             let dataFactorkey = Object.keys(data)
             let selectFcatorKeys:any = dataFactorkey.map((item)=>{
@@ -123,8 +129,8 @@ const Factor = () => {
                 }
             })
             setFactorSelect(selectFcatorKeys)
-            setFactorKey(dataFactorkey[0])
-            setFactorValue(data[dataFactorkey[0]].raw)
+            // setFactorKey(dataFactorkey[0])
+            // setFactorValue(data[dataFactorkey[0]].raw)
         }).catch(err => {
             console.log(err)
         })
@@ -196,45 +202,20 @@ const Factor = () => {
         setStockid(buttonNum)
         setStockName(buttonName)
     }
-
-    // 对图表的数据进行处理
-    const splitData = function (rawData: any) {
-        let categoryData = [];
-        let values = [];
-        let volumes = [];
-        for (let i = 0; i < rawData.length; i++) {
-            categoryData.push(rawData[i].splice(0, 1)[0]);
-            values.push(rawData[i]);
-            volumes.push([i, rawData[i][4], rawData[i][0] > rawData[i][1] ? 1 : -1]);
+    // 判断因子日期与k线日期是否一致
+    useEffect(()=>{
+        if(factorTime[0] !== lineTimeData[0]){
+            setHistoryData([])
+            setFactorSelect([])
+            setFactorValue([])
+        }else{
+            const firsttitle = factorSelect[0]?.value
+            setFactorKey(firsttitle)
+            setFactorValue(historyData[firsttitle]?.raw)
         }
-        return {
-            categoryData: categoryData,
-            values: values,
-            volumes: volumes
-        };
-    }
-    const calculateMA = function (dayCount: number, data: any) {
-        let result = [];
-        for (let i = 0, len = data.values.length; i < len; i++) {
-            if (i < dayCount) {
-                result.push('-');
-                continue;
-            }
-            let sum = 0;
-            for (let j = 0; j < dayCount; j++) {
-                sum += data.values[i - j][1];
-            }
-            result.push(+(sum / dayCount).toFixed(3));
-        }
-        return result;
-    }
-
+    },[factorTime])
     useEffect(() => {
-        const data = splitData(Linedata)
-        // 股票的数据
-        console.log("柱状图的数据",data.volumes);
-        console.log("原始数据",Linedata);
-        console.log("股票的数据",data.values);     
+        // 股票的数据  
         const data2 = factorData?.map((item) => {
             delete item.time
             return Object.values(item)
@@ -242,20 +223,7 @@ const Factor = () => {
         const data1 = data2?.map((item)=>{
             return[item[3],item[0],item[2],item[1]]
         })
-        // // 折线的数据
-        // const lineKeys = Object.keys(historyData)
-        // const lineData = Object.values(historyData)
-        // let serveris = lineKeys.map((item,index)=>{
-        //     return{
-        //         name:item,
-        //         type: 'line',
-        //         data:lineData[index].raw,
-        //         smooth: true,
-        //         lineStyle: {
-        //             opacity: 0.5
-        //         }
-        //     }
-        // })
+     
         const option = {
             animation: false,
             legend: {
@@ -274,6 +242,9 @@ const Factor = () => {
                     color: '#000'
                 },
             },
+            loading: {
+                show: true // 启用 loading 动画效果
+              },
             axisPointer: {
                 link: [
                     {
@@ -433,6 +404,9 @@ const Factor = () => {
             ]
         };
         chart = echarts.init(chartRef.current);
+        if(data1.length<=0){
+            chart.showLoading();
+        }
         chart.setOption(option);
         return () => {
             chart.dispose();
@@ -480,7 +454,6 @@ const Factor = () => {
 
 
     const handleFactorChange = (value:any) =>{
-        console.log(value);
         setFactorKey(value)
         setFactorValue(historyData[value].raw)
     } 
@@ -503,12 +476,10 @@ const Factor = () => {
 
     }
     const handleTargerChange = (value:any) =>{
-        console.log(value);
         setTargetSelectLi(value)
         filterTableData(allTabledata,value,ratedisSelectLi)
     }
     const handleRatedisChange = (value:any) => {
-        console.log(value);
         setRatedisSelectLi(value)
         filterTableData(allTabledata,targetSelectLi,value)
     }
@@ -533,7 +504,7 @@ const Factor = () => {
                         />
                 </div>
                 <ProCard style={{ height: '70vh' }} bordered>
-                    <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div>
+                        <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div>
                 </ProCard>
                 <ProCard>
                     <div style={{ textAlign: "center" }}>因子分析与评估</div>
