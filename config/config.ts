@@ -85,6 +85,12 @@ export default defineConfig({
       exact: true
     },
     {
+      path: '/home/news',
+      component: './Home/components/News/',
+      props: true,
+      exact: true
+    },
+    {
       path: '/home/developer',
       component: './Home/components/Developer',
       props: true,

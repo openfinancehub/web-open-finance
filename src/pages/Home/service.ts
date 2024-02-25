@@ -36,7 +36,7 @@ export const uploadFileService = async (formData: FormData) => {
 
 const apiUrl = 'http://121.37.5.77:5003/api';
 // get通用请求
-const performGETRequest = async (url: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }) => {
+const performGETRequest = async (url: string ) => {
   try {
     let requestConfig = {
       headers: {
@@ -110,8 +110,31 @@ export const getModels = async (factor: string) => {
 };
 
 export const categoryJson = async () => {
-  return performGETRequest('category', {});
+  return performGETRequest('category', );
 };
+//获取新闻信息
+export const getNews = async () => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const response = await fetch(`http://127.0.0.1:8000/api/getNews`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    let result = await response.json();
+
+    return { result };
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+  // return performGETRequest('getNews', );
+};
+
 // 获取models代码
 export const getCode = async (factor: string, model: string) => {
   const header = {
