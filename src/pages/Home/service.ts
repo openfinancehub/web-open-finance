@@ -36,7 +36,7 @@ export const uploadFileService = async (formData: FormData) => {
 
 const apiUrl = 'http://121.37.5.77:5003/api';
 // get通用请求
-const performGETRequest = async (url: string ) => {
+const performGETRequest = async (url: string) => {
   try {
     let requestConfig = {
       headers: {
@@ -57,9 +57,50 @@ const performGETRequest = async (url: string ) => {
   }
 };
 
+// // post通用请求
+// const performPostRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
+//   try {
+//     let requestConfig = {
+//       method,
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     };
+
+//     // 只有在 POST、PUT 或 DELETE 请求时才包含请求体
+//     if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
+//       requestConfig.body = JSON.stringify({
+//         header,
+//         data,
+//       });
+//     }
+
+//     const response = await fetch(`${apiUrl}/${url}`, requestConfig);
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+
+//     let result = await response.json();
+
+//     if (!data) {
+//       throw new Error('Response data is empty or not valid JSON');
+//     }
+//     return { result };
+//   } catch (error) {
+//     console.error('An error occurred:', error);
+//   }
+// };
+
 // post通用请求
-const performPostRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
+const performPostRequest = async (url: string, method: string, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
   try {
+    const header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
+
     let requestConfig = {
       method,
       headers: {
@@ -92,13 +133,6 @@ const performPostRequest = async (url: string, method: string, header: { req_id?
 };
 
 export const getModels = async (factor: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
-
   const dataStr = {
     ip: '127.0.0.1',
     factor: factor,
@@ -106,43 +140,41 @@ export const getModels = async (factor: string) => {
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('models', 'POST', header, dataStr);
+  return performPostRequest('models', 'POST', dataStr);
 };
 
 export const categoryJson = async () => {
-  return performGETRequest('category', );
+  return performGETRequest('category',);
 };
+
+let count = 0
 //获取新闻信息
 export const getNews = async () => {
   try {
+
     let requestConfig = {
       headers: {
         'Content-Type': 'application/json',
       },
     };
-
     const response = await fetch(`http://127.0.0.1:8000/api/getNews`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
     let result = await response.json();
-
+    if (count >= 5) {
+      return []
+    }
+    count++;
     return { result };
   } catch (error) {
     console.error('An error occurred:', error);
   }
-  // return performGETRequest('getNews', );
+
 };
 
 // 获取models代码
 export const getCode = async (factor: string, model: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
 
   const dataStr = {
     ip: '127.0.0.1',
@@ -152,16 +184,10 @@ export const getCode = async (factor: string, model: string) => {
     extra: 'extra',
   };
 
-  return performPostRequest('getCode', 'POST', header, dataStr);
+  return performPostRequest('getCode', 'POST', dataStr);
 };
 // 更新models
 export const updateCode = async (factor: string, model: string, code: string, text: string, extra: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
 
   const dataStr = {
     ip: '127.0.0.1',
@@ -173,16 +199,11 @@ export const updateCode = async (factor: string, model: string, code: string, te
     extra,
   };
 
-  return performPostRequest('updateCode', 'POST', header, dataStr);
+  return performPostRequest('updateCode', 'POST', dataStr);
 };
 // models详情页图形
 export const getModelData = async (factor: string, model: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
+
   const dataStr = {
     ip: '127.0.0.1',
     factor: model,
@@ -190,16 +211,11 @@ export const getModelData = async (factor: string, model: string) => {
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('test', 'POST', header, dataStr);
+  return performPostRequest('test', 'POST', dataStr);
 };
 
 export const getEval = async (factor: string, model: string, inputValue: string) => {
-  let header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
+
   let dataStr = {
     ip: '127.0.0.1',
     factor: model,
@@ -208,7 +224,7 @@ export const getEval = async (factor: string, model: string, inputValue: string)
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('eval', 'POST', header, dataStr);
+  return performPostRequest('eval', 'POST', dataStr);
 };
 
 //上传文件
@@ -222,3 +238,28 @@ export const getEval = async (factor: string, model: string, inputValue: string)
 
 //   return performPostRequest('upload', 'POST', header, formData);
 // };
+
+// 获取市场指数  
+export const getMarket = async () => {
+
+  return performGETRequest('market',);
+};
+
+// 获取重大事项  
+export const getImportantEvents = async () => {
+
+  return performGETRequest('events',);
+};
+
+// 获取重点关注股票信息  
+export const getFocusedStocks = async (stock: string[]) => {
+
+  let dataStr = {
+    ip: '127.0.0.1',
+    model: "default",
+    stock: stock,
+    time: '',
+    extra: 'extra',
+  };
+  return performPostRequest('stocks/focused', "POST", dataStr);
+};
