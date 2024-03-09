@@ -1,10 +1,10 @@
 import React from 'react';
-import { List, Button, Toast } from 'antd-mobile';
+import { List, FloatingBubble, Button, Toast } from 'antd-mobile';
 import { Input, Space, Spin } from 'antd';
-import { FloatingBubble } from 'antd-mobile'
 import { MessageFill } from 'antd-mobile-icons'
 import { getNews } from '../../service';
 import Demo from './Stocks/Demo'
+import Indices from './Market/Indices'
 import ImportantEvents from './Events/ImportantEvents'
 interface newsType {
   title: string;
@@ -33,7 +33,8 @@ const NewsPage = () => {
   return (
     <div>
       <Demo></Demo>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      {/* <Indices /> */}
+      {/* <div style={{ display: 'flex', alignItems: 'center' }}>
         <Input
           style={{ flex: 1, marginRight: '10px' }}
           placeholder="请输入搜索关键词"
@@ -41,7 +42,7 @@ const NewsPage = () => {
           onChange={(e) => setSearchText(e.target.value)}
         />
         <Button style={{ height: '35px' }} onClick={handleSearch}>搜索</Button>
-      </div>
+      </div> */}
 
       <ImportantEvents></ImportantEvents>
 

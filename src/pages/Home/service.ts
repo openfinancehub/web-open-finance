@@ -162,7 +162,7 @@ export const getNews = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 5) {
+    if (count >= 2) {
       return []
     }
     count++;
