@@ -98,7 +98,7 @@ export const REQUEST = ({
   }
 }: any) => {
   return axiosRequest({
-    baseURL,
+    // baseURL,
     method,
     url,
     data,

@@ -103,6 +103,11 @@ export default defineConfig({
           path: 'user/content',
           name: '发布内容',
           component: './UserInfo/Content'
+        },
+        {
+          path: 'user/pay-version',
+          name: '更多功能',
+          component: './UserInfo/PayVersion'
         }
       ]
     },
