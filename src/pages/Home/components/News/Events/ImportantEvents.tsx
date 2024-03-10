@@ -37,7 +37,6 @@ export default () => {
         setNewsList(searchResult);
     };
 
-
     async function loadMore() {
         const append = await getNews();
         try {
@@ -56,7 +55,7 @@ export default () => {
     }
     return (
         <>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Input
                     style={{ flex: 1, marginRight: '10px' }}
                     placeholder="请输入搜索关键词"
@@ -64,7 +63,7 @@ export default () => {
                     onChange={(e) => setSearchText(e.target.value)}
                 />
                 <Button style={{ height: '35px' }} onClick={handleSearch}>搜索</Button>
-            </div>
+            </div> */}
             <List>
                 {newsList.map((news, index) => (
                     <List.Item key={index}>
