@@ -242,7 +242,26 @@ export const getEval = async (factor: string, model: string, inputValue: string)
 // 获取市场指数  
 export const getMarket = async () => {
 
-  return performGETRequest('market',);
+  try {
+
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/getMarket`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    if (count >= 2) {
+      return []
+    }
+    count++;
+    return { result };
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 };
 
 // 获取重大事项  

@@ -199,11 +199,39 @@ const news = [
   总之，全球股市的波动是常态，投资者需要保持警惕，做好应对准备。只有充分了解市场、理性投资、控制风险，才能在复杂多变的市场环境中立于不败之地。` },
 ]
 
+const market = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+]
+
 export default {
   'GET /api/getNews': (req: any, res: any) => {
     res.json({
       msg: "成功",
       data: news,
+      ret_code: 0,
+      extra: {}
+    });
+  },
+  'GET /api/getMarket': (req: any, res: any) => {
+    res.json({
+      msg: "成功",
+      data: market,
       ret_code: 0,
       extra: {}
     });
