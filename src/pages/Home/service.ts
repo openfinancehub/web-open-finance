@@ -229,11 +229,11 @@ export const getNews = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 5) {
-      count = 0;
-      return []
-    }
-    count++;
+    // if (count >= 5) {
+    //   count = 0;
+    //   return []
+    // }
+    // count++;
     return result;
   } catch (error) {
     console.error('An error occurred:', error);
@@ -253,7 +253,7 @@ export const getMarket = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 5) {
+    if (count >= 3) {
       count = 0;
       return []
     }
@@ -277,7 +277,7 @@ export const getImportantEvents = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 5) {
+    if (count >= 3) {
       count = 0;
       return []
     }
@@ -301,7 +301,8 @@ export const getFocusedStocks = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 5) {
+    if (count >= 2) {
+      count = 0;
       return []
     }
     count++;

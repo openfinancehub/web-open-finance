@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { InfiniteScroll, List, DotLoading, Ellipsis, Button, Image, Rate } from 'antd-mobile'
-import { Input, Space, Spin } from 'antd';
+import { IndexBar, List, Rate } from 'antd-mobile'
 import { getNews } from '../../../service';
 
 interface newsType {
@@ -11,64 +10,60 @@ interface newsType {
     rate: number,
 }
 
-const InfiniteScrollContent = ({ hasMore }: { hasMore?: boolean }) => {
-    return (
-        <>
-            {hasMore ? (
-                <>
-                    <span>Loading</span>
-                    <DotLoading />
-                </>
-            ) : (
-                <span>--- 我是有底线的 ---</span>
-            )}
-        </>
-    )
-}
 export default () => {
     const [newsList, setNewsList] = useState<newsType[]>([])
-    const [hasMore, setHasMore] = useState(true)
 
-    async function loadMore() {
-        const response = await getNews();
+    const getRandomList = async () => {
         try {
+            const response = await getNews();
             const values = Object.values(response.data) as newsType[]
-            console.log(values)
             setNewsList(values)
-            setHasMore(values.length > 0)
         } catch (err) {
-            setHasMore(false);
+            console.error(err)
         }
     }
+
     useEffect(() => {
-        loadMore();
+        getRandomList();
     }, [])
+    // 生成标题索引
+    const groups = Array.from({ length: 26 }, (_, i) => ({
+        title: String.fromCharCode('A'.charCodeAt(0) + i),
+        items: newsList,
+    }))
 
     return (
-        <>
-
-            <List>
-                {newsList.map((news, index) => (
-                    <List.Item key={index}
-                        prefix={<Image src={news.avatar}
-                            style={{ borderRadius: 20 }}
-                            fit='cover'
-                            width={40}
-                            height={40}
-                        />}
-                        description={news.description}
-                    >
-                        <div> <Rate allowHalf readOnly value={news.rate}
-                            style={{
-                                '--star-size': '15px',
-                            }} /></div>
-                        <div>{news.name}</div>
-                    </List.Item>
-                ))}
-            </List>
-            <InfiniteScroll loadMore={loadMore} hasMore={hasMore}>
-                <InfiniteScrollContent hasMore={hasMore} />
-            </InfiniteScroll>
-        </>
+        <div style={{ height: window.innerHeight - 120 }}>
+            <IndexBar>
+                {groups.map(group => {
+                    const { title, items } = group
+                    return (
+                        <IndexBar.Panel
+                            index={title}
+                            title={`标题${title}`}
+                            key={`标题${title}`}
+                        >
+                            <List>
+                                {items.map((item, index) => (
+                                    <List.Item key={index}
+                                        prefix={
+                                            <span style={{ color: '#ff5500' }}>|</span>
+                                        }>
+                                        <div>
+                                            <span style={{ fontSize: '10px', color: '#969597' }}>重要性</span>
+                                            <Rate allowHalf readOnly value={item.rate}
+                                                style={{
+                                                    '--star-size': '10px',
+                                                }} />
+                                        </div>
+                                        {item.name}
+                                    </List.Item>
+                                ))}
+                            </List>
+                        </IndexBar.Panel>
+                    )
+                })}
+            </IndexBar>
+        </div>
     )
 }
