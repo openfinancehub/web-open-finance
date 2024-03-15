@@ -147,31 +147,7 @@ export const categoryJson = async () => {
   return performGETRequest('category',);
 };
 
-let count = 0
-//获取新闻信息
-export const getNews = async () => {
-  try {
 
-    let requestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const response = await fetch(`http://127.0.0.1:8000/api/getNews`, requestConfig);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    let result = await response.json();
-    if (count >= 2) {
-      return []
-    }
-    count++;
-    return { result };
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
-
-};
 
 // 获取models代码
 export const getCode = async (factor: string, model: string) => {
@@ -239,11 +215,34 @@ export const getEval = async (factor: string, model: string, inputValue: string)
 //   return performPostRequest('upload', 'POST', header, formData);
 // };
 
+let count = 0
+//获取新闻信息
+export const getNews = async () => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/getNews`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    if (count >= 5) {
+      count = 0;
+      return []
+    }
+    count++;
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
 // 获取市场指数  
 export const getMarket = async () => {
-
   try {
-
     let requestConfig = {
       headers: {
         'Content-Type': 'application/json',
@@ -254,11 +253,12 @@ export const getMarket = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 2) {
+    if (count >= 5) {
+      count = 0;
       return []
     }
     count++;
-    return { result };
+    return result;
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -266,19 +266,47 @@ export const getMarket = async () => {
 
 // 获取重大事项  
 export const getImportantEvents = async () => {
-
-  return performGETRequest('events',);
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/events`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    if (count >= 5) {
+      count = 0;
+      return []
+    }
+    count++;
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 };
 
 // 获取重点关注股票信息  
-export const getFocusedStocks = async (stock: string[]) => {
-
-  let dataStr = {
-    ip: '127.0.0.1',
-    model: "default",
-    stock: stock,
-    time: '',
-    extra: 'extra',
-  };
-  return performPostRequest('stocks/focused', "POST", dataStr);
+export const getFocusedStocks = async () => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/stocks/focused`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    if (count >= 5) {
+      return []
+    }
+    count++;
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 };

@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
-import { InfiniteScroll, List, DotLoading, Ellipsis, Button } from 'antd-mobile'
+import React, { useState, useEffect } from 'react'
+import { InfiniteScroll, List, DotLoading, Ellipsis, Button, Image, Rate } from 'antd-mobile'
 import { Input, Space, Spin } from 'antd';
 import { getNews } from '../../../service';
 
 interface newsType {
-    title: string;
-    content: string;
+    id: string,
+    avatar: string,
+    name: string,
+    description: string,
+    rate: number,
 }
 
 const InfiniteScrollContent = ({ hasMore }: { hasMore?: boolean }) => {
@@ -26,47 +29,40 @@ export default () => {
     const [newsList, setNewsList] = useState<newsType[]>([])
     const [hasMore, setHasMore] = useState(true)
 
-    const [data, setData] = useState<newsType[]>([]);
-    const [searchText, setSearchText] = React.useState('');
-
-    const handleSearch = () => {
-        // 在这里处理搜索逻辑，可以根据searchText进行过滤或搜索操作
-        // 假设搜索结果为searchResult
-        console.log(newsList)
-        const searchResult = data.filter(news => news.title.includes(searchText));
-        setNewsList(searchResult);
-    };
-
     async function loadMore() {
-        const append = await getNews();
+        const response = await getNews();
         try {
-            if (append?.result.data) {
-                const values = Object.values(append?.result.data)
-                console.log(newsList)
-                setNewsList(val => [...val, ...values])
-                setData(val => [...val, ...values])
-                setHasMore(values.length > 0)
-                console.log(values.length)
-            }
+            const values = Object.values(response.data) as newsType[]
+            console.log(values)
+            setNewsList(values)
+            setHasMore(values.length > 0)
         } catch (err) {
-            // console.error(err)
             setHasMore(false);
         }
     }
+    useEffect(() => {
+        loadMore();
+    }, [])
+
     return (
         <>
+
             <List>
                 {newsList.map((news, index) => (
-                    <List.Item key={index}>
-                        <h2><List.Item>{news.title}</List.Item></h2>
-                        <Ellipsis
-                            direction='end'
-                            rows={3}
-                            content={news.content}
-                            expandText='展开'
-                            collapseText='收起'
-                        />
-                        {/* <List.Item>{news.content}</List.Item> */}
+                    <List.Item key={index}
+                        prefix={<Image src={news.avatar}
+                            style={{ borderRadius: 20 }}
+                            fit='cover'
+                            width={40}
+                            height={40}
+                        />}
+                        description={news.description}
+                    >
+                        <div> <Rate allowHalf readOnly value={news.rate}
+                            style={{
+                                '--star-size': '15px',
+                            }} /></div>
+                        <div>{news.name}</div>
                     </List.Item>
                 ))}
             </List>
