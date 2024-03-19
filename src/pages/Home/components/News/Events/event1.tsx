@@ -1,69 +1,88 @@
-import React, { useState, useEffect } from 'react'
-import { IndexBar, List, Rate } from 'antd-mobile'
-import { getNews } from '../../../service';
+import React, { useEffect, useRef, useState } from 'react'
+import { IndexBar, List, Rate, Image } from 'antd-mobile'
+import { IndexBarRef } from 'antd-mobile/es/components/index-bar'
+import { getEvents } from '../../../service';
+import { ProList } from '@ant-design/pro-components';
 
-interface newsType {
-    id: string,
+type eventsType = {
+    title: string,
+    items: eventsListType[],
+}[];
+// type eventsType = { [key: string]: eventsListType[] };
+
+type eventsListType = {
     avatar: string,
     name: string,
     description: string,
     rate: number,
 }
 
-export default () => {
-    const [newsList, setNewsList] = useState<newsType[]>([])
+const createData = (titles: string[], description: any[]): eventsType => {
+    if (titles.length !== description.length) {
+        throw new Error('error');
+    }
+    return titles.map((title, index) => ({
+        title,
+        items: description[index] as eventsListType[]
+    }));
+};
 
-    const getRandomList = async () => {
-        try {
-            const response = await getNews();
-            const values = Object.values(response.data) as newsType[]
-            setNewsList(values)
-        } catch (err) {
-            console.error(err)
-        }
+export default () => {
+
+    const [eventList, setEventList] = useState<eventsType>([])
+
+    const getEventList = async () => {
+        const response = await getEvents();
+        const keys = Object.keys(response.data);
+        const values = Object.values(response.data) as eventsListType[];
+        const events = createData(keys, values);
+        // setEvents(values)
+        setEventList(events);
+        console.log(values, "values");
+
     }
 
     useEffect(() => {
-        getRandomList();
+        getEventList()
     }, [])
-    // 生成标题索引
-    const groups = Array.from({ length: 26 }, (_, i) => ({
-        title: String.fromCharCode('A'.charCodeAt(0) + i),
-        items: newsList,
-    }))
 
     return (
-        <div style={{ height: window.innerHeight - 120 }}>
-            <IndexBar>
-                {groups.map(group => {
-                    const { title, items } = group
-                    return (
-                        <IndexBar.Panel
-                            index={title}
-                            title={`标题${title}`}
-                            key={`标题${title}`}
-                        >
-                            <List>
-                                {items.map((item, index) => (
-                                    <List.Item key={index}
-                                        prefix={
-                                            <span style={{ color: '#ff5500' }}>|</span>
-                                        }>
-                                        <div>
-                                            <span style={{ fontSize: '10px', color: '#969597' }}>重要性</span>
-                                            <Rate allowHalf readOnly value={item.rate}
+        <div style={{ height: window.innerHeight - 150 }}>
+            <ProList
+                itemLayout="vertical"
+                rowKey="id"
+                dataSource={eventList}
+                metas={{
+                    title: {},
+                    description: {
+                        dataIndex: 'description',
+                        title: '',
+                        render: (_, item) => {
+                            return (
+                                item.items.map((event, index) => (
+                                    <List key={item.title + event.name}>
+                                        <List.Item
+                                            prefix={<Image src={event.avatar}
+                                                style={{ borderRadius: 20 }}
+                                                fit='cover'
+                                                width={40}
+                                                height={40}
+                                            />}
+                                            description={event.name}
+                                        >
+                                            <span style={{ fontSize: '10px', color: '#217DFF' }}>重要性 </span>
+                                            <Rate allowHalf readOnly value={event.rate}
                                                 style={{
                                                     '--star-size': '10px',
                                                 }} />
-                                        </div>
-                                        {item.name}
-                                    </List.Item>
-                                ))}
-                            </List>
-                        </IndexBar.Panel>
-                    )
-                })}
-            </IndexBar>
+                                        </List.Item>
+                                    </List>
+                                ))
+                            );
+                        },
+                    },
+                }}
+            />
         </div>
     )
 }

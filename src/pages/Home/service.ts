@@ -265,7 +265,7 @@ export const getMarket = async () => {
 };
 
 // 获取重大事项  
-export const getImportantEvents = async () => {
+export const getEvents = async () => {
   try {
     let requestConfig = {
       headers: {
@@ -277,11 +277,11 @@ export const getImportantEvents = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 3) {
-      count = 0;
-      return []
-    }
-    count++;
+    // if (count >= 3) {
+    //   count = 0;
+    //   return []
+    // }
+    // count++;
     return result;
   } catch (error) {
     console.error('An error occurred:', error);
