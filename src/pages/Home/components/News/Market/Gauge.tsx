@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import * as echarts from 'echarts/core';
 import { GaugeChart, GaugeSeriesOption } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
+import { Divider } from 'antd';
 
 echarts.use([GaugeChart, CanvasRenderer]);
 
@@ -9,7 +10,6 @@ type EChartsOption = echarts.ComposeOption<GaugeSeriesOption>;
 
 const EChartsComponent: React.FC = () => {
     const chartRef = React.useRef<HTMLDivElement>(null);
-    const canvasRef = React.useRef<HTMLCanvasElement>(null);
     const getOption = (grade: number): EChartsOption => {
         return {
             series: [
@@ -17,8 +17,8 @@ const EChartsComponent: React.FC = () => {
                     type: 'gauge',
                     startAngle: 270,
                     endAngle: 90,
-                    center: ['100%', '45%'],
-                    radius: '90%',
+                    center: ['100%', '50%'],
+                    radius: '190%',
                     min: 0,
                     max: 1,
                     splitNumber: 8,
@@ -62,25 +62,11 @@ const EChartsComponent: React.FC = () => {
                         distance: -40,
                         rotate: 'tangential',
                         formatter: function (value: number) {
-                            // if (value === 0.875) {
-                            //     return 'Grade A';
-                            // } else if (value === 0.625) {
-                            //     return 'Grade B';
-                            // } else if (value === 0.375) {
-                            //     return 'Grade C';
-                            // } else if (value === 0.125) {
-                            //     return 'Grade D';    
-                            // }
                             return '';
                         }
                     },
                     title: {
                         offsetCenter: [-40, '115%'],
-                        // formatter: function () {
-                        //     console.log(this);
-                        //     // 使用path标签绘制字体路径
-                        //     return `<path d="M0,0 L0,50 L100,25 Z" fill="none" stroke="black" stroke-width="2" style="font-family: myfont; font-size: 16px;"></path>`;
-                        // },
                         fontSize: 18
                     },
                     detail: {
@@ -98,28 +84,27 @@ const EChartsComponent: React.FC = () => {
                             name: ''
                         }
                     ]
-                }
+                },
             ]
         };
     };
 
     useEffect(() => {
-        if (chartRef.current ) {
+        if (chartRef.current) {
             const myChart = echarts.init(chartRef.current);
-            // const context = canvasRef.current.getContext('2d');
-            // // 在Canvas上绘制标题
-            // context.font = '16px Arial'; // 设置字体样式
-            // context.fillText('Your Title Here', 10, 50); // 绘制标题文本
-
             // 设置图表选项
             const option = getOption(0.3);
             myChart.setOption(option);
         }
     }, []);
 
-    return <div ref={chartRef} style={{ width: '100%', height: '280px' }}>
-        {/* <canvas ref={canvasRef}></canvas> */}
-    </div>;
+    return (
+        <>
+            <div ref={chartRef} style={{ width: '100%', height: '280px', float: 'right' }} />
+        </>
+
+    )
+
 };
 
 export default EChartsComponent;

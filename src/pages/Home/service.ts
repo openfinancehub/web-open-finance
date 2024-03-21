@@ -178,16 +178,24 @@ export const updateCode = async (factor: string, model: string, code: string, te
   return performPostRequest('updateCode', 'POST', dataStr);
 };
 // models详情页图形
-export const getModelData = async (factor: string, model: string) => {
+export const test = async () => {
 
-  const dataStr = {
-    ip: '127.0.0.1',
-    factor: model,
-    model: "default",
-    time: '',
-    extra: 'extra',
-  };
-  return performPostRequest('test', 'POST', dataStr);
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/test`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+  // return performPostRequest('test', 'GET', dataStr);
 };
 
 export const getEval = async (factor: string, model: string, inputValue: string) => {
