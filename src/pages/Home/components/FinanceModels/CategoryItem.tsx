@@ -38,16 +38,16 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   const handleTriggerEvent = async (factor: string) => {
     const dataJson = await getModels(factor);
     // console.log(dataJson)
-    if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
-      onFilterFinance(dataJson?.result?.models);
+    if (dataJson.models != null && dataJson.ret_code == 0) {
+      onFilterFinance(dataJson.models);
     }
   };
   const fetchCategoryJson = async () => {
     try {
       const response = await categoryJson();
       // console.log(response.data.category)
-      const titles = Object.keys(response?.result?.category);
-      const descriptions = Object.values(response?.result?.category);
+      const titles = Object.keys(response.category);
+      const descriptions = Object.values(response.category);
       const categories = createData(titles, descriptions);
       setCategoryList(categories);
       setOriginalData(categories);

@@ -1,8 +1,9 @@
 import { DownOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button } from 'antd';
-
+import { getStocks } from '../../../service';
+import { useEffect, useState } from 'react';
+import { history } from 'umi';
 const valueEnum = {
   0: 'into',
   1: 'out',
@@ -10,30 +11,17 @@ const valueEnum = {
 
 
 export type TableListItem = {
-  key: string;
+  // key: string;
   name: string;
-  MarketPrice: number;
+  MarketPrice: string;
   status: string;
   containers: number;
   Floating: number;
 };
-const tableListDataSource: TableListItem[] = [];
 
 const creators = ['三菱日联', '路透IFR', '摩根士丹利', '高盛', '野村控股'];
-
-const MarketPrice = [1.1191, 0.8643, 0.9673, 1.0432, 0.7842];
+const MarketPrice = ['1.1191', '0.8643', '0.9673', '1.0432', '0.7842'];
 const Floating = [809, 680, -973, -432, 842];
-
-for (let i = 0; i < 5; i += 1) {
-  tableListDataSource.push({
-    key: i + '',
-    name: creators[i],
-    status: valueEnum[(Math.floor(Math.random() * 10) + '') as '0'],
-    MarketPrice: MarketPrice[i],
-    containers: Math.floor(Math.random() * 20),
-    Floating: Floating[i],
-  });
-}
 
 const columns: ProColumns<TableListItem>[] = [
   {
@@ -46,15 +34,6 @@ const columns: ProColumns<TableListItem>[] = [
     title: '直盘/交叉盘',
     dataIndex: 'containers',
     width: 80,
-    // sorter: (a, b) => a.containers - b.containers,
-    valueEnum: {
-      all: { text: '全部' },
-      付小小: { text: '付小小' },
-      曲丽丽: { text: '曲丽丽' },
-      林东东: { text: '林东东' },
-      陈帅帅: { text: '陈帅帅' },
-      兼某某: { text: '兼某某' },
-    },
   },
   {
     title: '策略状态',
@@ -81,6 +60,24 @@ const columns: ProColumns<TableListItem>[] = [
 ];
 
 export default () => {
+  // let tableListDataSource: TableListItem[] = [];
+  let [tableListDataSource, setTableListDataSource] = useState<TableListItem[]>([])
+  // const history = useHistory();
+  tableListDataSource = tableListDataSource.map((stock, index) => ({
+    ...stock,
+    key: index,
+  }));
+  const stocksList = async () => {
+    const response = await getStocks();
+    console.log(response.data, "data");
+    setTableListDataSource(response.data.stocksList);
+    console.log(tableListDataSource, 'tableListDataSource');
+  }
+
+  useEffect(() => {
+    stocksList();
+  }, [])
+
   return (
     <ProTable<TableListItem>
       dataSource={tableListDataSource}
@@ -92,7 +89,22 @@ export default () => {
       search={false}
       options={false}
       dateFormatter="string"
-      // headerTitle="表格标题"
+      onRow={(record) => {
+        return {
+          onClick: (event) => {
+            <div style={{ backgroundColor: '#000000' }}>aaa</div>
+            // history.push(`/home/stocks`);
+            // console.log(record)
+          },
+        };
+      }}
+      expandable={{
+        expandRowByClick: true,
+        onExpand: (record) => <div style={{ backgroundColor: '#000000' }}>aaa</div>,
+        rowExpandable: (record) => true,
+        onExpandedRowsChange: (record) => <div style={{ backgroundColor: '#000000' }}>aaa</div>,
+      }}
+
     />
   );
 };

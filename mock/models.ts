@@ -909,36 +909,73 @@ const news = [
         rate: 3.5,
     },
 ]
-const focused = [
-    {
-        avatar:
-            'https://images.unsplash.com/photo-1548532928-b34e3be62fc6?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-        name: '中国2月新增人民币贷款(亿元)',
-        description: 'Deserunt dolor ea eaque eos',
-        rate: 4,
-    },
-    {
-        avatar:
-            'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9',
-        name: '中国2月M2货币供应年率',
-        description: 'Animi eius expedita, explicabo',
-        rate: 3,
-    },
-    {
-        avatar:
-            'https://images.unsplash.com/photo-1542624937-8d1e9f53c1b9?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-        name: '中国2月M1货币供应年率',
-        description: '中国2月社会融资规模(亿元)',
-        rate: 2.5,
-    },
-    {
-        avatar:
-            'https://images.unsplash.com/photo-1546967191-fdfb13ed6b1e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-        name: '中国2月社会融资规模(亿元)',
-        description: 'Commodi earum exercitationem id numquam vitae',
-        rate: 3.5,
-    },
-]
+// const stocks = [
+//     {
+//         name: '名称',
+//         MarketPrice: '1.1191',
+//         status: 0,
+//         containers: 123,
+//         Floating: 4343,
+//     },
+//     {
+//         name: '直盘/交叉盘',
+//         MarketPrice: '1.1191',
+//         status: 0,
+//         containers: 123,
+//         Floating: 4343,
+//     },
+//     {
+//         name: '策略状态',
+//         MarketPrice: '1.1191',
+//         status: 0,
+//         containers: 123,
+//         Floating: 4343,
+//     },
+//     {
+//         name: '市场价格',
+//         MarketPrice: '1.1191',
+//         status: 0,
+//         containers: 123,
+//         Floating: 4343,
+//     },
+// ]
+const stocks = {
+    title: ['名称', '直盘/交叉盘', '策略状态', '市场价格', '浮动盈亏'],
+    stocksList: [
+        {
+            "name": "三菱日联",
+            "MarketPrice": "1.1191",
+            "containers": 12,
+            "Floating": 809
+        },
+        {
+            "name": "路透IFR",
+            "MarketPrice": "0.8643",
+            "containers": 14,
+            "Floating": 680
+        },
+        {
+            "name": "摩根士丹利",
+            "status": "out",
+            "MarketPrice": "0.9673",
+            "containers": 10,
+            "Floating": -973
+        },
+        {
+            "name": "高盛",
+            "MarketPrice": "1.0432",
+            "containers": 12,
+            "Floating": -432
+        },
+        {
+            "name": "野村控股",
+            "MarketPrice": "0.7842",
+            "containers": 13,
+            "Floating": 842
+        }
+    ]
+}
+
 
 const eventsList = {
     "经济数据一览": [
@@ -1035,10 +1072,10 @@ export default {
             extra: {}
         });
     },
-    'GET /api/stocks/focused': (req: any, res: any) => {
+    'GET /api/stocks': (req: any, res: any) => {
         res.json({
             msg: "成功",
-            data: focused,
+            data: stocks,
             ret_code: 0,
             extra: {}
         });

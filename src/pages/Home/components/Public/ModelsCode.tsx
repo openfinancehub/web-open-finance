@@ -52,10 +52,10 @@ const ModelsCode: React.FC<{
         const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
         // console.log(response);
         // 处理响应数据  
-        if (response && response.result && response.result.ret_code === 0) {
+        if (response && response.ret_code === 0) {
           // 更新模型代码和文本  
-          setModelCode(response.result.models.data.code);
-          setModelText(response.result.models.data.text);
+          setModelCode(response.models.data.code);
+          setModelText(response.models.data.text);
           // 显示提交成功的消息  
           message.success('提交成功');
         } else {
@@ -79,8 +79,8 @@ const ModelsCode: React.FC<{
       // dataJson?.result
       // console.log(dataJson)
       // console.log(dataJson?.result.data)
-      setModelCode(dataJson?.result.models.code);
-      setModelText(dataJson?.result.models.text);
+      setModelCode(dataJson.models.code);
+      setModelText(dataJson.models.text);
     } else {
       setModelCode('');
       setModelText('');

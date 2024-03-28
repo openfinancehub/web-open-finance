@@ -35,8 +35,8 @@ const DModels: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper
         try {
             const response = await categoryJson();
             console.log(response)
-            const titles = Object.keys(response?.result?.category);
-            const descriptions = Object.values(response?.result?.category);
+            const titles = Object.keys(response.category);
+            const descriptions = Object.values(response.category);
             const categories = createData(titles, descriptions);
             setCategoryList(categories);
         } catch (error) {
@@ -57,8 +57,8 @@ const DModels: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper
         const [_, afterAtSymbol] = factor.split('@');
         const dataJson = await getModels(afterAtSymbol);
 
-        if (dataJson?.result?.models != null && dataJson.result.ret_code == 0) {
-            addElement(factor, dataJson?.result?.models)
+        if (dataJson.models != null && dataJson.ret_code == 0) {
+            addElement(factor, dataJson.models)
         }
 
     };

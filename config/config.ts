@@ -91,6 +91,12 @@ export default defineConfig({
       exact: true
     },
     {
+      path: '/home/stocks',
+      component: './Home/components/News/Stocks/',
+      props: true,
+      exact: true
+    },
+    {
       path: '/home/developer',
       component: './Home/components/Developer',
       props: true,

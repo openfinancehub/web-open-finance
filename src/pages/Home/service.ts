@@ -34,9 +34,29 @@ export const uploadFileService = async (formData: FormData) => {
   }
 };
 
-const apiUrl = 'http://121.37.5.77:5003/api';
+// 测试接口
+export const test = async () => {
+
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/test`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+const apiUrl = 'http://121.37.5.77:5003/api/';
 // get通用请求
-const performGETRequest = async (url: string) => {
+const GETRequest = async (url: string) => {
   try {
     let requestConfig = {
       headers: {
@@ -44,55 +64,21 @@ const performGETRequest = async (url: string) => {
       },
     };
 
-    const response = await fetch(`${apiUrl}/${url}`, requestConfig);
+    const response = await fetch(`${url}`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
 
     let result = await response.json();
 
-    return { result };
+    return result;
   } catch (error) {
     console.error('An error occurred:', error);
   }
 };
 
-// // post通用请求
-// const performPostRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
-//   try {
-//     let requestConfig = {
-//       method,
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     };
-
-//     // 只有在 POST、PUT 或 DELETE 请求时才包含请求体
-//     if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
-//       requestConfig.body = JSON.stringify({
-//         header,
-//         data,
-//       });
-//     }
-
-//     const response = await fetch(`${apiUrl}/${url}`, requestConfig);
-//     if (!response.ok) {
-//       throw new Error('Network response was not ok');
-//     }
-
-//     let result = await response.json();
-
-//     if (!data) {
-//       throw new Error('Response data is empty or not valid JSON');
-//     }
-//     return { result };
-//   } catch (error) {
-//     console.error('An error occurred:', error);
-//   }
-// };
-
 // post通用请求
-const performPostRequest = async (url: string, method: string, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
+const PostRequest = async (url: string, method: string, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
   try {
     const header = {
       req_id: '1234',
@@ -116,7 +102,7 @@ const performPostRequest = async (url: string, method: string, data: { ip?: stri
       });
     }
 
-    const response = await fetch(`${apiUrl}/${url}`, requestConfig);
+    const response = await fetch(`${url}`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -126,7 +112,7 @@ const performPostRequest = async (url: string, method: string, data: { ip?: stri
     if (!data) {
       throw new Error('Response data is empty or not valid JSON');
     }
-    return { result };
+    return result;
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -140,13 +126,12 @@ export const getModels = async (factor: string) => {
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('models', 'POST', dataStr);
+  return PostRequest(`${apiUrl}` + 'models', 'POST', dataStr);
 };
-
+// 获取因子分类
 export const categoryJson = async () => {
-  return performGETRequest('category',);
+  return GETRequest(`${apiUrl}` + 'category',);
 };
-
 
 
 // 获取models代码
@@ -160,7 +145,7 @@ export const getCode = async (factor: string, model: string) => {
     extra: 'extra',
   };
 
-  return performPostRequest('getCode', 'POST', dataStr);
+  return PostRequest(`${apiUrl}` + 'getCode', 'POST', dataStr);
 };
 // 更新models
 export const updateCode = async (factor: string, model: string, code: string, text: string, extra: string) => {
@@ -175,29 +160,10 @@ export const updateCode = async (factor: string, model: string, code: string, te
     extra,
   };
 
-  return performPostRequest('updateCode', 'POST', dataStr);
-};
-// models详情页图形
-export const test = async () => {
-
-  try {
-    let requestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const response = await fetch(`http://127.0.0.1:8000/api/test`, requestConfig);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    let result = await response.json();
-    return result;
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
-  // return performPostRequest('test', 'GET', dataStr);
+  return PostRequest(`${apiUrl}` + 'updateCode', 'POST', dataStr);
 };
 
+// model图形界面展示
 export const getEval = async (factor: string, model: string, inputValue: string) => {
 
   let dataStr = {
@@ -208,22 +174,12 @@ export const getEval = async (factor: string, model: string, inputValue: string)
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('eval', 'POST', dataStr);
+  return PostRequest(`${apiUrl}` + 'eval', 'POST', dataStr);
 };
 
-//上传文件
-// export const uploadFileService = async (formData) => {
-//   const header = {
-//     req_id: '1234',
-//     req_src: 'source',
-//     user: 'user',
-//     token: 'token',
-//   };
 
-//   return performPostRequest('upload', 'POST', header, formData);
-// };
+const apiPushUrl = 'http://121.37.5.77:5006/api/';
 
-let count = 0
 //获取新闻信息
 export const getNews = async () => {
   try {
@@ -237,11 +193,6 @@ export const getNews = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    // if (count >= 5) {
-    //   count = 0;
-    //   return []
-    // }
-    // count++;
     return result;
   } catch (error) {
     console.error('An error occurred:', error);
@@ -261,59 +212,49 @@ export const getMarket = async () => {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 3) {
-      count = 0;
-      return []
-    }
-    count++;
     return result;
   } catch (error) {
     console.error('An error occurred:', error);
   }
 };
 
-// 获取重大事项  
+// 获取重大事项 
+
+// export const getEvents = async () => {
+//   try {
+//     let requestConfig = {
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     };
+//     const response = await fetch(`http://127.0.0.1:8000/api/events`, requestConfig);
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+//     let result = await response.json();
+//     return result;
+//   } catch (error) {
+//     console.error('An error occurred:', error);
+//   }
+// };
+
 export const getEvents = async () => {
-  try {
-    let requestConfig = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    const response = await fetch(`http://127.0.0.1:8000/api/events`, requestConfig);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    let result = await response.json();
-    // if (count >= 3) {
-    //   count = 0;
-    //   return []
-    // }
-    // count++;
-    return result;
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
+  return GETRequest(`${apiPushUrl}` + 'strategy/event')
 };
 
 // 获取重点关注股票信息  
-export const getFocusedStocks = async () => {
+export const getStocks = async () => {
   try {
     let requestConfig = {
       headers: {
         'Content-Type': 'application/json',
       },
     };
-    const response = await fetch(`http://127.0.0.1:8000/api/stocks/focused`, requestConfig);
+    const response = await fetch(`http://127.0.0.1:8000/api/stocks`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
     let result = await response.json();
-    if (count >= 2) {
-      count = 0;
-      return []
-    }
-    count++;
     return result;
   } catch (error) {
     console.error('An error occurred:', error);
