@@ -1,0 +1,13 @@
+export { default as America } from './R-C.jpg';
+export { default as China } from './R-C.png';
+export { default as Japan } from './OIP-C.jpg';
+export { default as Australia } from './t01061dcc8bfd5b989c.png';
+export { default as Germany } from './OIP-C (1).jpg';
+export { default as Britain } from './t01264cf517c674c35c.png';
+export { default as France } from './OIP-C (2).jpg';
+export { default as Canada } from './R-C (1).jpg';
+export { default as Eurobond } from './OIP-C (3).jpg';
+export { default as Switzerland } from './t012f9a9090e01f34ef.png';
+export { default as Italy } from './t01574985508809fcad.png';
+export { default as Russia } from './th.jpg';
+export { default as HongKong } from './OIP-C (4).jpg';

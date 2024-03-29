@@ -266,9 +266,9 @@ const WindChart = () => {
             const myChart = echarts.init(chartRef.current);
             myChart.setOption(option);
         }
-        console.log(data)
+        // console.log(data)
         if (!data) {
-            console.log(data, 'data')
+            // console.log(data, 'data')
             fetchData();
         }
     }, [data]);
