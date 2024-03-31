@@ -25,6 +25,11 @@ export default defineConfig({
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
     },
+    '/quent-api': {
+      target: 'http://121.37.5.77:5001/api/quant/',
+      changeOrigin: true,
+      pathRewrite: { '^/quent-api': '' }
+    },
     '/quant': {
       target: 'http://139.159.205.40:8808/',
       changeOrigin: true,

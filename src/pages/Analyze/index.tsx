@@ -2,8 +2,9 @@ import { PageContainer } from '@ant-design/pro-components';
 import { Tabs, TabsProps } from 'antd';
 import Factor from './components/Factor'
 import Strategy from './components/Strategy'
-import Subscribe from './components/Subscribe'
-import Demo from './components/Factor/demo'
+// import Subscribe from './components/Subscribe'
+// import Demo from './components/Factor/demo'
+import Screen from "./components/Screen";
 const HomePage: React.FC = () => {
   const items: TabsProps['items'] = [
     {
@@ -16,11 +17,11 @@ const HomePage: React.FC = () => {
       label: `策略生成器`,
       children: <Strategy></Strategy>,
     },
-    // {
-    //   key: '3',
-    //   label: `demo图表`,
-    //   children: <Demo></Demo>,
-    // },
+    {
+      key: '3',
+      label: `筛选列表`,
+      children: <Screen></Screen>,
+    },
   ];
   const onChange = (key: string) => {
     console.log(key);

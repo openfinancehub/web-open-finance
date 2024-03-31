@@ -19,8 +19,8 @@ import {
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../Public/left"
-import {Linedata,lineType,linealldata} from "./stock-DJI"
-import { Space, Select, InputNumber, Button,Table,Spin } from 'antd'
+// import {Linedata,lineType,linealldata} from "./stock-DJI"
+import { Select, InputNumber, Button,Table } from 'antd'
 echarts.use([
     ToolboxComponent,
     TooltipComponent,

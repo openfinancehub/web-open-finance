@@ -1,6 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
 import { Button, InputNumber, Space, DatePicker, Radio, Select } from 'antd';
-const { Option } = Select;
 import type { DatePickerProps } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
@@ -43,6 +42,7 @@ export default function PublicStrategy(props: string) {
     const [lineIdent, setLineIdent] = useState([])
     const [demoEndData, setDemoEndData] = useState([])
     const [raderData, setRaderData] = useState([{ name: '', max: '' }])
+    const [eightOne,setEightOne] = useState('')
     const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
     const [minTime, setMinTime] = useState(5)
@@ -50,6 +50,7 @@ export default function PublicStrategy(props: string) {
     const [stopDemo, setStopDemo] = useState(0)
     const firstKargs: any = []
     let synthesis: any = []
+    
     const strtegylist = () => {
         const data = {
             uid: 1,
@@ -72,7 +73,6 @@ export default function PublicStrategy(props: string) {
                 }
             })
             setListData(options)   
-            // setListData(res.data.list)
             setDetailsData(res.data.details)
             console.log(detailsData,"选择项");
             
@@ -91,28 +91,29 @@ export default function PublicStrategy(props: string) {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(res)
             const list = demoTime + 20
             // 当测试时间超过80s时停止测试
             if (demoTime > 80) {
-
                 setStopDemo(res.code)
                 console.log(stopDemo);
                 return demoTime
+            }
+            if(res.code === 801){
+                setEightOne(res.message)
             }
             if (res.code === 300 && demoTime <= 140) {
                 setTimeout(() => {
                     GetStrategy(uid, list)
                 }, 2000)
             } else {
-                let destArr = []
-                let raderArr = []
-                let radervalue = []
-                let linedata = []
-                let lineDataTime = []
+                let destArr:object[] = []
+                let raderArr:object[] = []
+                let radervalue:number[] = []
+                let linedata:any = []
+                let lineDataTime:string[] = []
                 // 买入卖出节点
-                let longAndshort = []
-                res.data.result.forEach(item => {
+                let longAndshort:object[] = []
+                res.data.result.forEach((item:any) => {
                     if (item.indicator_flag === 'True') {
                         destArr.push({ name: item.name, desc: item.desc, value: item.value.toFixed(4) })
                         raderArr.push({ name: item.name, max: item.max })
@@ -120,7 +121,7 @@ export default function PublicStrategy(props: string) {
                     }
                 });
                 if (!backData) {
-                    res.data.raw_data.forEach(list => {
+                    res.data.raw_data.forEach((list:any) => {
                         linedata.push(Object.values(list)[0])
                         lineDataTime.push(Object.keys(list)[0])
                         for (let i = 0; i < res.data.decision_long.length; i++) {
@@ -170,7 +171,6 @@ export default function PublicStrategy(props: string) {
     const handleStopTime = () => {
         setTimeout(() => {
             setStopDemo({ list: true })
-            console.log(stopDemo);
         }, 8000)
     }
     const strategy_test = (kargs: number[]) => {
@@ -351,12 +351,6 @@ export default function PublicStrategy(props: string) {
         setDemoDays(value)
     }
     
-    // const handleValue = (index: number, event: any) => {
-    //     let text = event.target.innerHTML
-    //     setListName(text)
-    //     setindexDetails(index)
-    //     setSelectedButton(text)
-    // }
     const handleChangeValue = (value:any,option:any) =>{
         console.log(option.index);
         setListName(value)
@@ -373,7 +367,7 @@ export default function PublicStrategy(props: string) {
         console.log(firstKargs);
 
     }
-    const minTimeChange = (value) => {
+    const minTimeChange = (value:number) => {
         setMinTime(value)
     }
     console.log(selectedButton,"选择框的初始值");
@@ -393,15 +387,7 @@ export default function PublicStrategy(props: string) {
                             }}
                             onChange={handleChangeValue}
                             options={listData}
-                        />   
-                        {/* {
-                            listData.map((item, index) => {
-                                return (
-                                    <Button type={selectedButton === item ? 'primary' : 'default'}
-                                        key={index} onClick={(e) => { handleValue(index, e) }}>{item}</Button>
-                                )
-                            })
-                        } */}
+                        />
                     </Space>
                     <div>
                         {
@@ -505,7 +491,7 @@ export default function PublicStrategy(props: string) {
                     bordered>
                     <div className="demoResult">
                         <div>测试结果：</div><br></br>
-                        {demoEndData.map((item, index) => {
+                        {demoEndData.map((item:any, index) => {
                             return (
                                 <div style={{ fontWeight: 'bole' }} key={index}>
                                     <p > <span>{index + 1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
@@ -513,6 +499,7 @@ export default function PublicStrategy(props: string) {
                                 </div>
                             )
                         })}
+                        {eightOne}
                     </div>
                 </ProCard>
                 <ProCard
