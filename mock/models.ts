@@ -909,36 +909,6 @@ const news = [
         rate: 3.5,
     },
 ]
-// const stocks = [
-//     {
-//         name: '名称',
-//         MarketPrice: '1.1191',
-//         status: 0,
-//         containers: 123,
-//         Floating: 4343,
-//     },
-//     {
-//         name: '直盘/交叉盘',
-//         MarketPrice: '1.1191',
-//         status: 0,
-//         containers: 123,
-//         Floating: 4343,
-//     },
-//     {
-//         name: '策略状态',
-//         MarketPrice: '1.1191',
-//         status: 0,
-//         containers: 123,
-//         Floating: 4343,
-//     },
-//     {
-//         name: '市场价格',
-//         MarketPrice: '1.1191',
-//         status: 0,
-//         containers: 123,
-//         Floating: 4343,
-//     },
-// ]
 const stocks = {
     title: ['名称', '直盘/交叉盘', '策略状态', '市场价格', '浮动盈亏'],
     stocksList: [

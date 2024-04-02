@@ -218,8 +218,11 @@ export const getMarket = async () => {
   }
 };
 
-// 获取重大事项 
+export const getStrategy = async () => {
+  return GETRequest(`${apiPushUrl}` + 'strategy/sentiment')
+};
 
+// 获取重大事项 
 // export const getEvents = async () => {
 //   try {
 //     let requestConfig = {
@@ -241,6 +244,17 @@ export const getMarket = async () => {
 export const getEvents = async () => {
   return GETRequest(`${apiPushUrl}` + 'strategy/event')
 };
+
+// 获取危险指数
+export const getDanger = async () => {
+  return GETRequest(`${apiPushUrl}` + 'strategy/danger')
+};
+
+// 获取公司推荐
+export const getStock = async () => {
+  return GETRequest(`${apiPushUrl}` + 'strategy/stock')
+};
+
 
 // 获取重点关注股票信息  
 export const getStocks = async () => {

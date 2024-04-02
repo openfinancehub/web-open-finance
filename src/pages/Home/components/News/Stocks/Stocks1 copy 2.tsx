@@ -1,7 +1,7 @@
 import { DownOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { getStock } from '../../../service';
+import { getStocks } from '../../../service';
 import { useEffect, useState } from 'react';
 import { history } from 'umi';
 const valueEnum = {
@@ -18,6 +18,10 @@ export type TableListItem = {
   containers: number;
   Floating: number;
 };
+
+const creators = ['三菱日联', '路透IFR', '摩根士丹利', '高盛', '野村控股'];
+const MarketPrice = ['1.1191', '0.8643', '0.9673', '1.0432', '0.7842'];
+const Floating = [809, 680, -973, -432, 842];
 
 const columns: ProColumns<TableListItem>[] = [
   {
@@ -56,31 +60,18 @@ const columns: ProColumns<TableListItem>[] = [
 ];
 
 export default () => {
-
+  // let tableListDataSource: TableListItem[] = [];
   let [tableListDataSource, setTableListDataSource] = useState<TableListItem[]>([])
-
-  const [summary, setSummary] = useState<string[]>([])
-  const [features, setFeatures] = useState<string[]>([])
   // const history = useHistory();
   tableListDataSource = tableListDataSource.map((stock, index) => ({
     ...stock,
     key: index,
   }));
   const stocksList = async () => {
-    const response = await getStock();
-
-    const {
-      features = [],
-      summary = [],
-    } = response.result || {};
-    setSummary(summary);
-    setFeatures(features);
-    
-    // summary.map((item, index) =>{
-    //   columns[index].render = (text) => <a>{text}</a>;
-    // })
-
-    console.log(summary, features);
+    const response = await getStocks();
+    console.log(response.data, "data");
+    setTableListDataSource(response.data.stocksList);
+    console.log(tableListDataSource, 'tableListDataSource');
   }
 
   useEffect(() => {

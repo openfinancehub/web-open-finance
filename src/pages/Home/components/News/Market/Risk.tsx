@@ -5,7 +5,9 @@ import {
     TooltipComponent,
     GridComponent,
     VisualMapComponent,
-    DataZoomComponent
+    DataZoomComponent,
+    LegendComponent,
+    ToolboxComponent
 } from 'echarts/components';
 import { LineChart, CustomChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
@@ -17,261 +19,66 @@ echarts.use([
     GridComponent,
     VisualMapComponent,
     DataZoomComponent,
+    LegendComponent,
+    ToolboxComponent,
     LineChart,
     CustomChart,
     CanvasRenderer,
     UniversalTransition
 ]);
 import { test } from '../../../service';
+import { getDanger } from '../../../service';
 
-const WindChart = () => {
+const WindChart = ({
+    seriesData = {},
+    legendData,
+}) => {
     const chartRef = useRef(null);
-    const [data, setData] = React.useState<any[]>();
-    const fetchData = async () => {
-        test().then((res) => {
-            const a = res.data.data.map(function (entry) {
-                return [entry.time, entry.windSpeed, entry.R, entry.waveHeight];
-            });
-            setData(a);
-        }).catch(err => { console.log(err) })
-    };
 
-    const directionMap: Record<string, number> = {};
-    // prettier-ignore
-    ['W', 'WSW', 'SW', 'SSW', 'S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N', 'NNW', 'NW', 'WNW'].forEach(function (name, index) {
-        directionMap[name] = Math.PI / 8 * index;
-    });
-    // 定义维度映射
-    const dims = {
-        time: 0,
-        windSpeed: 1,
-        R: 2,
-        waveHeight: 3,
-        weatherIcon: 2,
-        minTemp: 3,
-        maxTemp: 4
-    };
-    const arrowSize = 18;
-    // 箭头的配置
-    const renderArrow = function (param, api) {
-        const point = api.coord([
-            api.value(dims.time),
-            api.value(dims.windSpeed)
-        ]);
-        return {
-            type: 'path',
-            shape: {
-                pathData: 'M31 16l-15-15v9h-26v12h26v9z',
-                x: -arrowSize / 2,
-                y: -arrowSize / 2,
-                width: arrowSize,
-                height: arrowSize
-            },
-            rotation: directionMap[api.value(dims.R)],
-            position: point,
-            style: api.style({
-                stroke: '#555',
-                lineWidth: 1
-            })
-        };
-    };
-    // 图标的配置
+    // 图表的配置
     const option = {
         title: {
-            text: '',
-            subtext: '',
-            left: 'left'
+            text: ''
         },
         tooltip: {
-            trigger: 'axis',
-            formatter: function (params) {
-                return [
-                    echarts.format.formatTime(
-                        'yyyy-MM-dd',
-                        params[0].value[dims.time]
-                    ) +
-                    ' ' +
-                    echarts.format.formatTime('hh:mm', params[0].value[dims.time]),
-                    '风速：' + params[0].value[dims.windSpeed],
-                    '风向：' + params[0].value[dims.R],
-                    '浪高：' + params[0].value[dims.waveHeight]
-                ].join('<br>');
-            }
+            trigger: 'axis'
         },
-        grid: {
-            top: 20,
-            bottom: 110
+        legend: {
+            data: legendData
+        },
+        grid: {},
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
         },
         xAxis: {
-            type: 'time',
-            maxInterval: 3600 * 1000 * 24,
-            splitLine: {
-                lineStyle: {
-                    color: '#ddd'
-                }
-            }
+            type: 'category',
+            boundaryGap: false,
         },
-        yAxis: [
-            {
-                name: '指数',
-                nameLocation: 'middle',
-                nameGap: 25,
-                axisLine: {
-                    lineStyle: {
-                        color: '#666'
-                    }
-                },
-                splitLine: {
-                    lineStyle: {
-                        color: '#ddd'
-                    }
-                }
-            },
-            {
-                name: '建议',
-                nameLocation: 'middle',
-                nameGap: 25,
-                max: 6,
-                axisLine: {
-                    lineStyle: {
-                        color: '#015DD5'
-                    }
-                },
-                splitLine: { show: false }
-            },
-            {
-                axisLine: { show: false },
-                axisTick: { show: false },
-                axisLabel: { show: false },
-                splitLine: { show: false }
-            }
-        ],
-        visualMap: {
-            type: 'piecewise',
-            // show: false,
-            orient: 'horizontal',
-            left: 'center',
-            bottom: 10,
-            pieces: [
-                {
-                    gte: 17,
-                    color: '#18BF12',
-                    label: '高(>=17节)'
-                },
-                {
-                    gte: 11,
-                    lt: 17,
-                    color: '#f4e9a3',
-                    label: '中(11  ~ 17 节)'
-                },
-                {
-                    lt: 11,
-                    color: '#D33C3E',
-                    label: '低(小于 11 节)'
-                }
-            ],
-            seriesIndex: 1,
-            dimension: 1
+        yAxis: {
+            type: 'value'
         },
-        // 内部数据
         dataZoom: [
-            // 缩放比例
             {
                 type: 'inside',
-                xAxisIndex: 0,
-                minSpan: 5
+                start: 0,
+                // end: 20
             },
             {
-                type: 'slider',
-                xAxisIndex: 0,
-                minSpan: 5,
-                bottom: 50
+                start: 0,
+                // end: 20
             }
         ],
-        series: [
-            {
-                type: 'line',
-                yAxisIndex: 1,
-                showSymbol: false,
-                emphasis: {
-                    scale: false
-                },
-                symbolSize: 10,
-                areaStyle: {
-                    color: {
-                        type: 'linear',
-                        x: 0,
-                        y: 0,
-                        x2: 0,
-                        y2: 1,
-                        global: false,
-                        colorStops: [
-                            {
-                                offset: 0,
-                                color: 'rgba(88,160,253,1)'
-                            },
-                            {
-                                offset: 0.5,
-                                color: 'rgba(88,160,253,0.7)'
-                            },
-                            {
-                                offset: 1,
-                                color: 'rgba(88,160,253,0)'
-                            }
-                        ]
-                    }
-                },
-                lineStyle: {
-                    color: 'rgba(88,160,253,1)'
-                },
-                itemStyle: {
-                    color: 'rgba(88,160,253,1)'
-                },
-                encode: {
-                    x: dims.time,
-                    y: dims.waveHeight
-                },
-                data: data,
-                z: 2
-            },
-            {
-                type: 'custom',
-                renderItem: renderArrow,
-                encode: {
-                    x: dims.time,
-                    y: dims.windSpeed
-                },
-                data: data,
-                z: 10
-            },
-            {
-                type: 'line',
-                symbol: 'none',
-                encode: {
-                    x: dims.time,
-                    y: dims.windSpeed
-                },
-                lineStyle: {
-                    color: '#aaa',
-                    type: 'dotted'
-                },
-                data: data,
-                z: 1
-            }
-        ]
+        series: seriesData
     };
+
     useEffect(() => {
-        // fetchData();
         if (chartRef.current) {
             const myChart = echarts.init(chartRef.current);
             myChart.setOption(option);
         }
-        // console.log(data)
-        if (!data) {
-            // console.log(data, 'data')
-            fetchData();
-        }
-    }, [data]);
+    }, [seriesData]);
 
     return <><div ref={chartRef} style={{ width: '100%', height: '400px' }} /></>;
 };
