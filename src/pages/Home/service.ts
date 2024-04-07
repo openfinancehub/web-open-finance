@@ -218,7 +218,8 @@ export const getMarket = async () => {
   }
 };
 
-export const getStrategy = async () => {
+// 获取情绪热度
+export const getSentiment = async () => {
   return GETRequest(`${apiPushUrl}` + 'strategy/sentiment')
 };
 

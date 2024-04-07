@@ -1,24 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { InfiniteScroll, List, Grid, DotLoading, ProgressCircle, Space, Slider, Toast, Tag } from 'antd-mobile'
+import { InfiniteScroll, List, Grid,  ProgressCircle, Space, Slider, Toast, Tag } from 'antd-mobile'
 import { getMarket } from '../../../service'
 import EChartsGauge from './Gauge'
 import Risk from './Risk'
 import { Col, Divider, Row, Statistic, } from 'antd';
 import style from './style.less'
-import { getStrategy, getDanger } from '../../../service'
+import { getSentiment, getDanger } from '../../../service'
 
-import { test } from '../../../service';
-import SizeContext from 'antd/lib/config-provider/SizeContext'
 export default () => {
-  const [data, setData] = useState([]);
+
   const [marks, setMarks] = useState<string[]>([]);
-  const getData = async () => {
-    const response = await test();
-    const a = response.data.data.map(function (entry) {
-      return [entry.time, entry.windSpeed, entry.R, entry.waveHeight];
-    });
-    setData(a);
-  }
 
   useEffect(() => {
     const newMarks: string[] = [];
@@ -29,9 +20,11 @@ export default () => {
     setMarks(newMarks);
     fetchData();
   }, []);
+
   const [featuresList, setFeaturesList] = React.useState<any[]>([]);
   const [summary, setSummary] = React.useState<any[]>([]);
   const [name, setName] = React.useState<any[]>([]);
+  
   const fetchData = async () => {
     const response = await getDanger();
     const {
@@ -81,9 +74,6 @@ export default () => {
     </div>)
   }
 
-  useEffect(() => {
-    getData();
-  }, []);
   return (
     <>
       <Row>
@@ -103,7 +93,7 @@ export default () => {
           </Grid>
         </Col>
         <Col span={8} >
-          <EChartsGauge />
+          <EChartsGauge size={0.35} />
         </Col>
         <Row >
           <Divider orientation="left">往期指数</Divider>
@@ -161,7 +151,7 @@ export default () => {
         </Col>
         <Col style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} span={6}>
           <Statistic value={summary.上证指数} valueStyle={{ color: 'red', fontSize: '2.5em' }} precision={2} />
-        </Col>  
+        </Col>
       </Row>
       <Row >
         {seriesData.map((item, index) => {

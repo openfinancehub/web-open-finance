@@ -8,7 +8,7 @@ echarts.use([GaugeChart, CanvasRenderer]);
 
 type EChartsOption = echarts.ComposeOption<GaugeSeriesOption>;
 
-const EChartsComponent: React.FC = () => {
+const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
     const chartRef = React.useRef<HTMLDivElement>(null);
     const getOption = (grade: number): EChartsOption => {
         return {
@@ -93,7 +93,7 @@ const EChartsComponent: React.FC = () => {
         if (chartRef.current) {
             const myChart = echarts.init(chartRef.current);
             // 设置图表选项
-            const option = getOption(0.3);
+            const option = getOption(size);
             myChart.setOption(option);
         }
     }, []);
@@ -102,7 +102,6 @@ const EChartsComponent: React.FC = () => {
         <>
             <div ref={chartRef} style={{ width: '100%', height: '280px', float: 'right' }} />
         </>
-
     )
 
 };
