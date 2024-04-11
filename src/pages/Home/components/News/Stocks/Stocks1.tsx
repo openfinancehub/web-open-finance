@@ -1,83 +1,81 @@
-import { DownOutlined } from '@ant-design/icons';
-import type { ProColumns } from '@ant-design/pro-components';
-import { ProTable, TableDropdown } from '@ant-design/pro-components';
+import React, { useEffect, useState } from 'react';
+import { Table } from 'antd';
+import type { TableColumnsType } from 'antd';
 import { getStock } from '../../../service';
-import { useEffect, useState } from 'react';
 
-export type TableListItem = {
-  key: string;
+interface DataType {
+  // key: React.Key;
   name: string;
-  MarketPrice: string;
-  status: string;
-  containers: number;
-  Floating: number;
-};
+  TTM估值水平: string;
+  分红平均值: string;
+  分红稳定性: string;
+  消息面利好度: string;
+  获利占比: string;
+  资金流向: string;
+}
 
-export default () => {
 
-  let [tableListDataSource, setTableListDataSource] = useState<TableListItem[]>([])
+const Stocks: React.FC = () => {
+  const [data, setData] = React.useState<any[]>([]);
 
-  const [summaryData, setSummaryData] = useState<string[]>([])
-  const [features, setFeatures] = useState<string[]>([])
-  const [columns, setColumns] = useState<ProColumns<TableListItem>[]>([
-    {
-      title: '名称',
-      dataIndex: 'name',
-    },
+  const [columns, setColumns] = useState<TableColumnsType<DataType>>([
+    { title: '名称', dataIndex: 'name', width: 90, key: 'name', fixed: 'left', },
   ]);
 
-  const stocksList = async () => {
+  const fetchData = async () => {
     const response = await getStock();
+    const { features = [], summary = [] } = response.result || {};
 
-    const {
-      features = [],
-      summary = [],
-    } = response.result || {};
+    const newColumns: TableColumnsType<DataType> = [];
+    Object.keys(features).forEach((titleName) => {
+      newColumns.push({
+        title: titleName,
+        dataIndex: titleName,
+        key: titleName,
+      });
+    });
+    setColumns(prevColumns => [...prevColumns, ...newColumns]);
 
-    setSummaryData(summary);
-    setFeatures(features);
+    console.log(features, 'features')
 
-    Object.keys(features).forEach((key, index) => {
+    const targetData = [];
 
-      columns.push({
-        title: key,
-        dataIndex: key,
-      })
+    // 提取股票名称列表
+    const stockNames = Object.values(features)[0].TIME;
 
-      console.log(key)
-    })
+    for (const stockName of Object.keys(stockNames)) {
+      const stockData = {
+        name: stockName,
+        key: stockName,
+      };
 
-  }
+      for (const [featureName, featureObj] of Object.entries(features)) {
+        const value = featureObj.result[stockName];
+        stockData[featureName] = value;
+      }
+      targetData.push(stockData);
+    }
+    console.log(targetData, '列表数据');
+    setData(targetData)
+  };
 
   useEffect(() => {
-    stocksList();
-  }, [])
+    fetchData();
+  }, []);
 
   return (
-    <>
-
-      <ProTable<TableListItem>
-        dataSource={tableListDataSource}
-        rowKey="key"
-        pagination={{
-          showQuickJumper: true,
-        }}
-        columns={columns}
-        search={false}
-        options={false}
-        dateFormatter="string"
-        onRow={(record) => {
-          return {
-            onClick: (event) => {
-              <div style={{ backgroundColor: '#000000' }}>aaa</div>
-            },
-          };
-        }}
-      // expandable={{
-      //   expandedRowRender: (record) => <p >{record.name}的详细信息</p>,
-      //   rowExpandable: (record) => record.name !== 'Not Expandable',
-      // }}
-      />
-    </>
+    <Table
+      columns={columns}
+      expandable={{
+        expandedRowRender: (record) => (
+          <p style={{ margin: 0 }}>{record.name}的详细信息</p>
+        ),
+      }}
+      dataSource={data}
+      // pagination={{ pageSize: 50 }}
+      scroll={{ x: 1100 }}
+    />
   );
 };
+
+export default Stocks;

@@ -58,20 +58,20 @@ const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
                     },
                     axisLabel: {
                         color: '#464646',
-                        fontSize: 15,
+                        fontSize: 12,
                         distance: -40,
                         rotate: 'tangential',
                         formatter: function (value: number) {
                             return '';
                         }
                     },
-                    title: {
-                        offsetCenter: [-40, '115%'],
-                        fontSize: 18
-                    },
+                    // title: {
+                    //     offsetCenter: [-40, '115%'],
+                    //     fontSize: 12
+                    // },
                     detail: {
-                        fontSize: 30,
-                        offsetCenter: [-20, '0%'],
+                        fontSize: 18,
+                        offsetCenter: [-25, '0%'],
                         valueAnimation: true,
                         formatter: function (value: number) {
                             return Math.round(value * 100) + '';

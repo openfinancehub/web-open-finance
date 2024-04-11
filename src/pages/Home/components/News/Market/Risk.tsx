@@ -62,12 +62,12 @@ const WindChart = ({
         dataZoom: [
             {
                 type: 'inside',
-                start: 0,
-                // end: 20
+                start: 80,
+                end: 100,
             },
             {
-                start: 0,
-                // end: 20
+                start: 50,
+                end: 100,
             }
         ],
         series: seriesData

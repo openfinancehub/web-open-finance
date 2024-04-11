@@ -11,3 +11,5 @@ export { default as Switzerland } from './t012f9a9090e01f34ef.png';
 export { default as Italy } from './t01574985508809fcad.png';
 export { default as Russia } from './th.jpg';
 export { default as HongKong } from './OIP-C (4).jpg';
+export { default as Taiwan } from './R-C (2).jpg';
+export { default as Sweden } from './th (1).jpg';

@@ -1,78 +1,96 @@
 import React, { useEffect, useState } from 'react'
-import { InfiniteScroll, List, Grid,  ProgressCircle, Space, Slider, Toast, Tag } from 'antd-mobile'
-import { getMarket } from '../../../service'
+import { InfiniteScroll, List, Grid, } from 'antd-mobile'
 import EChartsGauge from './Gauge'
 import Risk from './Risk'
 import { Col, Divider, Row, Statistic, } from 'antd';
-import style from './style.less'
 import { getSentiment, getDanger } from '../../../service'
 
 export default () => {
 
-  const [marks, setMarks] = useState<string[]>([]);
+  const [dangerList, setFeaturesList] = React.useState<any[]>([]);
+  const [danger, setDanger] = React.useState<any>();
+  const [dangerName, setDangerName] = React.useState<any[]>([]);
 
-  useEffect(() => {
-    const newMarks: string[] = [];
-    for (let i = 0; i <= 100; i += 1) {
-      const date = new Date(2022, 11, 9 + i / 2);
-      newMarks[i] = date.toISOString().split('T')[0];
-    }
-    setMarks(newMarks);
-    fetchData();
-  }, []);
+  const [sentList, setSentList] = React.useState<any[]>([]);
+  const [sentSummary, setSentSummary] = React.useState<any>();
+  const [sentName, setSentName] = React.useState<any[]>([]);
 
-  const [featuresList, setFeaturesList] = React.useState<any[]>([]);
-  const [summary, setSummary] = React.useState<any[]>([]);
-  const [name, setName] = React.useState<any[]>([]);
-  
   const fetchData = async () => {
     const response = await getDanger();
-    const {
-      features = [],
-      summary = {},
-    } = response.result || {};
+    const { features = [], summary = {} } = response.result || {};
 
-    setSummary(summary);
-    Object.keys(features).forEach(key => {
-      const time = features[key].TIME.上证指数
-      const result = features[key].result.上证指数
-      const r: React.SetStateAction<any[]> = [];
-      time.forEach((item: any, index: string | number) => {
-        r.push([item, result[index]]);
-      })
+    setDanger(summary);
+    Object.keys(features).forEach(feature => {
+      const time = features[feature].TIME
+      const result = features[feature].result
+
+      const keys = Object.keys(time)[0];
+      const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
 
       setFeaturesList(prevState => [...prevState, r]);
-      setName(prevState => [...prevState, key]);
-      // console.log(key, 'key')
+      setDangerName(prevState => [...prevState, feature]);
     })
   };
 
-  const seriesData = featuresList.map((feature, index) => {
+  const fetchSentimentData = async () => {
+    const response = await getSentiment();
+    const { features = [], summary = {} } = response.result || {};
+
+    setSentSummary(summary);
+
+    Object.keys(features).forEach(feature => {
+      const time = features[feature].TIME
+      const result = features[feature].result
+
+      const keys = Object.keys(time)[0];
+      const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
+
+      setSentList(prevState => [...prevState, r]);
+      setSentName(prevState => [...prevState, feature]);
+    });
+  };
+
+
+  const seriesData = dangerList.map((feature, index) => {
     return {
-      name: name[index],
+      name: dangerName[index],
       type: 'line',
       stack: 'Total',
       data: feature
     }
   });
 
+  const sentData = sentList.map((feature, index) => {
+    return {
+      name: sentName[index],
+      type: 'line',
+      stack: 'Total',
+      data: feature
+    }
+  });
+  function convertToOneDigitDecimal(num: number) {
+    const numStr = num.toString();
+    const decimalPointIndex = numStr.indexOf('.');
+    if (decimalPointIndex === -1) {
+      const length = numStr.length;
+      if (length > 10) {
+        return parseFloat(numStr.slice(0, 10));
+      }
+      return parseFloat(numStr) / Math.pow(10, length);
+    }
+    const decimalPlaces = numStr.length - decimalPointIndex - 1;
 
-  const showDate = (value: number | [number, number]) => {
-    let text = '';
-    if (typeof value === 'number') {
-      text = `${value}`;
-    } else {
-      text = `[${value.join(',')}]`;
-    }
-    // 确保marks数组已经初始化
-    if (marks[text]) {
-      // Toast.show(`当前选中值为：${marks[text]}`);
-      // console.log(value);
-    }
-    return (<div>
-      {marks[text]}
-    </div>)
+    const decimalPart = numStr.slice(decimalPointIndex + 1);
+    const truncatedDecimalPart = decimalPart.slice(0, 10);
+    const newNumStr = numStr.slice(0, decimalPointIndex) + '.' + truncatedDecimalPart;
+
+    return parseFloat(newNumStr) / Math.pow(10, decimalPlaces);
   }
+
+  useEffect(() => {
+    fetchSentimentData();
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -93,54 +111,17 @@ export default () => {
           </Grid>
         </Col>
         <Col span={8} >
-          <EChartsGauge size={0.35} />
-        </Col>
-        <Row >
-          <Divider orientation="left">往期指数</Divider>
-        </Row>
-        <Row >
-          <Space style={{ '--gap': '24px' }}>
-            <ProgressCircle
-              style={{
-                '--size': '100px',
-                '--track-width': '4px',
-                '--fill-color': 'var(--adm-color-danger)',
-              }}
-              percent={30}
-            >
-              <div style={{ 'fontSize': '10px' }}>北向资金流动位置</div>
-              <div>0.0</div>
-            </ProgressCircle>
-            <ProgressCircle
-              style={{
-                '--size': '100px',
-                '--track-width': '4px',
-                '--fill-color': 'var(--adm-color-danger)',
-              }}
-              percent={60}
-            >
-              <div style={{ 'fontSize': '10px' }}>成交活跃度</div>
-              <div>347709231730.5</div>
-            </ProgressCircle>
-            <ProgressCircle
-              style={{
-                '--size': '100px',
-                '--track-width': '4px',
-                '--fill-color': 'var(--adm-color-danger)',
-              }}
-              percent={10}
-            >
-              <div style={{ 'fontSize': '10px' }}>融资融券活跃度</div>
-              <div>0.0</div>
-            </ProgressCircle>
-          </Space>
 
-        </Row>
-      </Row>
-      <Row >
-        <Col span={24}>
-          <Slider defaultValue={30} popover={showDate} ticks={false} />
+          {danger && danger.上证指数 ? <EChartsGauge size={danger.上证指数} /> : null}
         </Col>
+      </Row>
+      <Row>
+        {sentData.map((item, index) => {
+          return (
+            <Col key={index} span={24} >
+              <Risk legendData={[item.name]} seriesData={item} />
+            </Col>)
+        })}
       </Row>
       <Row >
         <Divider orientation="left"></Divider>
@@ -150,7 +131,7 @@ export default () => {
           <Divider orientation="left"><h2 style={{ color: "#E92838" }}>危险指数</h2></Divider>
         </Col>
         <Col style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} span={6}>
-          <Statistic value={summary.上证指数} valueStyle={{ color: 'red', fontSize: '2.5em' }} precision={2} />
+          {sentSummary && sentSummary.上证指数 ? <EChartsGauge size={sentSummary.上证指数} /> : null}
         </Col>
       </Row>
       <Row >
