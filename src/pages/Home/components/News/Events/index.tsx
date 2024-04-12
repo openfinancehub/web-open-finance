@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { List, Rate, Image, Grid, Collapse, CalendarPickerView, Button, DatePicker } from 'antd-mobile'
+import { List, Rate, Image, Grid, Collapse, CalendarPickerView, Button, DatePicker, DotLoading } from 'antd-mobile'
 import { getEvents } from '../../../service';
 import { economicType, eventType, countryFlags } from './data.d';
 import { Timeline } from 'antd';
+import { history } from '@umijs/max';
 import moment from "moment";
+import styles from '../styles.less';
 
 
 
@@ -88,7 +90,7 @@ export default () => {
     }
 
     return (
-        <div style={{ height: window.innerHeight - 150, touchAction: 'none' }}>
+        <div className={styles.content} style={{ height: window.innerHeight - 150, touchAction: 'none' }}>
             <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }} columns={3} gap={16}>
                 <Grid.Item>
                     <Button onClick={() => {
@@ -120,17 +122,24 @@ export default () => {
                     changeDateValue(val.getDate() - dateTime.getDate())
                     setDateTime(val)
                 }}
-            // renderLabel={labelRenderer}
             />
-            <Collapse >
-                <Collapse.Panel key='1' title='经济数据一览'>
+            <Collapse  >
+                <Collapse.Panel key='1' title='经济数据一览' >
                     {economicList.length > 0 ? (
                         economicList.map((item, index) =>
-                            <Timeline.Item key={index}>
+                            <List.Item key={index}
+                                prefix={
+                                    <Image src={countryFlags[item.country]}
+                                        style={{ borderRadius: 20 }}
+                                        fit='cover'
+                                        width={40}
+                                        height={40} />
+                                }
+                                // onClick={() => { }}
+                                arrow={false}
+                                style={{}}
+                            >
                                 <Grid columns={8} gap={2}>
-                                    <Grid.Item >
-                                        <Image src={countryFlags[item.country]} />
-                                    </Grid.Item>
                                     <Grid.Item span={7}>
                                         <Grid columns={10} gap={1}>
                                             <Grid.Item span={7} style={{ color: "#007ACC" }}>
@@ -151,20 +160,27 @@ export default () => {
                                         </Grid>
                                     </Grid.Item>
                                 </Grid>
-                            </Timeline.Item>
+                            </List.Item>
                         )
                     ) : (
-                        <div>暂无数据</div>
+                        <DotLoading />
                     )}
                 </Collapse.Panel>
                 <Collapse.Panel key='2' title='重大事件'>
                     {eventList.length > 0 ? (
                         eventList.map((item, index) =>
-                            <Timeline.Item key={index}>
+                            <List.Item key={index}
+                                prefix={
+                                    <Image src={countryFlags[item.country]}
+                                        style={{ borderRadius: 20 }}
+                                        fit='cover'
+                                        width={40}
+                                        height={40} />
+                                }
+                                onClick={() => { history.push('/home/news/stocks/info'); }}
+                                arrow={false}
+                            >
                                 <Grid columns={8} gap={2}>
-                                    <Grid.Item >
-                                        <Image src={countryFlags[item.country]} />
-                                    </Grid.Item>
                                     <Grid.Item span={7}>
                                         <Grid columns={10} gap={1}>
                                             <Grid.Item span={7} style={{ color: "#007ACC" }}>
@@ -179,10 +195,10 @@ export default () => {
                                         </Grid>
                                     </Grid.Item>
                                 </Grid>
-                            </Timeline.Item>
+                            </List.Item>
                         )
                     ) : (
-                        <div>暂无数据</div>
+                        <DotLoading />
                     )}
                 </Collapse.Panel>
             </Collapse>

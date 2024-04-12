@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import defaultSettings from './defaultSettings';
 
 export default defineConfig({
-  esbuildMinifyIIFE: true,  
+  esbuildMinifyIIFE: true,
   antd: {},
   access: {},
   model: {},
@@ -34,7 +34,7 @@ export default defineConfig({
       target: 'http://121.37.5.77:5005/',
       changeOrigin: true,
       pathRewrite: { '^/chat-api': '/api' }
-    },    
+    },
     '/app-api': {
       target: 'http://39.101.71.109/',
       changeOrigin: true,
@@ -67,7 +67,7 @@ export default defineConfig({
       path: '/store',
       name: 'Store',
       component: './Store',
-    },    
+    },
     {
       name: 'Quant',
       path: '/analyze',
@@ -85,22 +85,42 @@ export default defineConfig({
       exact: true
     },
     {
-      path: '/home/news',
-      component: './Home/components/News/',
-      props: true,
-      exact: true
-    },
-    {
-      path: '/home/stocks',
-      component: './Home/components/News/Stocks/',
-      props: true,
-      exact: true
-    },
-    {
       path: '/home/developer',
       component: './Home/components/Developer',
       props: true,
       exact: true
+    },
+    {
+      path: '/home/news/stocks/info',
+      component: './Home/components/News/Stocks/stocks.tsx',
+      exact: true
+    },
+    {
+      path: '/home/news',
+      // name:'市场',
+      // component: './Home/components/News',
+      routes: [
+        {
+          path: 'market',
+          // name: '市场',
+          component: './Home/components/News/'
+        },
+        {
+          path: 'events',
+          // name: '事件',
+          component: './Home/components/News/Events/'
+        },
+        {
+          path: 'stocks',
+          // name: '股票',
+          component: './Home/components/News/Stocks/'
+        },
+        {
+          path: 'mine',
+          // name: '我的',
+          component: './Home/components/News/Mine/'
+        }
+      ]
     },
     {
       name: 'Users',

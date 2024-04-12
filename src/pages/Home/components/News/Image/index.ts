@@ -13,3 +13,6 @@ export { default as Russia } from './th.jpg';
 export { default as HongKong } from './OIP-C (4).jpg';
 export { default as Taiwan } from './R-C (2).jpg';
 export { default as Sweden } from './th (1).jpg';
+export { default as Singapore } from './xjp.jpg';
+export { default as Brazil } from './th (2).jpg';
+export { default as Korea } from './th (3).jpg';
