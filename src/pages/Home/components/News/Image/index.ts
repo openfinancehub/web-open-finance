@@ -16,3 +16,4 @@ export { default as Sweden } from './th (1).jpg';
 export { default as Singapore } from './xjp.jpg';
 export { default as Brazil } from './th (2).jpg';
 export { default as Korea } from './th (3).jpg';
+export { default as Israel } from './t01086251895269d314.png';

@@ -1,6 +1,6 @@
 import {
     America, China, Britain, Japan, Australia, Germany, Singapore, Brazil, Korea,
-    France, Eurobond, Switzerland, Italy, Canada, Russia, HongKong, Taiwan, Sweden
+    France, Eurobond, Switzerland, Italy, Canada, Russia, HongKong, Taiwan, Sweden, Israel
 } from '../Image';
 
 export interface economicType {
@@ -8,7 +8,7 @@ export interface economicType {
     affect: number,
     consensus: string,
     country: '美国' | '中国' | '欧元区' | '英国' | '日本' | '德国' | '法国' | '瑞典' | '新加坡' | '巴西' | '韩国' |
-    '加拿大' | '澳大利亚' | '瑞士' | '意大利' | '俄罗斯' | '中国香港' | '中国台湾',
+    '加拿大' | '澳大利亚' | '瑞士' | '意大利' | '俄罗斯' | '中国香港' | '中国台湾' | '以色列',
     id: number,
     indicator_id: number,
     name: string,
@@ -27,7 +27,7 @@ export interface economicType {
 
 export interface eventType {
     country: '美国' | '中国' | '欧元区' | '英国' | '日本' | '德国' | '法国' | '瑞典' | '新加坡' | '巴西' | '韩国' |
-    '加拿大' | '澳大利亚' | '瑞士' | '意大利' | '俄罗斯' | '中国香港' | '中国台湾',
+    '加拿大' | '澳大利亚' | '瑞士' | '意大利' | '俄罗斯' | '中国香港' | '中国台湾' | '以色列',
     determine: number,
     emergencies: number,
     event_content: string,
@@ -59,4 +59,5 @@ export const countryFlags = {
     '瑞典': Sweden,
     '新加坡': Singapore,
     '韩国': Korea,
+    '以色列': Israel,
 };

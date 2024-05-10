@@ -52,7 +52,9 @@ const Stocks: React.FC = () => {
 
       for (const [featureName, featureObj] of Object.entries(features)) {
         const value = featureObj.result[stockName];
-        stockData[featureName] = value;
+        const roundedNumber = parseFloat(value.toFixed(3));
+        stockData[featureName] = roundedNumber;
+        // console.log(roundedNumber, 'value');
       }
       targetData.push(stockData);
     }
@@ -76,7 +78,7 @@ const Stocks: React.FC = () => {
         }
         dataSource={data}
         // pagination={{ pageSize: 50 }}
-        scroll={{ x: 1100 }}
+        scroll={{ x: 1000 }}
       />
     </div>
 

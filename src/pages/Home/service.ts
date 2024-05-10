@@ -78,7 +78,7 @@ const GETRequest = async (url: string) => {
 };
 
 // post通用请求
-const PostRequest = async (url: string, method: string, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
+const PostRequest = async (url: string, method: string, data: any) => {
   try {
     const header = {
       req_id: '1234',
@@ -223,27 +223,18 @@ export const getSentiment = async () => {
   return GETRequest(`${apiPushUrl}` + 'strategy/sentiment')
 };
 
-// 获取重大事项 
 // export const getEvents = async () => {
-//   try {
-//     let requestConfig = {
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     };
-//     const response = await fetch(`http://127.0.0.1:8000/api/events`, requestConfig);
-//     if (!response.ok) {
-//       throw new Error('Network response was not ok');
-//     }
-//     let result = await response.json();
-//     return result;
-//   } catch (error) {
-//     console.error('An error occurred:', error);
-//   }
+//   return GETRequest(`${apiPushUrl}` + 'strategy/event')
 // };
 
-export const getEvents = async () => {
-  return GETRequest(`${apiPushUrl}` + 'strategy/event')
+export const getEvents = async (time: string) => {
+  const dataStr = {
+    ip: '127.0.0.1',
+    model: 'author',
+    date: time,
+    extra: 'extra',
+  };
+  return PostRequest(`${apiPushUrl}` + 'strategy/event', 'POST', dataStr);
 };
 
 // 获取危险指数

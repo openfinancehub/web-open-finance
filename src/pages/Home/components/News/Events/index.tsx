@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { List, Rate, Image, Grid, Collapse, CalendarPickerView, Button, DatePicker, DotLoading } from 'antd-mobile'
+import { List, Rate, Image, Grid, Collapse, CalendarPickerView, Button, DatePicker, DotLoading, Footer } from 'antd-mobile'
 import { getEvents } from '../../../service';
 import { economicType, eventType, countryFlags } from './data.d';
 import { Timeline } from 'antd';
 import { history } from '@umijs/max';
 import moment from "moment";
 import styles from '../styles.less';
-
 
 
 export default () => {
@@ -20,23 +19,23 @@ export default () => {
     const [economicOriginal, setEconomicOriginal] = useState<economicType[]>([]);
 
     useEffect(() => {
-        getEventList();
+        getEventList(dateTime);
     }, [])
 
-
-
-    const getEventList = async () => {
+    const getEventList = async (eTime) => {
         try {
-            const response = await getEvents();
+            const time = eTime.getFullYear() + `-` + (eTime.getMonth() + 1) + `-` + eTime.getDate()
+            console.log(time)
+            const response = await getEvents(time);
             const {
                 economic = [],
                 event = [],
             } = response.data || {};
 
 
-            const startDate = new Date(dateTime);
+            const startDate = new Date(time);
             startDate.setHours(0, 0, 0, 0);
-            const endDate = new Date(dateTime);
+            const endDate = new Date(time);
             endDate.setHours(23, 59, 59, 999);
 
             const eventList = event.filter((item: any) => {
@@ -50,43 +49,44 @@ export default () => {
                 date.setHours(date.getHours() - 8);
                 return startDate <= date && date <= endDate;
             })
-
-
+            console.log(dateTime, economicList)
             setEconomicList(economicList)
             setEventList(eventList)
 
-            setEventOriginal(event)
-            setEconomicOriginal(economic)
+            // setEventOriginal(event)
+            // setEconomicOriginal(economic)
+
         } catch (error) {
             console.error(error)
         }
     }
-    const changeEventList = (time: Date) => {
-        const startDate = new Date(time);
-        startDate.setHours(0, 0, 0, 0);
-        const endDate = new Date(time);
-        endDate.setHours(23, 59, 59, 999);
-        const eventList = eventOriginal.filter((item) => {
-            let date = new Date(item.event_time);
-            date.setHours(date.getHours() - 8);
-            return startDate <= date && date <= endDate;
-        })
+    // const changeEventList = (time: Date) => {
+    //     const startDate = new Date(time);
+    //     startDate.setHours(0, 0, 0, 0);
+    //     const endDate = new Date(time);
+    //     endDate.setHours(23, 59, 59, 999);
+    //     const eventList = eventOriginal.filter((item) => {
+    //         let date = new Date(item.event_time);
+    //         date.setHours(date.getHours() - 8);
+    //         return startDate <= date && date <= endDate;
+    //     })
 
-        const economicList = economicOriginal.filter((item) => {
-            let date = new Date(item.pub_time);
-            date.setHours(date.getHours() - 8);
-            return startDate <= date && date <= endDate;
-        })
+    //     const economicList = economicOriginal.filter((item) => {
+    //         let date = new Date(item.pub_time);
+    //         date.setHours(date.getHours() - 8);
+    //         return startDate <= date && date <= endDate;
+    //     })
 
-        setEconomicList(economicList)
-        setEventList(eventList)
-    };
+    //     setEconomicList(economicList)
+    //     setEventList(eventList)
+    // };
 
     const changeDateValue = (value: number) => {
         const newDateTime = new Date(dateTime);
         newDateTime.setDate(newDateTime.getDate() + value);
         setDateTime(newDateTime);
-        changeEventList(newDateTime)
+        // changeEventList(newDateTime)
+        getEventList(newDateTime);
     }
 
     return (
@@ -148,7 +148,7 @@ export default () => {
                                             <Grid.Item span={3}>
                                                 <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052', }} defaultValue={item.star} />
                                             </Grid.Item>
-                                            <Grid.Item span={10}>
+                                            <Grid.Item span={10} onClick={() => history.push('/home/news/stocks/info')}>
                                                 {item.name}
                                             </Grid.Item>
                                             <Grid.Item span={4}>
@@ -157,13 +157,26 @@ export default () => {
                                             <Grid.Item span={4}>
                                                 公布: {item.actual === null ? "---" : item.actual}
                                             </Grid.Item>
+                                            <Grid.Item span={2}>
+                                                <Footer
+                                                    links={[
+                                                        {
+                                                            text: item.video_url === null ? '' : '视频地址',
+                                                            href: item.video_url === null ? "---" : item.video_url,
+                                                        },
+                                                    ]}
+                                                />
+                                            </Grid.Item>
+                                            <Grid.Item span={10}>
+                                                vip内容:
+                                            </Grid.Item>
                                         </Grid>
                                     </Grid.Item>
                                 </Grid>
                             </List.Item>
                         )
                     ) : (
-                        <DotLoading />
+                        <div>暂无数据</div>
                     )}
                 </Collapse.Panel>
                 <Collapse.Panel key='2' title='重大事件'>
@@ -177,7 +190,7 @@ export default () => {
                                         width={40}
                                         height={40} />
                                 }
-                                onClick={() => { history.push('/home/news/stocks/info'); }}
+                                // onClick={() => { history.push('/home/news/stocks/info'); }}
                                 arrow={false}
                             >
                                 <Grid columns={8} gap={2}>
@@ -189,8 +202,18 @@ export default () => {
                                             <Grid.Item span={3}>
                                                 <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052' }} defaultValue={item.star} />
                                             </Grid.Item>
-                                            <Grid.Item span={10}>
+                                            <Grid.Item span={10} onClick={() => history.push('/home/news/stocks/info')}>
                                                 {item.event_content}
+                                            </Grid.Item>
+                                            <Grid.Item span={2}>
+                                                <Footer
+                                                    links={[
+                                                        {
+                                                            text: item.vip_resource === null ? '' : '网上直播',
+                                                            href: (item.vip_resource === null ? '' : item.vip_resource[0].link) as string,
+                                                        },
+                                                    ]}
+                                                />
                                             </Grid.Item>
                                         </Grid>
                                     </Grid.Item>
@@ -198,10 +221,11 @@ export default () => {
                             </List.Item>
                         )
                     ) : (
-                        <DotLoading />
+                        <div>暂无数据</div>
+                        // <DotLoading />
                     )}
                 </Collapse.Panel>
-            </Collapse>
+            </Collapse >
         </div >
     )
 }

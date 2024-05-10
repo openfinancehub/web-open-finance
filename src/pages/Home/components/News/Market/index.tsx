@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { InfiniteScroll, List, Grid, } from 'antd-mobile'
+import { InfiniteScroll, List, Grid, Ellipsis, AutoCenter, } from 'antd-mobile'
 import EChartsGauge from './Gauge'
 import Risk from './Risk'
 import { Col, Divider, Row, Statistic, } from 'antd';
@@ -14,6 +14,10 @@ export default () => {
   const [sentList, setSentList] = React.useState<any[]>([]);
   const [sentSummary, setSentSummary] = React.useState<any>();
   const [sentName, setSentName] = React.useState<any[]>([]);
+
+  const content =
+    '蚂蚁的企业级产品是一个庞大且复杂的体系。这类产品不仅量级巨大且功能复杂，而且变动和并发频繁，常常需要设计与开发能够快速的做出响应。同时这类产品中有存在很多类似的页面以及组件，可以通过抽象得到一些稳定且高复用性的内容。'
+
 
   const fetchData = async () => {
     const response = await getDanger();
@@ -68,24 +72,6 @@ export default () => {
       data: feature
     }
   });
-  function convertToOneDigitDecimal(num: number) {
-    const numStr = num.toString();
-    const decimalPointIndex = numStr.indexOf('.');
-    if (decimalPointIndex === -1) {
-      const length = numStr.length;
-      if (length > 10) {
-        return parseFloat(numStr.slice(0, 10));
-      }
-      return parseFloat(numStr) / Math.pow(10, length);
-    }
-    const decimalPlaces = numStr.length - decimalPointIndex - 1;
-
-    const decimalPart = numStr.slice(decimalPointIndex + 1);
-    const truncatedDecimalPart = decimalPart.slice(0, 10);
-    const newNumStr = numStr.slice(0, decimalPointIndex) + '.' + truncatedDecimalPart;
-
-    return parseFloat(newNumStr) / Math.pow(10, decimalPlaces);
-  }
 
   useEffect(() => {
     fetchSentimentData();
@@ -111,18 +97,26 @@ export default () => {
           </Grid>
         </Col>
         <Col span={8} >
-
           {danger && danger.上证指数 ? <EChartsGauge size={danger.上证指数} /> : null}
         </Col>
       </Row>
-      <Row>
-        {sentData.map((item, index) => {
-          return (
+
+      {sentData.map((item, index) => {
+        return (
+          <Row key={index}>
             <Col key={index} span={24} >
               <Risk legendData={[item.name]} seriesData={item} />
-            </Col>)
-        })}
-      </Row>
+            </Col>
+            <Col style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item} span={24} >
+              <AutoCenter  >
+                <Ellipsis direction='end' rows={3} content={content}
+                  expandText='展开'
+                  collapseText='收起' />
+              </AutoCenter>
+            </Col >
+          </Row >
+        )
+      })}
       <Row >
         <Divider orientation="left"></Divider>
       </Row>
@@ -134,14 +128,23 @@ export default () => {
           {sentSummary && sentSummary.上证指数 ? <EChartsGauge size={sentSummary.上证指数} /> : null}
         </Col>
       </Row>
-      <Row >
-        {seriesData.map((item, index) => {
-          return (
-            <Col key={index} span={24} >
+
+      {seriesData.map((item, index) => {
+        return (
+          <Grid key={index} columns={1} gap={8}>
+            <Grid.Item key={index} span={8}>
               <Risk legendData={[item.name]} seriesData={item} />
-            </Col>)
-        })}
-      </Row>
+            </Grid.Item>
+            <Grid.Item style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item} span={8}>
+              <AutoCenter>
+                <Ellipsis direction='end' rows={3} content={content}
+                  expandText='展开'
+                  collapseText='收起' />
+              </AutoCenter>
+            </Grid.Item>
+          </Grid>
+        )
+      })}
     </>
   )
 }

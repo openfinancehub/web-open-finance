@@ -24,12 +24,17 @@ const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
                     splitNumber: 8,
                     axisLine: {
                         lineStyle: {
+                            type: 'solid',
                             width: 6,
                             color: [
-                                [0.25, '#EA6508'],
-                                [0.5, '#E60314'],
-                                [0.75, '#A30035'],
-                                [1, '#690015']
+                                [0.125, '#1E8CF8'],
+                                [0.25, '#4E75CC'],
+                                [0.375, '#5F6DBC'],
+                                [0.5, '#7E5D9D'],
+                                [0.625, '#9D4E81'],
+                                [0.75, '#AB4673'],
+                                [0.875, '#CC3755'],
+                                [1, '#E82839']
                             ]
                         }
                     },

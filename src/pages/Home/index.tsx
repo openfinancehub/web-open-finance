@@ -45,7 +45,7 @@ const Home: React.FC = () => {
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
             <HeaderTitle
-              models={financeData}
+              // models={financeData}
               onModelsChange={handleModelsChange}
               originalData={filteredModels}
               isActivePage={isActivePage}
