@@ -1,7 +1,7 @@
 import { useEffect, useState,useRef } from 'react';
 import { request } from 'umi';
 import { ProCard } from '@ant-design/pro-components';
-import { Select, Button, Input, Space,message  } from 'antd';
+import { Select, Button, Space,message,InputNumber,Table  } from 'antd';
 import { useModel } from '@umijs/max';
 import * as echarts from 'echarts/core';
 import {
@@ -41,8 +41,10 @@ const Screen = () => {
     const [facotrLi, setFactorLi] = useState('')
     let   chart: any
     const [modeLi, setModeLi] = useState('')
-    const [inputValue,setInputValue] = useState('')
+    const [inputValue,setInputValue] = useState(0.01)
     const [echartsData,setEchartsData] = useState([])
+    const [dataSource,setDataSource] = useState([])
+    const [columns,setColumns] = useState([])
     const chartRef = useRef(null);
     const commonHeader = {
         user: currentUser.username,
@@ -81,8 +83,7 @@ const Screen = () => {
             factor: facotrLi,
             // mode: modeLi,
             mode: "gt",
-            val: 0.01,
-            // val: inputValue,
+            val: inputValue,
             extra:''
         }
         request('quent-api/fetch', {
@@ -98,58 +99,84 @@ const Screen = () => {
            
         }).then((res)=>{
             message.info(res.msg)
-            const resData = res.result.DividentMean
-            const xData =  Object.keys(resData.result)
-            const yData = Object.values(resData.result)
-            setEchartsData([xData,yData])
+            const resData = res.result
+            const arr:any = []
+            const title =  Object.keys(resData)
+            const firstTitle = title[0]
+            console.log(resData[firstTitle],'111');
+            
+            const row = Object.keys(resData[firstTitle].TIME)
+            const columnsone =  title.map((item)=>{
+                arr.push(Object.values(resData[item].result))
+                return {
+                  title:item,
+                  dataIndex: item,
+                  key: item,
+                }
+            })
+            const firstName = {
+                title:'Name',
+                dataIndex:'name',
+                key:'name'
+            }
+
+            const tableData = row.map((name,i)=>{
+                const rowData = { name };
+                title.forEach((column, j) => {
+                    rowData[column] = arr[j][i];
+                  });
+                return rowData;
+            })
+            setColumns([firstName,...columnsone])
+            setDataSource(tableData)
         })
     }
     useEffect(() => {
         getFactor()
     }, [])
-    useEffect(()=>{
-        const option = {
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                  type: 'shadow'
-                }
-              },
-              grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-              },
-              xAxis: [
-                {
-                  type: 'category',
-                  data: echartsData[0],
-                  axisTick: {
-                    alignWithLabel: true
-                  }
-                }
-              ],
-              yAxis: [
-                {
-                  type: 'value'
-                }
-              ],
-              series: [
-                {
-                  name: '2024-4-27',
-                  type: 'bar',
-                  barWidth: '60%',
-                  data: echartsData[1]
-                }
-              ]
-        }
-        chart = echarts.init(chartRef.current);
-        chart.setOption(option);
-        return () => {
-            chart.dispose();
-        };
-    },[echartsData])
+    // useEffect(()=>{
+    //     const option = {
+    //         tooltip: {
+    //             trigger: 'axis',
+    //             axisPointer: {
+    //               type: 'shadow'
+    //             }
+    //           },
+    //           grid: {
+    //             left: '3%',
+    //             right: '4%',
+    //             bottom: '3%',
+    //             containLabel: true
+    //           },
+    //           xAxis: [
+    //             {
+    //               type: 'category',
+    //               data: echartsData[0],
+    //               axisTick: {
+    //                 alignWithLabel: true
+    //               }
+    //             }
+    //           ],
+    //           yAxis: [
+    //             {
+    //               type: 'value'
+    //             }
+    //           ],
+    //           series: [
+    //             {
+    //               name: '2024-4-27',
+    //               type: 'bar',
+    //               barWidth: '60%',
+    //               data: echartsData[1]
+    //             }
+    //           ]
+    //     }
+    //     // chart = echarts.init(chartRef.current);
+    //     // chart.setOption(option);
+    //     // return () => {
+    //     //     chart.dispose();
+    //     // };
+    // },[echartsData])
     function handleFacChange(value: any) {
         console.log(value);
         setFactorLi(value)
@@ -168,7 +195,12 @@ const Screen = () => {
     return (
         <div>
             <Space>
-                <Input placeholder="请输入要查询的股票"
+                <InputNumber 
+                     defaultValue="0.01"
+                     min="0"
+                     max="10"
+                     step="0.01"
+                     stringMode
                     onChange={handleInput}
                 />
                 <Select
@@ -185,8 +217,9 @@ const Screen = () => {
                 />
                 <Button type="primary" onClick={handleQuery}>查询</Button>
             </Space>
-            <ProCard style={{ height: '40vh', marginTop:'30px' }} bordered>
-                <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div>
+            <ProCard  bordered>
+                {/* <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div> */}
+                <Table dataSource={dataSource} columns={columns} /> 
             </ProCard>
         </div>
     )
