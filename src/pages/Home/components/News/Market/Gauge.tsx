@@ -10,7 +10,8 @@ type EChartsOption = echarts.ComposeOption<GaugeSeriesOption>;
 
 const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
     const chartRef = React.useRef<HTMLDivElement>(null);
-    const getOption = (grade: number): EChartsOption => {
+    console.log(size)
+    const getOption = (): EChartsOption => {
         return {
             series: [
                 {
@@ -78,14 +79,11 @@ const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
                         fontSize: 18,
                         offsetCenter: [-25, '0%'],
                         valueAnimation: true,
-                        formatter: function (value: number) {
-                            return Math.round(value * 100) + '';
-                        },
                         color: 'inherit'
                     },
                     data: [
                         {
-                            value: grade,
+                            value: size,
                             name: ''
                         }
                     ]
@@ -98,10 +96,10 @@ const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
         if (chartRef.current) {
             const myChart = echarts.init(chartRef.current);
             // 设置图表选项
-            const option = getOption(size);
+            const option = getOption();
             myChart.setOption(option);
         }
-    }, []);
+    }, [size]);
 
     return (
         <>

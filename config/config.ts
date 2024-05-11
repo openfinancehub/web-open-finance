@@ -91,11 +91,6 @@ export default defineConfig({
       exact: true
     },
     {
-      path: '/home/news/stocks/info',
-      component: './Home/components/News/Stocks/stocks.tsx',
-      exact: true
-    },
-    {
       path: '/home/news',
       // name:'市场',
       // component: './Home/components/News',

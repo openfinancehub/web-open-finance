@@ -23,7 +23,6 @@ export default () => {
     const response = await getDanger();
     const { features = [], summary = {} } = response.result || {};
 
-    setDanger(summary);
     Object.keys(features).forEach(feature => {
       const time = features[feature].TIME
       const result = features[feature].result
@@ -34,13 +33,17 @@ export default () => {
       setFeaturesList(prevState => [...prevState, r]);
       setDangerName(prevState => [...prevState, feature]);
     })
+
+    const summaryValue = Object.values(summary)[0];
+    const substring = summaryValue.toString().substring(0, 4)
+    const floatNum = parseFloat(substring)
+    const res = parseFloat((floatNum / 100).toFixed(2))
+    setDanger(res);
   };
 
   const fetchSentimentData = async () => {
     const response = await getSentiment();
     const { features = [], summary = {} } = response.result || {};
-
-    setSentSummary(summary);
 
     Object.keys(features).forEach(feature => {
       const time = features[feature].TIME
@@ -52,6 +55,12 @@ export default () => {
       setSentList(prevState => [...prevState, r]);
       setSentName(prevState => [...prevState, feature]);
     });
+
+    const summaryValue = Object.values(summary)[0]
+    const substring = summaryValue.toString().substring(0, 4);
+    const floatNum = parseFloat(substring);
+    let res = (floatNum / 100).toFixed(2);
+    setSentSummary(res);
   };
 
 
@@ -97,7 +106,10 @@ export default () => {
           </Grid>
         </Col>
         <Col span={8} >
-          {danger && danger.上证指数 ? <EChartsGauge size={danger.上证指数} /> : null}
+          {danger}
+          {/* {parseFloat(danger.toFixed(2))} */}
+          <EChartsGauge size={danger} />
+          {/* {danger ? <EChartsGauge size={danger} /> : null} */}
         </Col>
       </Row>
 
@@ -123,9 +135,17 @@ export default () => {
       <Row >
         <Col span={18}>
           <Divider orientation="left"><h2 style={{ color: "#E92838" }}>危险指数</h2></Divider>
+          <Grid columns={8} gap={8}>
+            <Grid.Item span={1}>
+            </Grid.Item>
+            <Grid.Item span={7}>
+              <div >近期，全球财经市场关注的焦点集中在两大主题上：一是科技股的调整，二是各国央行的政策走向。</div>
+            </Grid.Item>
+          </Grid>
         </Col>
+
         <Col style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} span={6}>
-          {sentSummary && sentSummary.上证指数 ? <EChartsGauge size={sentSummary.上证指数} /> : null}
+          <EChartsGauge size={sentSummary} />
         </Col>
       </Row>
 

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { List, Rate, Image, Grid, Collapse, CalendarPickerView, Button, DatePicker, DotLoading, Footer } from 'antd-mobile'
 import { getEvents } from '../../../service';
 import { economicType, eventType, countryFlags } from './data.d';
-import { Timeline } from 'antd';
 import { history } from '@umijs/max';
 import moment from "moment";
 import styles from '../styles.less';
@@ -25,7 +24,7 @@ export default () => {
     const getEventList = async (eTime) => {
         try {
             const time = eTime.getFullYear() + `-` + (eTime.getMonth() + 1) + `-` + eTime.getDate()
-            console.log(time)
+            // console.log(time)
             const response = await getEvents(time);
             const {
                 economic = [],
@@ -49,7 +48,7 @@ export default () => {
                 date.setHours(date.getHours() - 8);
                 return startDate <= date && date <= endDate;
             })
-            console.log(dateTime, economicList)
+            // console.log(dateTime, economicList)
             setEconomicList(economicList)
             setEventList(eventList)
 
@@ -88,6 +87,24 @@ export default () => {
         // changeEventList(newDateTime)
         getEventList(newDateTime);
     }
+    const labelRenderer = useCallback((type: string, data: number) => {
+        switch (type) {
+            case 'year':
+                return data + '年'
+            case 'month':
+                return data + '月'
+            case 'day':
+                return data + '日'
+            case 'hour':
+                return data + '时'
+            case 'minute':
+                return data + '分'
+            case 'second':
+                return data + '秒'
+            default:
+                return data
+        }
+    }, [])
 
     return (
         <div className={styles.content} style={{ height: window.innerHeight - 150, touchAction: 'none' }}>
@@ -122,6 +139,7 @@ export default () => {
                     changeDateValue(val.getDate() - dateTime.getDate())
                     setDateTime(val)
                 }}
+                renderLabel={labelRenderer}
             />
             <Collapse  >
                 <Collapse.Panel key='1' title='经济数据一览' >
@@ -169,6 +187,9 @@ export default () => {
                                             </Grid.Item>
                                             <Grid.Item span={10}>
                                                 vip内容:
+                                                {
+                                                    item.vip_resource === null ? '暂无内容' : ''
+                                                }
                                             </Grid.Item>
                                         </Grid>
                                     </Grid.Item>
@@ -205,7 +226,14 @@ export default () => {
                                             <Grid.Item span={10} onClick={() => history.push('/home/news/stocks/info')}>
                                                 {item.event_content}
                                             </Grid.Item>
-                                            <Grid.Item span={2}>
+                                            <Grid.Item span={3}>
+                                                <Footer
+                                                    chips={[{
+                                                        text: 'vip内容:',
+                                                    }]}
+                                                />
+                                            </Grid.Item>
+                                            <Grid.Item span={3}>
                                                 <Footer
                                                     links={[
                                                         {
