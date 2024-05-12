@@ -100,9 +100,7 @@ const Screen = () => {
             const resData = res.result
             const arr:any = []
             const title =  Object.keys(resData)
-            const firstTitle = title[0]
-            console.log(resData[firstTitle],'111');
-            
+            const firstTitle = title[0]            
             const row = Object.keys(resData[firstTitle].TIME)
             const columnsone =  title.map((item)=>{
                 arr.push(Object.values(resData[item].result))
@@ -187,26 +185,17 @@ const Screen = () => {
 
     }
     const handleInput = (e:any)=>{
-        setInputValue(e.target.value)
+        setInputValue(e)
     }
     const handleAddElement = () =>{
-        // console.log();   
         setCondition((p:any)=>[...p,1])
     }
     return (
         <div>  
             {
-                condition.map((item)=>{
+                condition.map((item,index)=>{
                     return (
-                        <div style={{marginBottom:'5px'}} key={item} >
-                        <InputNumber 
-                                 defaultValue="0.01"
-                                 min="0"
-                                 max="10"
-                                 step="0.01"
-                                 stringMode
-                                onChange={handleInput}
-                            /> &nbsp;
+                        <div style={{marginBottom:'5px'}} key={index} >
                             <Select
                                 defaultValue="请选择条件"
                                 style={{ width: 240 }}
@@ -218,7 +207,15 @@ const Screen = () => {
                                 style={{ width: 240 }}
                                 onChange={handleMoChange}
                                 options={mode}
-                            />
+                            />&nbsp;
+                             <InputNumber 
+                                 defaultValue="0.01"
+                                 min="0"
+                                 max="10"
+                                 step="0.01"
+                                 stringMode
+                                onChange={handleInput}
+                            /> 
                         </div>
                     )
                 })
