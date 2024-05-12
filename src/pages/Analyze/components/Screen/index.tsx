@@ -45,6 +45,7 @@ const Screen = () => {
     const [echartsData,setEchartsData] = useState([])
     const [dataSource,setDataSource] = useState([])
     const [columns,setColumns] = useState([])
+    const [condition,setCondition] = useState([1])
     const chartRef = useRef(null);
     const commonHeader = {
         user: currentUser.username,
@@ -81,20 +82,17 @@ const Screen = () => {
     const postFetch = () => {
         const data = {
             factor: facotrLi,
-            // mode: modeLi,
-            mode: "gt",
+            mode: modeLi,
             val: inputValue,
-            extra:''
+            // extra:''
         }
         request('quent-api/fetch', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            // data:data,
             data: {
                 data:[data],
-                // header:commonHeader
             },
            
         }).then((res)=>{
@@ -182,7 +180,6 @@ const Screen = () => {
         setFactorLi(value)
     }
     function handleMoChange(value: any) {
-        console.log(value);
         setModeLi(value)
     }
     function handleQuery() {
@@ -192,31 +189,46 @@ const Screen = () => {
     const handleInput = (e:any)=>{
         setInputValue(e.target.value)
     }
+    const handleAddElement = () =>{
+        // console.log();   
+        setCondition((p:any)=>[...p,1])
+    }
     return (
-        <div>
-            <Space>
-                <InputNumber 
-                     defaultValue="0.01"
-                     min="0"
-                     max="10"
-                     step="0.01"
-                     stringMode
-                    onChange={handleInput}
-                />
-                <Select
-                    defaultValue="请选择条件"
-                    style={{ width: 240 }}
-                    onChange={handleFacChange}
-                    options={factor}
-                />
-                <Select
-                    defaultValue="请选择条件"
-                    style={{ width: 240 }}
-                    onChange={handleMoChange}
-                    options={mode}
-                />
-                <Button type="primary" onClick={handleQuery}>查询</Button>
-            </Space>
+        <div>  
+            {
+                condition.map((item)=>{
+                    return (
+                        <div style={{marginBottom:'5px'}} key={item} >
+                        <InputNumber 
+                                 defaultValue="0.01"
+                                 min="0"
+                                 max="10"
+                                 step="0.01"
+                                 stringMode
+                                onChange={handleInput}
+                            /> &nbsp;
+                            <Select
+                                defaultValue="请选择条件"
+                                style={{ width: 240 }}
+                                onChange={handleFacChange}
+                                options={factor}
+                            />&nbsp;
+                            <Select
+                                defaultValue="请选择条件"
+                                style={{ width: 240 }}
+                                onChange={handleMoChange}
+                                options={mode}
+                            />
+                        </div>
+                    )
+                })
+            }
+ 
+            <div style={{marginBottom:'5px'}}>
+            <Button onClick={handleAddElement}>添加条件</Button>&nbsp;&nbsp;
+            <Button type="primary" onClick={handleQuery}>查询</Button>
+            </div>
+          
             <ProCard  bordered>
                 {/* <div ref={chartRef} style={{ width: "100%", height: "100%", overflow: 'hidden' }}></div> */}
                 <Table dataSource={dataSource} columns={columns} /> 
