@@ -24,7 +24,7 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
   const handleTriggerEvent = async (factor: string) => {
     const dataJson = await getModels(factor);
     if (dataJson != null) {
-      onFilterFinance(dataJson.result.models);
+      onFilterFinance(dataJson.models);
     }
   };
 
@@ -33,7 +33,7 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
   ) => {
     try {
       const dataJson = await categoryJson();
-      const transformedData = transformData(dataJson?.result.category);
+      const transformedData = transformData(dataJson.category);
 
       const container = containerRef.current;
       if (!container) {

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, Popover, Radio } from 'antd';
 import { Tabs, message as Message } from 'antd';
 import { CompanyList } from '@/pages/Finchat/components';
-import { getEval } from '@/pages/Home/service';
-import styles from './style.less'
+
 import { FinchatServices } from '@/services';
 import { history, useModel } from '@umijs/max';
 import _ from 'lodash';
@@ -18,11 +15,8 @@ const DCompanyList: React.FC<{
 }> = ({ companyChange }) => {
   //获取请求中的model数据
   const [stockList, setStockList] = useState<any[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
 
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
-  const [factorValue, setFactorValue] = useState<string>('');
-  const [modelValue, setModelValue] = useState<string>('');
   const {
     initialState: { currentUser }
   } = useModel('@@initialState');

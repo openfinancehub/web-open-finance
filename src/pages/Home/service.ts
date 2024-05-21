@@ -34,9 +34,29 @@ export const uploadFileService = async (formData: FormData) => {
   }
 };
 
-const apiUrl = 'http://121.37.5.77:5003/api';
+// 测试接口
+export const test = async () => {
+
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/test`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+const apiUrl = 'http://121.37.5.77:5003/api/';
 // get通用请求
-const performGETRequest = async (url: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }) => {
+const GETRequest = async (url: string) => {
   try {
     let requestConfig = {
       headers: {
@@ -44,22 +64,29 @@ const performGETRequest = async (url: string, header: { req_id?: string; req_src
       },
     };
 
-    const response = await fetch(`${apiUrl}/${url}`, requestConfig);
+    const response = await fetch(`${url}`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
 
     let result = await response.json();
 
-    return { result };
+    return result;
   } catch (error) {
     console.error('An error occurred:', error);
   }
 };
 
 // post通用请求
-const performPostRequest = async (url: string, method: string, header: { req_id?: string; req_src?: string; user?: string; token?: string; }, data: { ip?: string; factor?: any; model?: any; time?: string; extra?: any; code?: any; text?: any; }) => {
+const PostRequest = async (url: string, method: string, data: any) => {
   try {
+    const header = {
+      req_id: '1234',
+      req_src: 'source',
+      user: 'user',
+      token: 'token',
+    };
+
     let requestConfig = {
       method,
       headers: {
@@ -75,7 +102,7 @@ const performPostRequest = async (url: string, method: string, header: { req_id?
       });
     }
 
-    const response = await fetch(`${apiUrl}/${url}`, requestConfig);
+    const response = await fetch(`${url}`, requestConfig);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -85,20 +112,13 @@ const performPostRequest = async (url: string, method: string, header: { req_id?
     if (!data) {
       throw new Error('Response data is empty or not valid JSON');
     }
-    return { result };
+    return result;
   } catch (error) {
     console.error('An error occurred:', error);
   }
 };
 
 export const getModels = async (factor: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
-
   const dataStr = {
     ip: '127.0.0.1',
     factor: factor,
@@ -106,20 +126,16 @@ export const getModels = async (factor: string) => {
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('models', 'POST', header, dataStr);
+  return PostRequest(`${apiUrl}` + 'models', 'POST', dataStr);
+};
+// 获取因子分类
+export const categoryJson = async () => {
+  return GETRequest(`${apiUrl}` + 'category',);
 };
 
-export const categoryJson = async () => {
-  return performGETRequest('category', {});
-};
+
 // 获取models代码
 export const getCode = async (factor: string, model: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
 
   const dataStr = {
     ip: '127.0.0.1',
@@ -129,16 +145,10 @@ export const getCode = async (factor: string, model: string) => {
     extra: 'extra',
   };
 
-  return performPostRequest('getCode', 'POST', header, dataStr);
+  return PostRequest(`${apiUrl}` + 'getCode', 'POST', dataStr);
 };
 // 更新models
 export const updateCode = async (factor: string, model: string, code: string, text: string, extra: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
 
   const dataStr = {
     ip: '127.0.0.1',
@@ -150,33 +160,12 @@ export const updateCode = async (factor: string, model: string, code: string, te
     extra,
   };
 
-  return performPostRequest('updateCode', 'POST', header, dataStr);
-};
-// models详情页图形
-export const getModelData = async (factor: string, model: string) => {
-  const header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
-  const dataStr = {
-    ip: '127.0.0.1',
-    factor: model,
-    model: "default",
-    time: '',
-    extra: 'extra',
-  };
-  return performPostRequest('test', 'POST', header, dataStr);
+  return PostRequest(`${apiUrl}` + 'updateCode', 'POST', dataStr);
 };
 
+// model图形界面展示
 export const getEval = async (factor: string, model: string, inputValue: string) => {
-  let header = {
-    req_id: '1234',
-    req_src: 'source',
-    user: 'user',
-    token: 'token',
-  };
+
   let dataStr = {
     ip: '127.0.0.1',
     factor: model,
@@ -185,17 +174,95 @@ export const getEval = async (factor: string, model: string, inputValue: string)
     time: '',
     extra: 'extra',
   };
-  return performPostRequest('eval', 'POST', header, dataStr);
+  return PostRequest(`${apiUrl}` + 'eval', 'POST', dataStr);
 };
 
-//上传文件
-// export const uploadFileService = async (formData) => {
-//   const header = {
-//     req_id: '1234',
-//     req_src: 'source',
-//     user: 'user',
-//     token: 'token',
-//   };
 
-//   return performPostRequest('upload', 'POST', header, formData);
+const apiPushUrl = 'http://121.37.5.77:5006/api/';
+
+//获取新闻信息
+export const getNews = async () => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/getNews`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+// 获取市场指数  
+export const getMarket = async () => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/getMarket`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+// 获取情绪热度
+export const getSentiment = async () => {
+  return GETRequest(`${apiPushUrl}` + 'strategy/sentiment')
+};
+
+// export const getEvents = async () => {
+//   return GETRequest(`${apiPushUrl}` + 'strategy/event')
 // };
+
+export const getEvents = async (time: string) => {
+  const dataStr = {
+    ip: '127.0.0.1',
+    model: 'author',
+    date: time,
+    extra: 'extra',
+  };
+  return PostRequest(`${apiPushUrl}` + 'strategy/event', 'POST', dataStr);
+};
+
+// 获取危险指数
+export const getDanger = async () => {
+  return GETRequest(`${apiPushUrl}` + 'strategy/danger')
+};
+
+// 获取公司推荐
+export const getStock = async () => {
+  return GETRequest(`${apiPushUrl}` + 'strategy/stock')
+};
+
+
+// 获取重点关注股票信息  
+export const getStocks = async () => {
+  try {
+    let requestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await fetch(`http://127.0.0.1:8000/api/stocks`, requestConfig);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    let result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};

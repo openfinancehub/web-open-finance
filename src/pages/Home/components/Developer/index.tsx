@@ -11,10 +11,6 @@ const Home: React.FC = () => {
   const [company, setCompany] = useState<string>('');
   const [isDeveloper, setIsDeveloper] = useState(false);
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  // const [isDeveloper, setIsDeveloper] = useState(searchParams.get('isDeveloper') || '');
-
   const companyChange = (company: string) => {
     setCompany(company);
   };
@@ -29,19 +25,16 @@ const Home: React.FC = () => {
   return (
     <>
       <ProCard split="vertical">
+        {/* 卡片左侧 */}
         <ProCard split="horizontal" title="" colSpan="40%" >
-          <div>
-            <ProCard title="" headerBordered>
-              <DCompanyList companyChange={companyChange} /> :
-            </ProCard>
-          </div>
-
+          <ProCard title="" headerBordered>
+            <DCompanyList companyChange={companyChange} /> :
+          </ProCard>
         </ProCard>
-
+        {/* 卡片右侧 */}
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
             <HeaderTitle
-              models={financeData}
               onModelsChange={handleModelsChange}
               originalData={filteredModels}
               isActivePage={isActivePage}
@@ -52,14 +45,11 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container' key={'container'}>
-
               <DModels
                 isDeveloper={isDeveloper}
-                onFilterFinance={handleFilterFinance}
                 data={financeData}
                 company={company}
-                setCompany={companyChange} /> 
-
+                setCompany={companyChange} />
             </div>
           </ProCard>
         </ProCard>

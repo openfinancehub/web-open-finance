@@ -72,7 +72,7 @@ const ModelsFigure: React.FC<{
       // console.log(inputValue, '请求后台inputValue')
       const evalJson = await getEval('', model, inputValue)
 
-      const result = processJson(evalJson?.result);
+      const result = processJson(evalJson);
       setMessage([]);
       setMessage(pre => [...pre, result]);
       return result;

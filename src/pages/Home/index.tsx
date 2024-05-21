@@ -1,7 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import CategoryItem from './components/FinanceModels/CategoryItem'
 import Models from './components/FinanceModels/Models'
-import DModels from './components/Developer/DModels'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import HeaderTitle from './components/FinanceModels/HeaderTitle'
@@ -37,11 +36,6 @@ const Home: React.FC = () => {
           {isActivePage ? <CategoryFigure onFilterFinance={handleFilterFinance} /> :
             <div>
               <ProCard title="" headerBordered>
-                {/* {
-                  isDeveloper ?
-                    <DCompanyList companyChange={companyChange} /> :
-                    <CategoryItem onFilterFinance={handleFilterFinance} />
-                } */}
                 <CategoryItem onFilterFinance={handleFilterFinance} />
               </ProCard>
             </div>
@@ -51,7 +45,7 @@ const Home: React.FC = () => {
         <ProCard title="" split="horizontal" headerBordered>
           <ProCard title="" headerBordered>
             <HeaderTitle
-              models={financeData}
+              // models={financeData}
               onModelsChange={handleModelsChange}
               originalData={filteredModels}
               isActivePage={isActivePage}
@@ -62,19 +56,6 @@ const Home: React.FC = () => {
           </ProCard>
           <ProCard title="" headerBordered>
             <div id='container' key={'container'}>
-              {/* {
-                isDeveloper ? <DModels
-                  isDeveloper={isDeveloper}
-                  onFilterFinance={handleFilterFinance}
-                  data={financeData}
-                  company={company}
-                  setCompany={companyChange} /> :
-                  <Models
-                    isDeveloper={isDeveloper}
-                    data={financeData}
-                    company={company}
-                    setCompany={companyChange} />
-              } */}
               <Models
                 isDeveloper={isDeveloper}
                 data={financeData}

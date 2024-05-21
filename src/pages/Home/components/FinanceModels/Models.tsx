@@ -62,33 +62,30 @@ const Models: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper 
     }, [data]);
     return (
         <div>
-            <div>
-                <ProList<ModelsItem>
-                    onRow={onRow}
-                    // onItem={onRow}
-                    rowKey='name'
-                    dataSource={filteredModels}
-                    pagination={{
-                        pageSize: 10,
-                    }}
-                    showActions='hover'
-                    metas={{
-                        title: {
-                            dataIndex: 'model',
-                            title: '模型名称',
-                        },
-                        avatar: {
-                            dataIndex: 'icon',
-                            search: false,
-                        },
-                        description: {
-                            dataIndex: 'tag',
-                            search: false,
-                            render: (_, json) => <DescriptionMeta json={json} />,
-                        },
-                    }}
-                />
-            </div>
+            <ProList<ModelsItem>
+                onRow={onRow}
+                rowKey='name'
+                dataSource={filteredModels}
+                pagination={{
+                    pageSize: 10,
+                }}
+                showActions='hover'
+                metas={{
+                    title: {
+                        dataIndex: 'model',
+                        title: '模型名称',
+                    },
+                    avatar: {
+                        dataIndex: 'icon',
+                        search: false,
+                    },
+                    description: {
+                        dataIndex: 'tag',
+                        search: false,
+                        render: (_, json) => <DescriptionMeta json={json} />,
+                    },
+                }}
+            />
         </div>
     );
 }
