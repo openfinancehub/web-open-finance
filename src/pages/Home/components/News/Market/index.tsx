@@ -28,10 +28,16 @@ export default () => {
       const result = features[feature].result
 
       const keys = Object.keys(time)[0];
-      const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
+      if (typeof time[keys] === 'object' && !Array.isArray(time)) {
+        const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
 
-      setFeaturesList(prevState => [...prevState, r]);
-      setDangerName(prevState => [...prevState, feature]);
+        setFeaturesList(prevState => [...prevState, r]);
+        setDangerName(prevState => [...prevState, feature]);
+      } else {
+        const r = [time, result];
+        setFeaturesList(prevState => [...prevState, r]);
+        setDangerName(prevState => [...prevState, feature]);
+      }
     })
 
     const summaryValue = Object.values(summary)[0];
@@ -50,16 +56,22 @@ export default () => {
       const result = features[feature].result
 
       const keys = Object.keys(time)[0];
-      const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
+      if (typeof time[keys] === 'object' && !Array.isArray(time)) {
+        const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
 
-      setSentList(prevState => [...prevState, r]);
-      setSentName(prevState => [...prevState, feature]);
+        setSentList(prevState => [...prevState, r]);
+        setSentName(prevState => [...prevState, feature]);
+      } else {
+        const r = [time, result];
+        setSentList(prevState => [...prevState, r]);
+        setSentName(prevState => [...prevState, feature]);
+      }
     });
 
-    const summaryValue = Object.values(summary)[0]
-    const substring = summaryValue.toString().substring(0, 4);
-    const floatNum = parseFloat(substring);
-    let res = (floatNum / 100).toFixed(2);
+    const summaryValue = Object.values(summary)[0];
+    const substring = summaryValue.toString().substring(0, 4)
+    const floatNum = parseFloat(substring)
+    const res = parseFloat((floatNum / 100).toFixed(2))
     setSentSummary(res);
   };
 
@@ -106,10 +118,8 @@ export default () => {
           </Grid>
         </Col>
         <Col span={8} >
-          {danger}
           {/* {parseFloat(danger.toFixed(2))} */}
           <EChartsGauge size={danger} />
-          {/* {danger ? <EChartsGauge size={danger} /> : null} */}
         </Col>
       </Row>
 

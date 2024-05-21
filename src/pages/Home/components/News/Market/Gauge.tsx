@@ -10,7 +10,6 @@ type EChartsOption = echarts.ComposeOption<GaugeSeriesOption>;
 
 const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
     const chartRef = React.useRef<HTMLDivElement>(null);
-    console.log(size)
     const getOption = (): EChartsOption => {
         return {
             series: [
