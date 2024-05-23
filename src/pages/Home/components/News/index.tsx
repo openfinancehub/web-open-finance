@@ -35,20 +35,6 @@ const tabs = [
   },
 ];
 
-export function TabsComponent({ activeKey, onTabChange }: any) {
-  return (
-    <TabBar
-      activeKey={activeKey}
-      onChange={newActiveKey => {
-        onTabChange(newActiveKey);
-      }}
-    >
-      {tabs.map(item => (
-        <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-      ))}
-    </TabBar>
-  );
-}
 
 export default () => {
   const [activeKey, setActiveKey] = useState(tabs[0].key);
@@ -62,7 +48,17 @@ export default () => {
       </div>
 
       <div className={styles.fixedBottom}>
-        <TabsComponent activeKey={activeKey} onTabChange={setActiveKey}></TabsComponent>
+        {/* <TabsComponent activeKey={activeKey} onTabChange={setActiveKey}></TabsComponent> */}
+        <TabBar
+          activeKey={activeKey}
+          onChange={newActiveKey => {
+            setActiveKey(newActiveKey);
+          }}
+        >
+          {tabs.map(item => (
+            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+          ))}
+        </TabBar>
       </div>
     </>
   );

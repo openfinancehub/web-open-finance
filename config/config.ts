@@ -96,6 +96,12 @@ export default defineConfig({
       exact: true
     },
     {
+      path: '/home/news/events/info',
+      component: './Home/components/News/Events/event.tsx',
+      props: true,
+      exact: true
+    },
+    {
       path: '/home/news',
       // name:'市场',
       // component: './Home/components/News',

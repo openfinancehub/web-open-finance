@@ -5,10 +5,11 @@ import { economicType, eventType, countryFlags } from './data.d';
 import { history } from '@umijs/max';
 import moment from "moment";
 import styles from '../styles.less';
+import { useNavigate, } from 'react-router-dom'
 
 
 export default () => {
-
+    const navigate = useNavigate();
     const [visible, setVisible] = useState(false)
     const [dateTime, setDateTime] = useState(new Date())
 
@@ -153,20 +154,19 @@ export default () => {
                                         width={40}
                                         height={40} />
                                 }
-                                // onClick={() => { }}
                                 arrow={false}
                                 style={{}}
                             >
                                 <Grid columns={8} gap={2}>
                                     <Grid.Item span={7}>
                                         <Grid columns={10} gap={1}>
-                                            <Grid.Item span={7} style={{ color: "#007ACC" }}>
-                                                {moment(item.pub_time).utc().format('YYYY-MM-DD HH:mm:ss')}
+                                            <Grid.Item span={7} >
+                                                {moment(item.pub_time).utc().format('MM-DD HH:mm:ss')}
                                             </Grid.Item>
                                             <Grid.Item span={3}>
                                                 <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052', }} defaultValue={item.star} />
                                             </Grid.Item>
-                                            <Grid.Item span={10} onClick={() => history.push('/home/news/stocks/info')}>
+                                            <Grid.Item style={{ color: "#007ACC" }} span={10} onClick={() => navigate('/home/news/events/info', { state: item.name })}>
                                                 {item.name}
                                             </Grid.Item>
                                             <Grid.Item span={4}>
@@ -217,13 +217,13 @@ export default () => {
                                 <Grid columns={8} gap={2}>
                                     <Grid.Item span={7}>
                                         <Grid columns={10} gap={1}>
-                                            <Grid.Item span={7} style={{ color: "#007ACC" }}>
-                                                {moment(item.event_time).utc().format('YYYY-MM-DD HH:mm:ss')}
+                                            <Grid.Item span={7} >
+                                                {moment(item.event_time).utc().format('MM-DD HH:mm:ss')}
                                             </Grid.Item>
                                             <Grid.Item span={3}>
                                                 <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052' }} defaultValue={item.star} />
                                             </Grid.Item>
-                                            <Grid.Item span={10} onClick={() => history.push('/home/news/stocks/info')}>
+                                            <Grid.Item style={{ color: "#007ACC" }} span={10} onClick={() => navigate('/home/news/events/info', { state: item.event_content })}>
                                                 {item.event_content}
                                             </Grid.Item>
                                             <Grid.Item span={3}>

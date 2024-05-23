@@ -6,100 +6,75 @@ import {
   Routes,
   useNavigate,
   useLocation,
-  BrowserRouter
-  // MemoryRouter as Router,
 } from 'react-router-dom'
 import {
   AppOutline,
-  MessageOutline,
   UnorderedListOutline,
   UserOutline,
+  HistogramOutline,
 } from 'antd-mobile-icons'
-
+import MarketIndex from '@/pages/Home/components/News/Market/index'
+import EventsIndex from '@/pages/Home/components/News/Events/index'
+import StocksIndex from '@/pages/Home/components/News/Stocks/index'
 import styles from './demo2.less'
 
-const Bottom: FC = () => {
-  const history = useNavigate()
-  const location = useLocation()
-  const { pathname } = location
 
-  const setRouteActive = (value: string) => {
-    history(value)
-  }
-
-  const tabs = [
-    {
-      key: '/home/news',
-      title: '首页',
-      icon: <AppOutline />,
-    },
-    {
-      key: '/todo',
-      title: '待办',
-      icon: <UnorderedListOutline />,
-    },
-    {
-      key: '/message',
-      title: '消息',
-      icon: <MessageOutline />,
-    },
-    {
-      key: '/me',
-      title: '我的',
-      icon: <UserOutline />,
-    },
-  ]
-
-  return (
-    <TabBar activeKey={pathname} onChange={value => setRouteActive(value)}>
-      {tabs.map(item => (
-        <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-      ))}
-    </TabBar>
-  )
-}
+const tabs = [
+  {
+    key: '/home/news/market',
+    title: '市场',
+    icon: <AppOutline />,
+    path: '/home/news/market',
+  },
+  {
+    key: '/home/news/events',
+    title: '事件',
+    icon: <UnorderedListOutline />,
+    path: '/home/news/events',
+  },
+  {
+    key: '/home/news/stocks',
+    title: '股票',
+    icon: <HistogramOutline />,
+    path: '/home/news/stocks',
+  },
+  {
+    key: '/home/news/mine',
+    title: '我的',
+    icon: <UserOutline />,
+    path: '/mine',
+  },
+];
 
 export default () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+
+  const setRouteActiveByKey = (key: string) => {
+    navigate(key);
+  };
+
   return (
-    <BrowserRouter>
-      <div className={styles.app}>
-        <div className={styles.top}>
-          <NavBar>配合路由使用</NavBar>
-        </div>
-        <div className={styles.body}>
-          <Routes>
-            <Route path='/home' element={<Home/>} >
-              {/* <Home /> */}
-            </Route>
-            <Route path='/market'>
-              <Todo />
-            </Route>
-            <Route path='/events'>
-              <Message />
-            </Route>
-            <Route path='/stocks'>
-              <PersonalCenter />
-            </Route>
-          </Routes>
-        </div>
-        <div className={styles.bottom}>
-          <Bottom />
-        </div>
+    <div className={styles.app}>
+      <MarketIndex />
+      <div className={styles.content}>
+        <Routes>
+          <Route path="/home/news/market" element={<MarketIndex />} />
+          <Route path="/home/news/events" element={<EventsIndex />} />
+          <Route path="/home/news/stocks" element={<StocksIndex />} />
+          <Route path="/mine" element={<PersonalCenter />} />
+        </Routes>
       </div>
-    </BrowserRouter>
+      <div className={styles.fixedBottom}>
+        <TabBar activeKey={pathname} onChange={(key) => setRouteActiveByKey(key)}>
+          {tabs.map((item) => (
+            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+          ))}
+        </TabBar>
+      </div>
+    </div>
   )
-}
-
-function Home() {
-  return <div>首页</div>
-}
-
-function Todo() {
-  return <div>待办</div>
-}
-
-function Message() {
-  return <div>消息</div>
 }
 
 function PersonalCenter() {

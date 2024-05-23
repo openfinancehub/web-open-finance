@@ -15,7 +15,6 @@ function createNewColumns(features: Record<string, any>) {
     title: titleName,
     dataIndex: titleName,
     key: titleName,
-    // width: ReactAutoFitColumns.getWidth(titleName),
     width: 80,
   }));
 }
