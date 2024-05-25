@@ -31,20 +31,16 @@ const Screen = () => {
     }).then(res => {
       setFactorLi(res.result.factor[0]);
       setModeLi(res.result.mode[0]);
-      let factorData = res.result.factor.map((item: string) => {
-        return {
-          value: item,
-          lable: item
-        };
-      });
-      let modeData = res.result.mode.map((item: string) => {
-        return {
-          value: item,
-          lable: item
-        };
-      });
 
-      setFactor(factorData);
+      let modeDataLabel = Object.keys(res.result.mode[0]) 
+      let modeDataValue = Object.values(res.result.mode[0])
+      const modeData:any = modeDataLabel.map((item,index)=>{
+        return{
+          label:item,
+          value:modeDataValue[index]
+        }
+      })
+      setFactor(res.result.factor);
       setMode(modeData);
     });
   };
@@ -195,7 +191,7 @@ const Screen = () => {
           )}
         </Form.List>
       </Form>
-      <ProCard bordered>
+      <ProCard bordered style={{overflow:'auto'}}>
         <Table dataSource={dataSource} columns={columns} />
       </ProCard>
     </div>
