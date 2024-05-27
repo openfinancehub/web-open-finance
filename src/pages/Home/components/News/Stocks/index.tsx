@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 
 interface StockData {
-  name: string;
+  // name: string;
   key: string;
   [key: string]: string;
 }
@@ -19,14 +19,19 @@ function createNewColumns(features: Record<string, any>) {
   }));
 }
 
-function generateTargetData(features: Record<string, any>): StockData[] {
+function generateTargetData(features: Record<string, any>, summary: Object): StockData[] {
   const stockNames = Object.values(features)[0].TIME;
 
   return Object.entries(stockNames).map(([stockName]) => {
     const stockData: StockData = {
-      name: stockName,
+      // name: stockName,
       key: stockName,
     };
+    Object.entries(summary).forEach(([sName, num]) => {
+      if (sName === stockName) {
+        stockData['number'] = num.toFixed(2)
+      }
+    });
 
     Object.entries(features).forEach(([featureName, featureObj]) => {
       const value = featureObj.result[stockName];
@@ -40,7 +45,7 @@ function generateTargetData(features: Record<string, any>): StockData[] {
 
 const EnhancedRender = ({ record }: { record: StockData }) => (
   <div>
-    <p>{record.name}的内容</p>
+    <p>{record.key}的内容</p>
   </div>
 );
 const extendedRender = (record: StockData) => <EnhancedRender record={record} />;
@@ -52,7 +57,25 @@ export default () => {
       width: 60,
       fixed: 'left',
       dataIndex: 'name',
-      render: (_, record) => <a>{record.name}</a>,
+      render: (_, record) => <a>{record.key}</a>,
+    },
+    {
+      title: '推荐指数',
+      width: 80,
+      // fixed: 'left',
+      sorter: (a, b) => {
+        const numA = a.number as unknown as number;
+        const numB = b.number as unknown as number;
+        if (numA < 0 && numB >= 0) {
+          return -1; // 负数排在前面
+        } else if (numA >= 0 && numB < 0) {
+          return 1; // 正数排在前面
+        } else {
+          return numA - numB; // 保持默认的数字排序
+        }
+      },
+      dataIndex: 'number',
+      render: (_, record) => <a>{record.number}</a>,
     },
   ];
 
@@ -69,7 +92,8 @@ export default () => {
       const combinedColumns = [...initialColumns, ...newColumns];
       setMergedColumns(combinedColumns);
 
-      const targetData = generateTargetData(features);
+      const targetData = generateTargetData(features, summary);
+      console.log(targetData)
       setData(targetData);
     } catch (error) {
       console.error('Fetch data error:', error);
@@ -94,7 +118,7 @@ export default () => {
         pageSize: 10,
       }}
       expandable={{
-        columnWidth: 15,
+        columnWidth: 17,
         expandedRowRender: (record) => (
           extendedRender(record)
         ),

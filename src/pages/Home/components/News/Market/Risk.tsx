@@ -35,6 +35,8 @@ const WindChart = ({
 }) => {
     const chartRef = useRef(null);
 
+    // console.log(seriesData, 'seriesData')
+    // console.log(legendData, 'legendData')
     // 图表的配置
     const option = {
         title: {

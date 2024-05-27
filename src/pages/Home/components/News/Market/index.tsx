@@ -7,96 +7,74 @@ import { getSentiment, getDanger } from '../../../service'
 
 export default () => {
 
-  const [dangerList, setFeaturesList] = React.useState<any[]>([]);
-  const [danger, setDanger] = React.useState<any>();
-  const [dangerName, setDangerName] = React.useState<any[]>([]);
+  const [dangerList, setFeaturesList] = useState<any[]>([]);
+  const [dangerSize, setDangerSize] = useState<number>(0);
+  const [dangerText, setDangerText] = useState<string>('');
 
-  const [sentList, setSentList] = React.useState<any[]>([]);
-  const [sentSummary, setSentSummary] = React.useState<any>();
-  const [sentName, setSentName] = React.useState<any[]>([]);
+  const [sentList, setSentList] = useState<any[]>([]);
+  const [sentSize, setSentSize] = useState<number>(0);
+  const [sentText, setSentText] = useState<string>('');
 
-  const content =
-    '蚂蚁的企业级产品是一个庞大且复杂的体系。这类产品不仅量级巨大且功能复杂，而且变动和并发频繁，常常需要设计与开发能够快速的做出响应。同时这类产品中有存在很多类似的页面以及组件，可以通过抽象得到一些稳定且高复用性的内容。'
-
-
-  const fetchData = async () => {
-    const response = await getDanger();
+  const fetchDataAndProcess = async (url: () => Promise<any>, setList: any,
+    setText: any, setSize: any) => {
+    const response = await url();
     const { features = [], summary = {} } = response.result || {};
 
     Object.keys(features).forEach(feature => {
       const time = features[feature].TIME
       const result = features[feature].result
+      const text = features[feature].text
 
       const keys = Object.keys(time)[0];
       if (typeof time[keys] === 'object' && !Array.isArray(time)) {
-        const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
+        const r = time[keys].map((item: any, index: string | number) => {
+          return [item, result[keys][index]]
+        });
+        setList(prevState => [...prevState, { title: feature, data: r, text: text }]);
 
-        setFeaturesList(prevState => [...prevState, r]);
-        setDangerName(prevState => [...prevState, feature]);
       } else {
         const r = [time, result];
-        setFeaturesList(prevState => [...prevState, r]);
-        setDangerName(prevState => [...prevState, feature]);
-      }
-    })
-
-    const summaryValue = Object.values(summary)[0];
-    const substring = summaryValue.toString().substring(0, 4)
-    const floatNum = parseFloat(substring)
-    const res = parseFloat((floatNum / 100).toFixed(2))
-    setDanger(res);
-  };
-
-  const fetchSentimentData = async () => {
-    const response = await getSentiment();
-    const { features = [], summary = {} } = response.result || {};
-
-    Object.keys(features).forEach(feature => {
-      const time = features[feature].TIME
-      const result = features[feature].result
-
-      const keys = Object.keys(time)[0];
-      if (typeof time[keys] === 'object' && !Array.isArray(time)) {
-        const r = time[keys].map((item: any, index: string | number) => [item, result[keys][index]]);
-
-        setSentList(prevState => [...prevState, r]);
-        setSentName(prevState => [...prevState, feature]);
-      } else {
-        const r = [time, result];
-        setSentList(prevState => [...prevState, r]);
-        setSentName(prevState => [...prevState, feature]);
+        setList(prevState => [...prevState, { title: feature, data: r, text: text }]);
       }
     });
 
-    const summaryValue = Object.values(summary)[0];
-    const substring = summaryValue.toString().substring(0, 4)
+    const textContent = summary.text;
+    const shangZhiZhenShu = summary['上证指数'];
+
+    const substring = shangZhiZhenShu.toString().substring(0, 4)
     const floatNum = parseFloat(substring)
     const res = parseFloat((floatNum / 100).toFixed(2))
-    setSentSummary(res);
+    setSize(res);
+    setText(textContent)
   };
-
-
-  const seriesData = dangerList.map((feature, index) => {
-    return {
-      name: dangerName[index],
-      type: 'line',
-      stack: 'Total',
-      data: feature
-    }
-  });
 
   const sentData = sentList.map((feature, index) => {
     return {
-      name: sentName[index],
-      type: 'line',
-      stack: 'Total',
-      data: feature
+      echartsConf: {
+        name: feature.title,
+        type: 'line',
+        stack: 'Total',
+        data: feature.data
+      },
+      textContent: feature.text
+    }
+  });
+
+  const seriesData = dangerList.map((feature, index) => {
+    return {
+      echartsConf: {
+        name: feature.title,
+        type: 'line',
+        stack: 'Total',
+        data: feature.data
+      },
+      textContent: feature.text
     }
   });
 
   useEffect(() => {
-    fetchSentimentData();
-    fetchData();
+    fetchDataAndProcess(getSentiment, setSentList, setSentText, setSentSize);
+    fetchDataAndProcess(getDanger, setFeaturesList, setDangerText, setDangerSize);
   }, []);
 
   return (
@@ -113,13 +91,12 @@ export default () => {
             <Grid.Item span={2}>
             </Grid.Item>
             <Grid.Item span={6}>
-              <div >近期，全球财经市场关注的焦点集中在两大主题上：一是科技股的调整，二是各国央行的政策走向。</div>
+              <div >{sentText}</div>
             </Grid.Item>
           </Grid>
         </Col>
         <Col span={8} >
-          {/* {parseFloat(danger.toFixed(2))} */}
-          <EChartsGauge size={danger} />
+          <EChartsGauge size={sentSize} />
         </Col>
       </Row>
 
@@ -127,11 +104,11 @@ export default () => {
         return (
           <Row key={index}>
             <Col key={index} span={24} >
-              <Risk legendData={[item.name]} seriesData={item} />
+              <Risk legendData={[item.echartsConf.name]} seriesData={item.echartsConf} />
             </Col>
-            <Col style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item} span={24} >
+            <Col style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item.echartsConf.name} span={24} >
               <AutoCenter  >
-                <Ellipsis direction='end' rows={3} content={content}
+                <Ellipsis direction='end' rows={3} content={item.textContent}
                   expandText='展开'
                   collapseText='收起' />
               </AutoCenter>
@@ -142,32 +119,35 @@ export default () => {
       <Row >
         <Divider orientation="left"></Divider>
       </Row>
-      <Row >
-        <Col span={18}>
+      <Row>
+        <Col span={16}>
           <Divider orientation="left"><h2 style={{ color: "#E92838" }}>危险指数</h2></Divider>
           <Grid columns={8} gap={8}>
             <Grid.Item span={1}>
             </Grid.Item>
             <Grid.Item span={7}>
-              <div >近期，全球财经市场关注的焦点集中在两大主题上：一是科技股的调整，二是各国央行的政策走向。</div>
+              <h3 >危险信息</h3>
+            </Grid.Item>
+            <Grid.Item span={2}>
+            </Grid.Item>
+            <Grid.Item span={6}>
+              <div >{dangerText}</div>
             </Grid.Item>
           </Grid>
         </Col>
-
-        <Col style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} span={6}>
-          <EChartsGauge size={sentSummary} />
+        <Col span={8} >
+          <EChartsGauge size={dangerSize} />
         </Col>
       </Row>
-
       {seriesData.map((item, index) => {
         return (
           <Grid key={index} columns={1} gap={8}>
             <Grid.Item key={index} span={8}>
-              <Risk legendData={[item.name]} seriesData={item} />
+              <Risk legendData={[item.echartsConf.name]} seriesData={item.echartsConf} />
             </Grid.Item>
-            <Grid.Item style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item} span={8}>
+            <Grid.Item style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item.echartsConf.name} span={8}>
               <AutoCenter>
-                <Ellipsis direction='end' rows={3} content={content}
+                <Ellipsis direction='end' rows={3} content={item.textContent}
                   expandText='展开'
                   collapseText='收起' />
               </AutoCenter>

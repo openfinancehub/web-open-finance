@@ -102,31 +102,31 @@ export default defineConfig({
       exact: true
     },
     {
-      path: '/home/news',
-      // name:'市场',
-      // component: './Home/components/News',
-      routes: [
-        {
-          path: 'market',
-          // name: '市场',
-          component: './Home/components/News/'
-        },
-        {
-          path: 'events',
-          // name: '事件',
-          component: './Home/components/News/Events/'
-        },
-        {
-          path: 'stocks',
-          // name: '股票',
-          component: './Home/components/News/Stocks/'
-        },
-        {
-          path: 'mine',
-          // name: '我的',
-          component: './Home/components/News/Mine/'
-        }
-      ]
+      path: '/home/news/market',
+      name: 'Market',
+      component: './Home/components/News',
+      // routes: [
+      //   {
+      //     path: 'market',
+      //     // name: '市场',
+      //     component: './Home/components/News/'
+      //   },
+      //   {
+      //     path: 'events',
+      //     // name: '事件',
+      //     component: './Home/components/News/Events/'
+      //   },
+      //   {
+      //     path: 'stocks',
+      //     // name: '股票',
+      //     component: './Home/components/News/Stocks/'
+      //   },
+      //   {
+      //     path: 'mine',
+      //     // name: '我的',
+      //     component: './Home/components/News/Mine/'
+      //   }
+      // ]
     },
     {
       name: 'Users',
