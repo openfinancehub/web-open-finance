@@ -71,19 +71,27 @@ const Screen = () => {
         return {
           title: item,
           dataIndex: item,
-          key: item
+          key: item,
+          sorter: {
+            compare: (a:any, b:any) => {
+              console.log(a[item],b[item],'数据展示');
+              
+              return  a[item] - b[item]
+            },            
+          },
         };
       });
       const firstName = {
         title: 'Name',
         dataIndex: 'name',
-        key: 'name'
+        key: 'name',
+        width:'5%'
       };
 
       const tableData = row.map((name, i) => {
         const rowData = { name };
         title.forEach((column, j) => {
-          rowData[column] = arr[j][i];
+          rowData[column] = arr[j][i].toFixed(4);
         });
         return rowData;
       });
@@ -192,7 +200,7 @@ const Screen = () => {
         </Form.List>
       </Form>
       <ProCard bordered style={{overflow:'auto'}}>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={dataSource} columns={columns}  />
       </ProCard>
     </div>
   );
