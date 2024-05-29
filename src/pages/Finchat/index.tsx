@@ -8,10 +8,10 @@ import {
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import ReactEcharts from 'echarts-for-react';
-import { Button, Card, Input, message as Message, Popover, Radio, Typography, Tooltip  } from 'antd';
+import { Button, Card, Input, message as Message, Popover, Radio, Typography, Tooltip, Table  } from 'antd';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { ChatList, CompanyList, TaskList, MyCharts, HistoryList } from './components';
+import { ChatList, CompanyList, TaskList, HistoryList} from './components';
 
 import styles from './index.less';
 import useWebSocket from './useWebsocket';
@@ -330,16 +330,22 @@ const Finchat = () => {
                         style={{height: '300px'}}
                       />
                     )
-                  }                  
+                  } 
+                  {
+                    item.table && (
+                      <Table
+                        columns={item.table.columns}
+                        rowSelection={{}}
+                        dataSource={item.table.data}
+                      />
+                    )
+                  }                                   
                   {item.content && (
                     <div
                       style={{ padding: '0 16px 0 0' }}
                       dangerouslySetInnerHTML={{ __html: item.content }}
                     />
                   )}
-                  {
-                    item.chartData ? <MyCharts data={item.chartData}/> : null 
-                  }
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>
