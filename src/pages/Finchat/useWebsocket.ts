@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useModel } from 'umi';
+import createTable from './components/MyTables';
 
 type WebSocketHook = {
   message: any[];
@@ -32,11 +33,18 @@ const useWebSocket = (url: string): WebSocketHook => {
       if (typeof chart === 'object' && Object.keys(chart).length === 0) {
         chart = null;
       }
+      let table = response.output?.table;
+      if (typeof table === 'object' && Object.keys(table).length === 0) {
+        table = null;
+      } else {
+        table = createTable(table);
+      }
+      
       // console.log(chart)
       // const tempList = [...message];
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
-        return [...tempList, { sender: 'bot', content, chart }];
+        return [...tempList, { sender: 'bot', content, chart, table}];
       });
     };
 

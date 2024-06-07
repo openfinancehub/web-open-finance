@@ -69,9 +69,76 @@ export default defineConfig({
       component: './Home'
     },
     {
+      name: 'Store',      
       path: '/store',
-      name: 'Store',
       component: './Store',
+      routes: [
+        {
+          path: 'tasks',
+          // name: '市场',
+          component: './Store/views/chatflows'
+        },
+        {
+          path: 'canvas',
+          // name: '事件',
+          component: './Store/views/canvas'
+        },
+        {
+          path: 'canvas/:id',
+          // name: '事件',
+          component: './Store/views/canvas'
+        },        
+        {
+          path: 'analyst',
+          // name: '事件',
+          component: './Store/views/marketplaces'
+        },
+        {
+          path: 'analyst/:id',
+          // name: '事件',
+          component: './Store/views/marketplaces/MarketplaceCanvas'
+        },        
+        {
+          path: 'skills',
+          // name: '事件',
+          component: './Store/views/agentflows'
+        },
+        {
+          path: 'skills/:id',
+          // name: '事件',
+          component: './Store/views/agentflows'
+        },           
+        {
+          path: 'tools',
+          // name: '事件',
+          component: './Store/views/tools'
+        },   
+        {
+          path: 'tools/:id',
+          // name: '事件',
+          component: './Store/views/tools'
+        },        
+        {
+          path: 'assistants',
+          // name: '事件',
+          component: './Store/views/assistants'
+        },
+        {
+          path: 'credentials',
+          // name: '事件',
+          component: './Store/views/credentials'
+        },
+        {
+          path: 'apikeys',
+          // name: '事件',
+          component: './Store/views/apikey'
+        },
+        {
+          path: 'documents',
+          // name: '事件',
+          component: './Store/views/docstore'
+        }
+      ]    
     },
     {
       name: 'Quant',

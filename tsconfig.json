@@ -3,6 +3,13 @@
   "compilerOptions": {
     "moduleResolution": "node",
     // 关闭ts 大小写检验
-    "forceConsistentCasingInFileNames": false,
-  }
+    "forceConsistentCasingInFileNames": false,    
+    "target": "esnext",
+    "module": "commonjs",
+    "paths": {
+        "@/*": ["./src/pages/Store/*"]
+    }
+},
+"include": ["src/**/*"],
+"exclude": ["node_modules"]  
 }
