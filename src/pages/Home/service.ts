@@ -53,8 +53,8 @@ export const test = async () => {
     console.error('An error occurred:', error);
   }
 };
-
-const apiUrl = 'http://121.37.5.77:5003/api/';
+  
+const apiUrl = 'http://121.37.5.77:5002/api/info/';
 // get通用请求
 const GETRequest = async (url: string) => {
   try {
@@ -178,7 +178,7 @@ export const getEval = async (factor: string, model: string, inputValue: string)
 };
 
 
-const apiPushUrl = 'http://121.37.5.77:5006/api/';
+const apiPushUrl = 'http://121.37.5.77:5002/api/';
 
 //获取新闻信息
 export const getNews = async () => {

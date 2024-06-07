@@ -21,12 +21,12 @@ export default defineConfig({
   },
   proxy: {
     '/api': {
-      target: 'http://121.37.5.77:5003',
+      target: 'http://121.37.5.77:5002/api/info/',
       changeOrigin: true,
       pathRewrite: { '^/api': '/api' }
     },
     '/quent-api': {
-      target: 'http://121.37.5.77:5001/api/quant/',
+      target: 'http://121.37.5.77:5002/api/quant/',
       changeOrigin: true,
       pathRewrite: { '^/quent-api': '' }
     },
@@ -36,7 +36,7 @@ export default defineConfig({
       pathRewrite: { '^/quant': '/quant' }
     },
     '/chat-api': {
-      target: 'http://121.37.5.77:5005/',
+      target: 'http://121.37.5.77:5002/api/info/',
       changeOrigin: true,
       pathRewrite: { '^/chat-api': '/api' }
     },
