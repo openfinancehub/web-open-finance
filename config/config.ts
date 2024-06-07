@@ -96,7 +96,7 @@ export default defineConfig({
         {
           path: 'analyst/:id',
           // name: '事件',
-          component: './Store/views/marketplaces'
+          component: './Store/views/marketplaces/MarketplaceCanvas'
         },        
         {
           path: 'skills',

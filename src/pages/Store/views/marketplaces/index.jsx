@@ -180,7 +180,7 @@ const Marketplace = () => {
     }
 
     const goToCanvas = (selectedChatflow) => {
-        navigate(`/store/marketplace/${selectedChatflow.id}`, { state: selectedChatflow })
+        navigate(`/store/analyst/${selectedChatflow.id}`, { state: selectedChatflow })
     }
 
     useEffect(() => {
