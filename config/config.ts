@@ -74,10 +74,15 @@ export default defineConfig({
       component: './Store',
       routes: [
         {
-          path: 'tasks',
+          path: 'chatflows',
           // name: '市场',
           component: './Store/views/chatflows'
         },
+        {
+          path: 'chatflows/:id',
+          // name: '市场',
+          component: './Store/views/chatflows'
+        },        
         {
           path: 'canvas',
           // name: '事件',
@@ -89,24 +94,34 @@ export default defineConfig({
           component: './Store/views/canvas'
         },        
         {
-          path: 'analyst',
+          path: 'marketplaces',
           // name: '事件',
           component: './Store/views/marketplaces'
         },
         {
-          path: 'analyst/:id',
+          path: 'marketplaces/:id',
           // name: '事件',
           component: './Store/views/marketplaces/MarketplaceCanvas'
-        },        
+        },
+        {
+          path: 'agents',
+          // name: '事件',
+          component: './Store/views/agents'
+        },
+        {
+          path: 'agents/:id',
+          // name: '事件',
+          component: './Store/views/agents/AgentCanvas'
+        },                  
         {
           path: 'skills',
           // name: '事件',
-          component: './Store/views/agentflows'
+          component: './Store/views/chatflows'
         },
         {
           path: 'skills/:id',
           // name: '事件',
-          component: './Store/views/agentflows'
+          component: './Store/views/chatflows'
         },           
         {
           path: 'tools',

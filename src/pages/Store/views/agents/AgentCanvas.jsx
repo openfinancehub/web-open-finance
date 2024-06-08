@@ -10,16 +10,16 @@ import { Toolbar, Box, AppBar } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // project imports
-import MarketplaceCanvasNode from './MarketplaceCanvasNode'
-import MarketplaceCanvasHeader from './MarketplaceCanvasHeader'
+import AgentCanvasNode from './AgentCanvasNode'
+import AgentCanvasHeader from './AgentCanvasHeader'
 import StickyNote from '../canvas/StickyNote'
 
-const nodeTypes = { customNode: MarketplaceCanvasNode, stickyNote: StickyNote }
+const nodeTypes = { customNode: AgentCanvasNode, stickyNote: StickyNote }
 const edgeTypes = { buttonedge: '' }
 
 // ==============================|| CANVAS ||============================== //
 
-const MarketplaceCanvas = () => {
+const AgentCanvas = () => {
     const theme = useTheme()
     const navigate = useNavigate()
 
@@ -45,10 +45,9 @@ const MarketplaceCanvas = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flowData])
 
-    const onChatflowCopy = (flowData) => {
-        const isAgentCanvas = (flowData?.nodes || []).some((node) => node.data.category === 'Multi Agents')
+    const onAgentwCopy = (flowData) => {
         const templateFlowData = JSON.stringify(flowData)
-        navigate(`/store/${isAgentCanvas ? 'skills' : 'canvas'}`, { state: { templateFlowData } })
+        navigate(`/store/agents`, { state: { templateFlowData } })
     }
 
     return (
@@ -64,10 +63,10 @@ const MarketplaceCanvas = () => {
                     }}
                 >
                     <Toolbar>
-                        <MarketplaceCanvasHeader
+                        <AgentCanvasHeader
                             flowName={name}
                             flowData={JSON.parse(flowData)}
-                            onChatflowCopy={(flowData) => onChatflowCopy(flowData)}
+                            onAgentwCopy={(flowData) => onAgentwCopy(flowData)}
                         />
                     </Toolbar>
                 </AppBar>
@@ -103,4 +102,4 @@ const MarketplaceCanvas = () => {
     )
 }
 
-export default MarketplaceCanvas
+export default AgentCanvas

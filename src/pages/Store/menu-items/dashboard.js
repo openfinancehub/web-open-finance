@@ -22,23 +22,31 @@ const dashboard = {
     type: 'group',
     children: [
         {
-            id: 'analyst',
+            id: 'supermarket',
+            title: '商城',
+            type: 'item',
+            url: '/store/marketplaces',
+            icon: icons.IconBuildingStore,
+            breadcrumbs: true
+        },    
+        {
+            id: 'agents',
             title: '分析员',
             type: 'item',
-            url: '/store/analyst',
+            url: '/store/agents',
             icon: icons.IconBuildingStore,
             breadcrumbs: true
         },        
         {
-            id: 'task',
-            title: '任务',
+            id: 'chatflows',
+            title: '任务流',
             type: 'item',
-            url: '/store/tasks',
+            url: '/store/chatflows',
             icon: icons.IconHierarchy,
             breadcrumbs: true
         },
         {
-            id: 'skill',
+            id: 'skills',
             title: '技能',
             type: 'item',
             url: '/store/skills',
