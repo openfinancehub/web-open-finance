@@ -137,14 +137,6 @@ const Agent = () => {
         setSearch(event.target.value)
     }
 
-    function filterFlows(data) {
-        return (
-            data.categories?.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            data.templateName.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            (data.description && data.description.toLowerCase().indexOf(search.toLowerCase()) > -1)
-        )
-    }
-
     function filterByBadge(data) {
         return badgeFilter.length > 0 ? badgeFilter.includes(data.badge) : true
     }
@@ -387,7 +379,6 @@ const Agent = () => {
                                         {getAllAgentsApi.data
                                             ?.filter(filterByBadge)
                                             .filter(filterByType)
-                                            .filter(filterFlows)
                                             .filter(filterByFramework)
                                             .map((data, index) => (
                                                 <Box key={index}>
