@@ -308,7 +308,6 @@ export default function PublicStrategy(props: string) {
                     },
                     itemStyle: {
                         borderWidth: 3,
-                        //   borderColor: '#EE6666',
                         color: 'blue'
                     }
                 },

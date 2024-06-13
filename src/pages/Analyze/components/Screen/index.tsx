@@ -91,7 +91,7 @@ const Screen = () => {
       const tableData = row.map((name, i) => {
         const rowData = { name };
         title.forEach((column, j) => {
-          rowData[column] = arr[j][i].toFixed(4);
+          rowData[column] = Number(arr[j][i]).toFixed(4) 
         });
         return rowData;
       });
