@@ -179,7 +179,7 @@ const Canvas = () => {
             try {
                 await chatflowsApi.deleteChatflow(chatflow.id)
                 localStorage.removeItem(`${chatflow.id}_INTERNAL`)
-                navigate(isAgentCanvas ? '/store/skills' : '/store')
+                navigate(isAgentCanvas ? '/store/agents' : '/store')
             } catch (error) {
                 enqueueSnackbar({
                     message: typeof error.response.data === 'object' ? error.response.data.message : error.response.data,
@@ -223,7 +223,7 @@ const Canvas = () => {
                     deployed: false,
                     isPublic: false,
                     flowData,
-                    type: isAgentCanvas ? 'MULTIAGENT' : 'CHATFLOW'
+                    type: isAgentCanvas ? 'AGENT' : 'CHATFLOW'
                 }
                 createNewChatflowApi.request(newChatflowBody)
             } else {
@@ -268,12 +268,12 @@ const Canvas = () => {
             event.preventDefault()
             const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect()
             let nodeData = event.dataTransfer.getData('application/reactflow')
-
+            console.log("1 onDrop nodeData:", nodeData)
             // check if the dropped element is valid
             if (typeof nodeData === 'undefined' || !nodeData) {
                 return
             }
-
+            console.log("2 onDrop nodeData:", nodeData)
             nodeData = JSON.parse(nodeData)
 
             const position = reactFlowInstance.project({

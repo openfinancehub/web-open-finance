@@ -47,9 +47,9 @@ const Finchat = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<any>(null);
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
-  // ws://121.37.5.77:5004
+  // ws://129.204.166.171:5004
   const { message, sendWebSocketMessage, clearMessage } = useWebSocket(
-    'ws://121.37.5.77:5004'
+    'ws://129.204.166.171:5004'
   );
 
   const [messageList, setMessageList] = useState<any[]>(message);

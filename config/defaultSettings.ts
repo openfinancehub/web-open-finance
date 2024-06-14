@@ -7,7 +7,8 @@ const Settings: LayoutSettings & {
   // 拂晓蓝
   // primaryColor: '#1890ff',
   layout: 'mix',
-  splitMenus: true
+  // splitMenus: true,
+  logo: "@/pages/Store/assets/images/openfiance_dark_log.png"
 };
 
 export default Settings;

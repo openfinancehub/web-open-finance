@@ -19,7 +19,7 @@ import NodeInfoDialog from '@/pages/Store/ui-component/dialog/NodeInfoDialog'
 import { baseURL } from '@/pages/Store/store/constant'
 import { IconTrash, IconCopy, IconInfoCircle, IconAlertTriangle } from '@tabler/icons-react'
 import { flowContext } from '@/pages/Store/store/context/ReactFlowContext'
-import LlamaindexPNG from '@/pages/Store/assets/images/llamaindex.png'
+import OpenfinancePNG from '@/pages/Store/assets/images/openfinance_dark_log.png'
 
 // ===========================|| CANVAS NODE ||=========================== //
 
@@ -165,7 +165,7 @@ const CanvasNode = ({ data }) => {
                                 </Typography>
                             </Box>
                             <div style={{ flexGrow: 1 }}></div>
-                            {data.tags && data.tags.includes('LlamaIndex') && (
+                            {data.tags && data.tags.includes('Openfinance') && (
                                 <>
                                     <div
                                         style={{
@@ -175,8 +175,8 @@ const CanvasNode = ({ data }) => {
                                     >
                                         <img
                                             style={{ width: '25px', height: '25px', borderRadius: '50%', objectFit: 'contain' }}
-                                            src={LlamaindexPNG}
-                                            alt='LlamaIndex'
+                                            src={OpenfinancePNG}
+                                            alt='Openfinance'
                                         />
                                     </div>
                                 </>

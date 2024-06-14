@@ -1,5 +1,5 @@
 import logo from '@/pages/Store/assets/images/openfinance_light_log.png'
-import logoDark from '@/pages/Store/assets/images/openfiance_dark_log.png'
+import logoDark from '@/pages/Store/assets/images/openfinance_dark_log.png'
 
 import { useSelector } from 'react-redux'
 

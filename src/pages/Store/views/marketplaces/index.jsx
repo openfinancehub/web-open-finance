@@ -64,7 +64,7 @@ TabPanel.propTypes = {
 
 const badges = ['POPULAR', 'NEW']
 const types = ['Chatflow', 'Agentflow', 'Tool']
-const framework = ['Langchain', 'LlamaIndex']
+const framework = ['Openfinance', 'Langchain']
 const MenuProps = {
     PaperProps: {
         style: {

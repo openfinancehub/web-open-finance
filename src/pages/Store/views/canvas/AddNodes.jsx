@@ -38,7 +38,7 @@ import { StyledFab } from '@/pages/Store/ui-component/button/StyledFab'
 
 // icons
 import { IconPlus, IconSearch, IconMinus, IconX } from '@tabler/icons-react'
-import LlamaindexPNG from '@/pages/Store/assets/images/llamaindex.png'
+import OpenfinancePNG from '@/pages/Store/assets/images/openfinance_dark_log.png'
 import LangChainPNG from '@/pages/Store/assets/images/langchain.png'
 
 // const
@@ -73,6 +73,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
 
     // Temporary method to handle Deprecating Vector Store and New ones
     const categorizeVectorStores = (nodes, accordianCategories, isFilter) => {
+        console.log("nodes: ", nodes)
         const obj = { ...nodes }
         const vsNodes = obj['Vector Stores'] ?? []
         const deprecatingNodes = []
@@ -115,7 +116,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
             })
             return passed
         }
-        const nodes = nodesData.filter((nd) => nd.category !== 'Multi Agents')
+        const nodes = nodesData.filter((nd) => nd.category !== 'AGENT')
         const passed = nodes.filter((nd) => {
             const passesQuery = nd.name.toLowerCase().includes(value.toLowerCase())
             const passesCategory = nd.category.toLowerCase().includes(value.toLowerCase())
@@ -140,11 +141,11 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
 
     const groupByTags = (nodes, newTabValue = 0) => {
         const langchainNodes = nodes.filter((nd) => !nd.tags)
-        const llmaindexNodes = nodes.filter((nd) => nd.tags && nd.tags.includes('LlamaIndex'))
+        const openfinanceNodes = nodes.filter((nd) => nd.tags && nd.tags.includes('Openfinance'))
         if (newTabValue === 0) {
-            return langchainNodes
+            return openfinanceNodes
         } else {
-            return llmaindexNodes
+            return langchainNodes
         }
     }
 
@@ -162,8 +163,8 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
             for (const category in result) {
                 // Filter out blacklisted categories
                 if (!blacklistCategoriesForAgentCanvas.includes(category)) {
-                    // Filter out LlamaIndex nodes
-                    const nodes = result[category].filter((nd) => !nd.tags || !nd.tags.includes('LlamaIndex'))
+                    // Filter out Openfinance nodes
+                    const nodes = result[category].filter((nd) => !nd.tags || !nd.tags.includes('Openfinance'))
                     if (!nodes.length) continue
 
                     // Only allow specific models for specific categories
@@ -177,10 +178,12 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
             }
             setNodes(filteredResult)
             categorizeVectorStores(filteredResult, accordianCategories, isFilter)
-            accordianCategories['Multi Agents'] = true
+            accordianCategories['AGENT'] = true
             setCategoryExpanded(accordianCategories)
         } else {
             const taggedNodes = groupByTags(nodes, newTabValue)
+            console.log("taggedNodes: ", taggedNodes)
+            console.log("newTabValue: ", newTabValue)            
             const accordianCategories = {}
             const result = taggedNodes.reduce(function (r, a) {
                 r[a.category] = r[a.category] || []
@@ -191,7 +194,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
 
             const filteredResult = {}
             for (const category in result) {
-                if (category === 'Multi Agents') {
+                if (category === 'AGENT') {
                     continue
                 }
                 filteredResult[category] = result[category]
@@ -244,7 +247,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodesData, dispatch])
-
+    // console.log("nodesData: ", nodesData)
     return (
         <>
             <StyledFab
@@ -332,7 +335,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                 onChange={handleTabChange}
                                                 aria-label='tabs'
                                             >
-                                                {['LangChain', 'LlamaIndex'].map((item, index) => (
+                                                {['Openfinance', 'LangChain'].map((item, index) => (
                                                     <Tab
                                                         icon={
                                                             <div
@@ -347,7 +350,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                                         borderRadius: '50%',
                                                                         objectFit: 'contain'
                                                                     }}
-                                                                    src={index === 0 ? LangChainPNG : LlamaindexPNG}
+                                                                    src={index === 0 ? OpenfinancePNG: LangChainPNG}
                                                                     alt={item}
                                                                 />
                                                             </div>

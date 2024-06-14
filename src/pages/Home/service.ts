@@ -9,7 +9,7 @@ export const uploadFileService = async (formData: FormData) => {
       token: 'token',
     };
     // console.log("获取到的请求data", formData);
-    const response = await fetch('http://121.37.5.77:5003/api/upload', {
+    const response = await fetch('http://129.204.166.171:5003/api/upload', {
       method: 'POST',
       body: JSON.stringify({
         header: header,
@@ -54,7 +54,7 @@ export const test = async () => {
   }
 };
   
-const apiUrl = 'http://121.37.5.77:5002/api/info/';
+const apiUrl = 'http://129.204.166.171:5002/api/info/';
 // get通用请求
 const GETRequest = async (url: string) => {
   try {
@@ -178,7 +178,7 @@ export const getEval = async (factor: string, model: string, inputValue: string)
 };
 
 
-const apiPushUrl = 'http://121.37.5.77:5002/api/';
+const apiPushUrl = 'http://129.204.166.171:5002/api/';
 
 //获取新闻信息
 export const getNews = async () => {
