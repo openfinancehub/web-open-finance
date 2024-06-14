@@ -54,7 +54,7 @@ export default function PublicStrategy() {
             uid: 1,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/strtegylist', {
+        request('http://8.138.96.163:8081/quant/strtegylist', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default function PublicStrategy() {
             uid: uid,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/get_strategy_test_result', {
+        request('http://8.138.96.163:8081/quant/get_strategy_test_result', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ export default function PublicStrategy() {
                 mode: 'both'
             }
         }
-        request('http://139.159.205.40:8808/quant/strategy_test', {
+        request('http://8.138.96.163:8081/quant/strategy_test', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

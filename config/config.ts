@@ -31,7 +31,7 @@ export default defineConfig({
       pathRewrite: { '^/quent-api': '' }
     },
     '/quant': {
-      target: 'http://139.159.205.40:8808/',
+      target: 'http://8.138.96.163:8081/',
       changeOrigin: true,
       pathRewrite: { '^/quant': '/quant' }
     },

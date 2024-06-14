@@ -84,7 +84,7 @@ const Factor = () => {
             days: Day,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/getstock_kline', {
+        request('http://8.138.96.163:8081/quant/getstock_kline', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ const Factor = () => {
             days: Day,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/historyfactor', {
+        request('http://8.138.96.163:8081/quant/historyfactor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const Factor = () => {
             uid:uid,    
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/get_factor_profile_test_result', {
+        request('http://8.138.96.163:8081/quant/get_factor_profile_test_result', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const Factor = () => {
             step,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/factor_profile_test', {
+        request('http://8.138.96.163:8081/quant/factor_profile_test', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

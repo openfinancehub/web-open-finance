@@ -8,7 +8,7 @@ export async function queryCurrent(): Promise<{ data: CurrentUser }> {
 export async function queryFakeList(params: {
   count: number;
 }): Promise<{ data: { list: ListItemDataType[] } }> {
-  return request('http://139.159.205.40:8808/api/fake_list_Detail', {
+  return request('http://8.138.96.163:8081/api/fake_list_Detail', {
     params
   });
 }

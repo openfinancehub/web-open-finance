@@ -14,7 +14,7 @@ export default function left({ onDataChange, onInval}) {
         const data = {
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://139.159.205.40:8808/quant/sotcklist', {
+        request('http://8.138.96.163:8081/quant/sotcklist', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
