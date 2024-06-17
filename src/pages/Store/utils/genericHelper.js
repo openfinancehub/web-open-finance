@@ -572,6 +572,7 @@ export const isValidURL = (url) => {
 }
 
 export const formatDataGridRows = (rows) => {
+    console.log("rows:", rows)
     try {
         const parsedRows = typeof rows === 'string' ? JSON.parse(rows) : rows
         return parsedRows.map((sch, index) => {

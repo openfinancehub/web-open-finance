@@ -19,7 +19,7 @@ import HowToUseFunctionDialog from './HowToUseFunctionDialog'
 import { IconX, IconFileDownload, IconPlus } from '@tabler/icons-react'
 
 // API
-import toolsApi from '@/pages/Store/api/tools'
+import agentsApi from '@/pages/Store/api/agents'
 
 // Hooks
 import useConfirm from '@/pages/Store/hooks/useConfirm'
@@ -31,31 +31,38 @@ import { generateRandomGradient, formatDataGridRows } from '@/pages/Store/utils/
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/pages/Store/store/actions'
 
 const exampleAPIFunc = `/*
-* You can use any libraries imported in Flowise
-* You can use properties specified in Input Schema as variables. Ex: Property = userid, Variable = $userid
-* You can get default flow config: $flow.sessionId, $flow.chatId, $flow.chatflowId, $flow.input
-* You can get custom variables: $vars.<variable-name>
-* Must return a string value at the end of function
+* You can use write your prompt here
 */
 
-const fetch = require('node-fetch');
-const url = 'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true';
-const options = {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-};
-try {
-    const response = await fetch(url, options);
-    const text = await response.text();
-    return text;
-} catch (error) {
-    console.error(error);
-    return '';
+Role: You are a senior Stock Analyst
+Goal: Analyze Input and infer helpfully for investing
+Input:
+{content}
+you must respond in following format
+
+Thought:  
+- what entity is influenced mainly, entity must be in Chinese
+- which level entity belong to, must one of [{types}]
+- what financial indicator is influenced mainly, indicator must be in English
+- what event is happenning to entity, event must be briefly in Chinese
+- what sentiment is event, one of [Positive Negative Neural]
+Result:
+{{
+    "consequence": [
+        {{
+            "entity": "",
+            "event": "",        
+            "level": "",
+            "indicator": "",
+            "sentiment": ""
+        }}
+    ]
+}}
+
+Let's begin! 
 }`
 
-const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, setError }) => {
+const AgentDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, setError }) => {
     const portalElement = document.getElementById('root')
 
     const customization = useSelector((state) => state.customization)
@@ -69,35 +76,35 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
     const enqueueSnackbar = (...args) => dispatch(enqueueSnackbarAction(...args))
     const closeSnackbar = (...args) => dispatch(closeSnackbarAction(...args))
 
-    const getSpecificToolApi = useApi(toolsApi.getSpecificTool)
+    const getSpecificAgentApi = useApi(agentsApi.getSpecificAgent)
 
-    const [toolId, setToolId] = useState('')
-    const [toolName, setToolName] = useState('')
-    const [toolDesc, setToolDesc] = useState('')
-    const [toolIcon, setToolIcon] = useState('')
-    const [toolSchema, setToolSchema] = useState([])
-    const [toolFunc, setToolFunc] = useState('')
-    const [showHowToDialog, setShowHowToDialog] = useState(false)
+    const [agentId, setAgentId] = useState('')
+    const [agentName, setAgentName] = useState('')
+    const [agentDesc, setAgentDesc] = useState('')
+    const [agentIcon, setAgentIcon] = useState('')
+    const [agentSchema, setAgentSchema] = useState([])
+    const [agentPrompt, setAgentPrompt] = useState('')
+    // const [showHowToDialog, setShowHowToDialog] = useState(false)
 
     const deleteItem = useCallback(
         (id) => () => {
             setTimeout(() => {
-                setToolSchema((prevRows) => prevRows.filter((row) => row.id !== id))
+                setAgentSchema((prevRows) => prevRows.filter((row) => row.id !== id))
             })
         },
         []
     )
 
-    const addNewRow = () => {
+    const addNewRow = (stype) => {
         setTimeout(() => {
-            setToolSchema((prevRows) => {
+            setAgentSchema((prevRows) => {
                 let allRows = [...cloneDeep(prevRows)]
                 const lastRowId = allRows.length ? allRows[allRows.length - 1].id + 1 : 1
                 allRows.push({
                     id: lastRowId,
-                    property: '',
+                    type: stype,
+                    name: '',
                     description: '',
-                    type: '',
                     required: false
                 })
                 return allRows
@@ -107,7 +114,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
 
     const onRowUpdate = (newRow) => {
         setTimeout(() => {
-            setToolSchema((prevRows) => {
+            setAgentSchema((prevRows) => {
                 let allRows = [...cloneDeep(prevRows)]
                 const indexToUpdate = allRows.findIndex((row) => row.id === newRow.id)
                 if (indexToUpdate >= 0) {
@@ -120,14 +127,14 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
 
     const columns = useMemo(
         () => [
-            { field: 'property', headerName: 'Property', editable: true, flex: 1 },
             {
-                field: 'type',
-                headerName: 'Type',
+                field: 'name',
+                headerName: 'Name',
                 type: 'singleSelect',
-                valueOptions: ['string', 'number', 'boolean', 'date'],
+                valueOptions: ['search', 'percept', 'analysis', 'date'],
                 editable: true,
-                width: 120
+                flex: 1
+                // width: 120
             },
             { field: 'description', headerName: 'Description', editable: true, flex: 1 },
             { field: 'required', headerName: 'Required', type: 'boolean', editable: true, width: 80 },
@@ -142,7 +149,6 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         ],
         [deleteItem]
     )
-
     useEffect(() => {
         if (show) dispatch({ type: SHOW_CANVAS_DIALOG })
         else dispatch({ type: HIDE_CANVAS_DIALOG })
@@ -150,72 +156,72 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
     }, [show, dispatch])
 
     useEffect(() => {
-        if (getSpecificToolApi.data) {
-            setToolId(getSpecificToolApi.data.id)
-            setToolName(getSpecificToolApi.data.name)
-            setToolDesc(getSpecificToolApi.data.description)
-            setToolSchema(formatDataGridRows(getSpecificToolApi.data.schema))
-            if (getSpecificToolApi.data.func) setToolFunc(getSpecificToolApi.data.func)
-            else setToolFunc('')
+        if (getSpecificAgentApi.data) {
+            setAgentId(getSpecificAgentApi.data.id)
+            setAgentName(getSpecificAgentApi.data.name)
+            setAgentDesc(getSpecificAgentApi.data.description)
+            setAgentSchema(formatDataGridRows(getSpecificAgentApi.data.schema))
+            if (getSpecificAgentApi.data.func) setAgentPrompt(getSpecificAgentApi.data.func)
+            else setAgentPrompt('')
         }
-    }, [getSpecificToolApi.data])
+    }, [getSpecificAgentApi.data])
 
     useEffect(() => {
-        if (getSpecificToolApi.error) {
-            setError(getSpecificToolApi.error)
+        if (getSpecificAgentApi.error) {
+            setError(getSpecificAgentApi.error)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getSpecificToolApi.error])
+    }, [getSpecificAgentApi.error]) 
 
     useEffect(() => {
         if (dialogProps.type === 'EDIT' && dialogProps.data) {
-            // When tool dialog is opened from Tools dashboard
-            setToolId(dialogProps.data.id)
-            setToolName(dialogProps.data.name)
-            setToolDesc(dialogProps.data.description)
-            setToolIcon(dialogProps.data.iconSrc)
-            setToolSchema(formatDataGridRows(dialogProps.data.schema))
-            if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
-            else setToolFunc('')
-        } else if (dialogProps.type === 'EDIT' && dialogProps.toolId) {
-            // When tool dialog is opened from CustomTool node in canvas
-            getSpecificToolApi.request(dialogProps.toolId)
+            // When tool dialog is opened from Agents dashboard
+            setAgentId(dialogProps.data.id)
+            setAgentName(dialogProps.data.name)
+            setAgentDesc(dialogProps.data.description)
+            setAgentIcon(dialogProps.data.iconSrc)
+            setAgentSchema(formatDataGridRows(dialogProps.data.schema))
+            if (dialogProps.data.func) setAgentPrompt(dialogProps.data.func)
+            else setAgentPrompt('')
+        } else if (dialogProps.type === 'EDIT' && dialogProps.agentId) {
+            // When tool dialog is opened from CustomAgent node in canvas
+            getSpecificAgentApi.request(dialogProps.agentId)
         } else if (dialogProps.type === 'IMPORT' && dialogProps.data) {
             // When tool dialog is to import existing tool
-            setToolName(dialogProps.data.name)
-            setToolDesc(dialogProps.data.description)
-            setToolIcon(dialogProps.data.iconSrc)
-            setToolSchema(formatDataGridRows(dialogProps.data.schema))
-            if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
-            else setToolFunc('')
+            setAgentName(dialogProps.data.name)
+            setAgentDesc(dialogProps.data.description)
+            setAgentIcon(dialogProps.data.iconSrc)
+            setAgentSchema(formatDataGridRows(dialogProps.data.schema))
+            if (dialogProps.data.func) setAgentPrompt(dialogProps.data.func)
+            else setAgentPrompt('')
         } else if (dialogProps.type === 'TEMPLATE' && dialogProps.data) {
             // When tool dialog is a template
-            setToolName(dialogProps.data.name)
-            setToolDesc(dialogProps.data.description)
-            setToolIcon(dialogProps.data.iconSrc)
-            setToolSchema(formatDataGridRows(dialogProps.data.schema))
-            if (dialogProps.data.func) setToolFunc(dialogProps.data.func)
-            else setToolFunc('')
+            setAgentName(dialogProps.data.name)
+            setAgentDesc(dialogProps.data.description)
+            setAgentIcon(dialogProps.data.iconSrc)
+            setAgentSchema(formatDataGridRows(dialogProps.data.schema))
+            if (dialogProps.data.func) setAgentPrompt(dialogProps.data.func)
+            else setAgentPrompt('')
         } else if (dialogProps.type === 'ADD') {
             // When tool dialog is to add a new tool
-            setToolId('')
-            setToolName('')
-            setToolDesc('')
-            setToolIcon('')
-            setToolSchema([])
-            setToolFunc('')
+            setAgentId('')
+            setAgentName('')
+            setAgentDesc('')
+            setAgentIcon('')
+            setAgentSchema([])
+            setAgentPrompt('')
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dialogProps])
 
-    const useToolTemplate = () => {
+    const useAgentTemplate = () => {
         onUseTemplate(dialogProps.data)
     }
 
-    const exportTool = async () => {
+    const exportAgent = async () => {
         try {
-            const toolResp = await toolsApi.getSpecificTool(toolId)
+            const toolResp = await agentsApi.getSpecificAgent(agentId)
             if (toolResp.data) {
                 const toolData = toolResp.data
                 delete toolData.id
@@ -224,7 +230,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 let dataStr = JSON.stringify(toolData, null, 2)
                 let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
 
-                let exportFileDefaultName = `${toolName}-CustomTool.json`
+                let exportFileDefaultName = `${agentName}-CustomAgent.json`
 
                 let linkElement = document.createElement('a')
                 linkElement.setAttribute('href', dataUri)
@@ -233,7 +239,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             }
         } catch (error) {
             enqueueSnackbar({
-                message: `Failed to export Tool: ${
+                message: `Failed to export Agent: ${
                     typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                 }`,
                 options: {
@@ -251,20 +257,20 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         }
     }
 
-    const addNewTool = async () => {
+    const addNewAgent = async () => {
         try {
             const obj = {
-                name: toolName,
-                description: toolDesc,
+                name: agentName,
+                description: agentDesc,
                 color: generateRandomGradient(),
-                schema: JSON.stringify(toolSchema),
-                func: toolFunc,
-                iconSrc: toolIcon
+                schema: JSON.stringify(agentSchema),
+                func: agentPrompt,
+                iconSrc: agentIcon
             }
-            const createResp = await toolsApi.createNewTool(obj)
+            const createResp = await agentsApi.createNewAgent(obj)
             if (createResp.data) {
                 enqueueSnackbar({
-                    message: 'New Tool added',
+                    message: 'New Agent added',
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'success',
@@ -279,7 +285,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             }
         } catch (error) {
             enqueueSnackbar({
-                message: `Failed to add new Tool: ${
+                message: `Failed to add new Agent: ${
                     typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                 }`,
                 options: {
@@ -297,18 +303,18 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         }
     }
 
-    const saveTool = async () => {
+    const saveAgent = async () => {
         try {
-            const saveResp = await toolsApi.updateTool(toolId, {
-                name: toolName,
-                description: toolDesc,
-                schema: JSON.stringify(toolSchema),
-                func: toolFunc,
-                iconSrc: toolIcon
+            const saveResp = await agentsApi.updateAgent(agentId, {
+                name: agentName,
+                description: agentDesc,
+                schema: JSON.stringify(agentSchema),
+                func: agentPrompt,
+                iconSrc: agentIcon
             })
             if (saveResp.data) {
                 enqueueSnackbar({
-                    message: 'Tool saved',
+                    message: 'Agent saved',
                     options: {
                         key: new Date().getTime() + Math.random(),
                         variant: 'success',
@@ -323,7 +329,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             }
         } catch (error) {
             enqueueSnackbar({
-                message: `Failed to save Tool: ${
+                message: `Failed to save Agent: ${
                     typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                 }`,
                 options: {
@@ -341,10 +347,10 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         }
     }
 
-    const deleteTool = async () => {
+    const deleteAgent = async () => {
         const confirmPayload = {
-            title: `Delete Tool`,
-            description: `Delete tool ${toolName}?`,
+            title: `Delete Agent`,
+            description: `Delete agent ${agentName}?`,
             confirmButtonName: 'Delete',
             cancelButtonName: 'Cancel'
         }
@@ -352,10 +358,10 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
 
         if (isConfirmed) {
             try {
-                const delResp = await toolsApi.deleteTool(toolId)
+                const delResp = await agentsApi.deleteAgent(agentId)
                 if (delResp.data) {
                     enqueueSnackbar({
-                        message: 'Tool deleted',
+                        message: 'Agent deleted',
                         options: {
                             key: new Date().getTime() + Math.random(),
                             variant: 'success',
@@ -370,7 +376,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 }
             } catch (error) {
                 enqueueSnackbar({
-                    message: `Failed to delete Tool: ${
+                    message: `Failed to delete Agent: ${
                         typeof error.response.data === 'object' ? error.response.data.message : error.response.data
                     }`,
                     options: {
@@ -389,7 +395,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
         }
     }
     console.log("enter dialog show: ", show)
-    
+    console.log("agentSchema: ", agentSchema)
     const component = show ? (
         <Dialog
             fullWidth
@@ -403,7 +409,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     {dialogProps.title}
                     {dialogProps.type === 'EDIT' && (
-                        <Button variant='outlined' onClick={() => exportTool()} startIcon={<IconFileDownload />}>
+                        <Button variant='outlined' onClick={() => exportAgent()} startIcon={<IconFileDownload />}>
                             Export
                         </Button>
                     )}
@@ -414,26 +420,26 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     <Box>
                         <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
                             <Typography variant='overline'>
-                                Tool Name
+                                Agent Name
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
-                            <TooltipWithParser title={'Tool name must be small capital letter with underscore. Ex: my_tool'} />
+                            <TooltipWithParser title={'Agent name must be small capital letter with underscore. Ex: my_tool'} />
                         </Stack>
                         <OutlinedInput
-                            id='toolName'
+                            id='agentName'
                             type='string'
                             fullWidth
                             disabled={dialogProps.type === 'TEMPLATE'}
-                            placeholder='My New Tool'
-                            value={toolName}
-                            name='toolName'
-                            onChange={(e) => setToolName(e.target.value)}
+                            placeholder='My New Agent'
+                            value={agentName}
+                            name='agentName'
+                            onChange={(e) => setAgentName(e.target.value)}
                         />
                     </Box>
                     <Box>
                         <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
                             <Typography variant='overline'>
-                                Tool description
+                                Agent description
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
                             <TooltipWithParser
@@ -441,52 +447,66 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                             />
                         </Stack>
                         <OutlinedInput
-                            id='toolDesc'
+                            id='agentDesc'
                             type='string'
                             fullWidth
                             disabled={dialogProps.type === 'TEMPLATE'}
                             placeholder='Description of what the tool does. This is for ChatGPT to determine when to use this tool.'
                             multiline={true}
                             rows={3}
-                            value={toolDesc}
-                            name='toolDesc'
-                            onChange={(e) => setToolDesc(e.target.value)}
+                            value={agentDesc}
+                            name='agentDesc'
+                            onChange={(e) => setAgentDesc(e.target.value)}
                         />
                     </Box>
                     <Box>
                         <Stack sx={{ position: 'relative' }} direction='row'>
-                            <Typography variant='overline'>Tool Icon Source</Typography>
+                            <Typography variant='overline'>Agent Icon Source</Typography>
                         </Stack>
                         <OutlinedInput
-                            id='toolIcon'
+                            id='agentIcon'
                             type='string'
                             fullWidth
                             disabled={dialogProps.type === 'TEMPLATE'}
                             placeholder='https://raw.githubusercontent.com/gilbarbara/logos/main/logos/airtable.svg'
-                            value={toolIcon}
-                            name='toolIcon'
-                            onChange={(e) => setToolIcon(e.target.value)}
+                            value={agentIcon}
+                            name='agentIcon'
+                            onChange={(e) => setAgentIcon(e.target.value)}
                         />
                     </Box>
                     <Box>
                         <Stack sx={{ position: 'relative', justifyContent: 'space-between' }} direction='row'>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                                <Typography variant='overline'>Input Schema</Typography>
+                                <Typography variant='overline'> Agents </Typography>
                                 <TooltipWithParser title={'What is the input format in JSON?'} />
                             </Stack>
                             {dialogProps.type !== 'TEMPLATE' && (
-                                <Button variant='outlined' onClick={addNewRow} startIcon={<IconPlus />}>
+                                <Button variant='outlined' onClick={() => addNewRow("tool")} startIcon={<IconPlus />}>
                                     Add Item
                                 </Button>
                             )}
                         </Stack>
-                        <Grid columns={columns} rows={toolSchema} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
+                        <Grid columns={columns} rows={agentSchema.filter((a) => a.type === 'tool')} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
+                    </Box>
+                    <Box>
+                        <Stack sx={{ position: 'relative', justifyContent: 'space-between' }} direction='row'>
+                            <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
+                                <Typography variant='overline'> Skills </Typography>
+                                <TooltipWithParser title={'What is the input format in JSON?'} />
+                            </Stack>
+                            {dialogProps.type !== 'TEMPLATE' && (
+                                <Button variant='outlined' onClick={() => addNewRow("skill")} startIcon={<IconPlus />}>
+                                    Add Item
+                                </Button>
+                            )}
+                        </Stack>
+                        <Grid columns={columns} rows={agentSchema.filter((a) => a.type === 'skill')} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
                     </Box>
                     <Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                                <Typography variant='overline'>Javascript Function</Typography>
-                                <TooltipWithParser title='Function to execute when tool is being used. You can use properties specified in Input Schema as variables. For example, if the property is <code>userid</code>, you can use as <code>$userid</code>. Return value must be a string. You can also override the code from API by following this <a target="_blank" href="https://docs.flowiseai.com/tools/custom-tool#override-function-from-api">guide</a>' />
+                                <Typography variant='overline'>Agent Prompt</Typography>
+                                <TooltipWithParser title='Write prompts for agent role' />
                             </Stack>
                             <Stack direction='row'>
                                 <Button
@@ -498,52 +518,51 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                                     How to use Function
                                 </Button>
                                 {dialogProps.type !== 'TEMPLATE' && (
-                                    <Button style={{ marginBottom: 10 }} variant='outlined' onClick={() => setToolFunc(exampleAPIFunc)}>
-                                        See Example
+                                    <Button style={{ marginBottom: 10 }} variant='outlined' onClick={() => setAgentPrompt(exampleAPIFunc)}>
+                                        Default Prompt
                                     </Button>
                                 )}
                             </Stack>
                         </Box>
                         <CodeEditor
                             disabled={dialogProps.type === 'TEMPLATE'}
-                            value={toolFunc}
+                            value={agentPrompt}
                             theme={customization.isDarkMode ? 'dark' : 'light'}
                             lang={'js'}
-                            onValueChange={(code) => setToolFunc(code)}
+                            onValueChange={(code) => setAgentPrompt(code)}
                         />
                     </Box>
                 </Box>
             </DialogContent>
             <DialogActions sx={{ p: 3 }}>
                 {dialogProps.type === 'EDIT' && (
-                    <StyledButton color='error' variant='contained' onClick={() => deleteTool()}>
+                    <StyledButton color='error' variant='contained' onClick={() => deleteAgent()}>
                         Delete
                     </StyledButton>
                 )}
                 {dialogProps.type === 'TEMPLATE' && (
-                    <StyledButton color='secondary' variant='contained' onClick={useToolTemplate}>
+                    <StyledButton color='secondary' variant='contained' onClick={useAgentTemplate}>
                         Use Template
                     </StyledButton>
                 )}
                 {dialogProps.type !== 'TEMPLATE' && (
                     <StyledButton
-                        disabled={!(toolName && toolDesc)}
+                        disabled={!(agentName && agentDesc)}
                         variant='contained'
-                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewTool() : saveTool())}
+                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewAgent() : saveAgent())}
                     >
                         {dialogProps.confirmButtonName}
                     </StyledButton>
                 )}
             </DialogActions>
             <ConfirmDialog />
-            <HowToUseFunctionDialog show={showHowToDialog} onCancel={() => setShowHowToDialog(false)} />
         </Dialog>
     ) : null
-    console.log("portalElement", portalElement)
+    console.log("component", component)
     return createPortal(component, portalElement)
 }
 
-ToolDialog.propTypes = {
+AgentDialog.propTypes = {
     show: PropTypes.bool,
     dialogProps: PropTypes.object,
     onUseTemplate: PropTypes.func,
@@ -552,4 +571,4 @@ ToolDialog.propTypes = {
     setError: PropTypes.func
 }
 
-export default ToolDialog
+export default AgentDialog

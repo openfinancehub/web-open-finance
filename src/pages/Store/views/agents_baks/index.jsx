@@ -28,7 +28,7 @@ import WorkflowEmptySVG from '@/pages/Store/assets/images/workflow_empty.svg'
 import ToolDialog from '@/pages/Store/views/tools/ToolDialog'
 
 // API
-import marketplacesApi from '@/pages/Store/api/marketplaces'
+import agentsApi from '@/pages/Store/api/agents'
 
 // Hooks
 import useApi from '@/pages/Store/hooks/useApi'
@@ -64,7 +64,7 @@ TabPanel.propTypes = {
 
 const badges = ['POPULAR', 'NEW']
 const types = ['Chatflow', 'Agentflow', 'Tool']
-const framework = ['Openfinance', 'Langchain']
+const framework = ['Langchain', 'Openfinance']
 const MenuProps = {
     PaperProps: {
         style: {
@@ -77,9 +77,9 @@ const SelectStyles = {
         borderRadius: 2
     }
 }
-// ==============================|| Marketplace ||============================== //
+// ==============================|| Agent ||============================== //
 
-const Marketplace = () => {
+const Agent = () => {
     const navigate = useNavigate()
 
     const theme = useTheme()
@@ -91,7 +91,7 @@ const Marketplace = () => {
     const [showToolDialog, setShowToolDialog] = useState(false)
     const [toolDialogProps, setToolDialogProps] = useState({})
 
-    const getAllTemplatesMarketplacesApi = useApi(marketplacesApi.getAllTemplatesFromMarketplaces)
+    const getAllAgentsApi = useApi(agentsApi.getAllAgents)
 
     const [view, setView] = React.useState(localStorage.getItem('mpDisplayStyle') || 'card')
     const [search, setSearch] = useState('')
@@ -169,34 +169,24 @@ const Marketplace = () => {
         setShowToolDialog(true)
     }
 
-    const goToTool = (selectedTool) => {
-        const dialogProp = {
-            title: selectedTool.templateName,
-            type: 'TEMPLATE',
-            data: selectedTool
-        }
-        setToolDialogProps(dialogProp)
-        setShowToolDialog(true)
-    }
-
     const goToCanvas = (selectedChatflow) => {
-        navigate(`/store/marketplaces/${selectedChatflow.id}`, { state: selectedChatflow })
+        navigate(`/store/agents/${selectedChatflow.id}`, { state: selectedChatflow })
     }
 
     useEffect(() => {
-        getAllTemplatesMarketplacesApi.request()
+        getAllAgentsApi.request()
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
-        setLoading(getAllTemplatesMarketplacesApi.loading)
-    }, [getAllTemplatesMarketplacesApi.loading])
+        setLoading(getAllAgentsApi.loading)
+    }, [getAllAgentsApi.loading])
 
     useEffect(() => {
-        if (getAllTemplatesMarketplacesApi.data) {
+        if (getAllAgentsApi.data) {
             try {
-                const flows = getAllTemplatesMarketplacesApi.data
+                const flows = getAllAgentsApi.data
                 console.log(flows)
                 const images = {}
                 for (let i = 0; i < flows.length; i += 1) {
@@ -218,13 +208,13 @@ const Marketplace = () => {
                 console.error(e)
             }
         }
-    }, [getAllTemplatesMarketplacesApi.data])
+    }, [getAllAgentsApi.data])
 
     useEffect(() => {
-        if (getAllTemplatesMarketplacesApi.error) {
-            setError(getAllTemplatesMarketplacesApi.error)
+        if (getAllAgentsApi.error) {
+            setError(getAllAgentsApi.error)
         }
-    }, [getAllTemplatesMarketplacesApi.error])
+    }, [getAllAgentsApi.error])
 
     return (
         <>
@@ -349,7 +339,7 @@ const Marketplace = () => {
                             onSearchChange={onSearchChange}
                             search={true}
                             searchPlaceholder='Search Name/Description/Node'
-                            title='MarketPlace'
+                            title='Agents'
                         >
                             <ToggleButtonGroup
                                 sx={{ borderRadius: 2, height: '100%' }}
@@ -394,7 +384,7 @@ const Marketplace = () => {
                                     </Box>
                                 ) : (
                                     <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                        {getAllTemplatesMarketplacesApi.data
+                                        {getAllAgentsApi.data
                                             ?.filter(filterByBadge)
                                             .filter(filterByType)
                                             .filter(filterFlows)
@@ -413,23 +403,17 @@ const Marketplace = () => {
                                                             badgeContent={data.badge}
                                                             color={data.badge === 'POPULAR' ? 'primary' : 'error'}
                                                         >
-                                                            {(data.type === 'Chatflow' || data.type === 'Agentflow') && (
+                                                            {(
                                                                 <ItemCard
                                                                     onClick={() => goToCanvas(data)}
                                                                     data={data}
                                                                     images={images[data.id]}
                                                                 />
                                                             )}
-                                                            {data.type === 'Tool' && (
-                                                                <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                            )}
                                                         </Badge>
                                                     )}
-                                                    {!data.badge && (data.type === 'Chatflow' || data.type === 'Agentflow') && (
+                                                    {!data.badge && (
                                                         <ItemCard onClick={() => goToCanvas(data)} data={data} images={images[data.id]} />
-                                                    )}
-                                                    {!data.badge && data.type === 'Tool' && (
-                                                        <ItemCard data={data} onClick={() => goToTool(data)} />
                                                     )}
                                                 </Box>
                                             ))}
@@ -438,7 +422,7 @@ const Marketplace = () => {
                             </>
                         ) : (
                             <MarketplaceTable
-                                data={getAllTemplatesMarketplacesApi.data}
+                                data={getAllAgentsApi.data}
                                 filterFunction={filterFlows}
                                 filterByType={filterByType}
                                 filterByBadge={filterByBadge}
@@ -450,7 +434,7 @@ const Marketplace = () => {
                             />
                         )}
 
-                        {!isLoading && (!getAllTemplatesMarketplacesApi.data || getAllTemplatesMarketplacesApi.data.length === 0) && (
+                        {!isLoading && (!getAllAgentsApi.data || getAllAgentsApi.data.length === 0) && (
                             <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
                                 <Box sx={{ p: 2, height: 'auto' }}>
                                     <img
@@ -459,7 +443,7 @@ const Marketplace = () => {
                                         alt='WorkflowEmptySVG'
                                     />
                                 </Box>
-                                <div>No Marketplace Yet</div>
+                                <div>No Agent Yet</div>
                             </Stack>
                         )}
                     </Stack>
@@ -476,4 +460,4 @@ const Marketplace = () => {
     )
 }
 
-export default Marketplace
+export default Agent

@@ -1,31 +1,15 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import { useEffect, useState, useRef } from 'react'
 
 // material-ui
-import {
-    Box,
-    Stack,
-    Badge,
-    ToggleButton,
-    InputLabel,
-    FormControl,
-    Select,
-    OutlinedInput,
-    Checkbox,
-    ListItemText,
-    Skeleton
-} from '@mui/material'
-import { useTheme } from '@mui/material/styles'
-import { IconLayoutGrid, IconList } from '@tabler/icons-react'
+import { Box, Stack, Button, ButtonGroup, Skeleton } from '@mui/material'
 
 // project imports
 import MainCard from '@/pages/Store/ui-component/cards/MainCard'
 import ItemCard from '@/pages/Store/ui-component/cards/ItemCard'
 import { gridSpacing } from '@/pages/Store/store/constant'
-import WorkflowEmptySVG from '@/pages/Store/assets/images/workflow_empty.svg'
-import ToolDialog from '@/pages/Store/views/tools/ToolDialog'
+import AgentEmptySVG from '@/pages/Store/assets/images/tools_empty.svg'
+import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import AgentDialog from './AgentsDialog'
 
 // API
 import agentsApi from '@/pages/Store/api/agents'
@@ -33,144 +17,81 @@ import agentsApi from '@/pages/Store/api/agents'
 // Hooks
 import useApi from '@/pages/Store/hooks/useApi'
 
-// const
-import { baseURL } from '@/pages/Store/store/constant'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { MarketplaceTable } from '@/pages/Store/ui-component/table/MarketplaceTable'
-import MenuItem from '@mui/material/MenuItem'
+// icons
+import { IconPlus, IconFileUpload } from '@tabler/icons-react'
 import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props
-    return (
-        <div
-            role='tabpanel'
-            hidden={value !== index}
-            id={`attachment-tabpanel-${index}`}
-            aria-labelledby={`attachment-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box sx={{ p: 1 }}>{children}</Box>}
-        </div>
-    )
-}
+// ==============================|| CHATFLOWS ||============================== //
 
-TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired
-}
-
-const badges = ['POPULAR', 'NEW']
-const types = ['Chatflow', 'Agentflow', 'Tool']
-const framework = ['Langchain', 'Openfinance']
-const MenuProps = {
-    PaperProps: {
-        style: {
-            width: 160
-        }
-    }
-}
-const SelectStyles = {
-    '& .MuiOutlinedInput-notchedOutline': {
-        borderRadius: 2
-    }
-}
-// ==============================|| Agent ||============================== //
-
-const Agent = () => {
-    const navigate = useNavigate()
-
-    const theme = useTheme()
+const Agents = () => {
+    const getAllAgentsApi = useApi(agentsApi.getAllAgents)
 
     const [isLoading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [images, setImages] = useState({})
+    const [showDialog, setShowDialog] = useState(false)
+    const [dialogProps, setDialogProps] = useState({})
 
-    const [showToolDialog, setShowToolDialog] = useState(false)
-    const [toolDialogProps, setToolDialogProps] = useState({})
+    const inputRef = useRef(null)
 
-    const getAllAgentsApi = useApi(agentsApi.getAllAgents)
-
-    const [view, setView] = React.useState(localStorage.getItem('mpDisplayStyle') || 'card')
-    const [search, setSearch] = useState('')
-
-    const [badgeFilter, setBadgeFilter] = useState([])
-    const [typeFilter, setTypeFilter] = useState([])
-    const [frameworkFilter, setFrameworkFilter] = useState([])
-    const handleBadgeFilterChange = (event) => {
-        const {
-            target: { value }
-        } = event
-        setBadgeFilter(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        )
-    }
-    const handleTypeFilterChange = (event) => {
-        const {
-            target: { value }
-        } = event
-        setTypeFilter(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        )
-    }
-    const handleFrameworkFilterChange = (event) => {
-        const {
-            target: { value }
-        } = event
-        setFrameworkFilter(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value
-        )
-    }
-
-    const handleViewChange = (event, nextView) => {
-        if (nextView === null) return
-        localStorage.setItem('mpDisplayStyle', nextView)
-        setView(nextView)
-    }
-
-    const onSearchChange = (event) => {
-        setSearch(event.target.value)
-    }
-
-    function filterFlows(data) {
-        return (
-            data.categories?.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            data.templateName.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            (data.description && data.description.toLowerCase().indexOf(search.toLowerCase()) > -1)
-        )
-    }
-
-    function filterByBadge(data) {
-        return badgeFilter.length > 0 ? badgeFilter.includes(data.badge) : true
-    }
-
-    function filterByType(data) {
-        return typeFilter.length > 0 ? typeFilter.includes(data.type) : true
-    }
-
-    function filterByFramework(data) {
-        return frameworkFilter.length > 0 ? frameworkFilter.includes(data.framework) : true
-    }
-
-    const onUseTemplate = (selectedTool) => {
-        const dialogProp = {
-            title: 'Add New Tool',
-            type: 'IMPORT',
-            cancelButtonName: 'Cancel',
-            confirmButtonName: 'Add',
-            data: selectedTool
+    const onUploadFile = (file) => {
+        try {
+            const dialogProp = {
+                title: 'Add New Agent',
+                type: 'IMPORT',
+                cancelButtonName: 'Cancel',
+                confirmButtonName: 'Save',
+                data: JSON.parse(file)
+            }
+            setDialogProps(dialogProp)
+            setShowDialog(true)
+        } catch (e) {
+            console.error(e)
         }
-        setToolDialogProps(dialogProp)
-        setShowToolDialog(true)
     }
 
-    const goToCanvas = (selectedChatflow) => {
-        navigate(`/store/agents/${selectedChatflow.id}`, { state: selectedChatflow })
+    const handleFileUpload = (e) => {
+        if (!e.target.files) return
+
+        const file = e.target.files[0]
+
+        const reader = new FileReader()
+        reader.onload = (evt) => {
+            if (!evt?.target?.result) {
+                return
+            }
+            const { result } = evt.target
+            onUploadFile(result)
+        }
+        reader.readAsText(file)
+    }
+
+    const addNew = () => {
+        const dialogProp = {
+            title: 'Add New Agent',
+            type: 'ADD',
+            cancelButtonName: 'Cancel',
+            confirmButtonName: 'Add'
+        }
+        setDialogProps(dialogProp)
+        setShowDialog(true)
+    }
+
+    const edit = (selectedAgent) => {
+        const dialogProp = {
+            title: 'Edit Agent',
+            type: 'EDIT',
+            cancelButtonName: 'Cancel',
+            confirmButtonName: 'Save',
+            data: selectedAgent
+        }
+        setDialogProps(dialogProp)
+        setShowDialog(true)
+    }
+
+    const onConfirm = () => {
+        setShowDialog(false)
+        getAllAgentsApi.request()
     }
 
     useEffect(() => {
@@ -184,38 +105,12 @@ const Agent = () => {
     }, [getAllAgentsApi.loading])
 
     useEffect(() => {
-        if (getAllAgentsApi.data) {
-            try {
-                const flows = getAllAgentsApi.data
-                console.log(flows)
-                const images = {}
-                for (let i = 0; i < flows.length; i += 1) {
-                    if (flows[i].flowData) {
-                        const flowDataStr = flows[i].flowData
-                        const flowData = JSON.parse(flowDataStr)
-                        const nodes = flowData.nodes || []
-                        images[flows[i].id] = []
-                        for (let j = 0; j < nodes.length; j += 1) {
-                            const imageSrc = `${baseURL}/api/v1/node-icon/${nodes[j].data.name}`
-                            if (!images[flows[i].id].includes(imageSrc)) {
-                                images[flows[i].id].push(imageSrc)
-                            }
-                        }
-                    }
-                }
-                setImages(images)
-            } catch (e) {
-                console.error(e)
-            }
-        }
-    }, [getAllAgentsApi.data])
-
-    useEffect(() => {
         if (getAllAgentsApi.error) {
             setError(getAllAgentsApi.error)
         }
     }, [getAllAgentsApi.error])
 
+    console.log("Agents showDialog: ", showDialog)
     return (
         <>
             <MainCard>
@@ -223,241 +118,74 @@ const Agent = () => {
                     <ErrorBoundary error={error} />
                 ) : (
                     <Stack flexDirection='column' sx={{ gap: 3 }}>
-                        <ViewHeader
-                            filters={
-                                <>
-                                    <FormControl
-                                        sx={{
-                                            borderRadius: 2,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'end',
-                                            minWidth: 120
-                                        }}
-                                    >
-                                        <InputLabel size='small' id='filter-badge-label'>
-                                            Tag
-                                        </InputLabel>
-                                        <Select
-                                            labelId='filter-badge-label'
-                                            id='filter-badge-checkbox'
-                                            size='small'
-                                            multiple
-                                            value={badgeFilter}
-                                            onChange={handleBadgeFilterChange}
-                                            input={<OutlinedInput label='Badge' />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            MenuProps={MenuProps}
-                                            sx={SelectStyles}
-                                        >
-                                            {badges.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
-                                                >
-                                                    <Checkbox checked={badgeFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl
-                                        sx={{
-                                            borderRadius: 2,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'end',
-                                            minWidth: 120
-                                        }}
-                                    >
-                                        <InputLabel size='small' id='type-badge-label'>
-                                            Type
-                                        </InputLabel>
-                                        <Select
-                                            size='small'
-                                            labelId='type-badge-label'
-                                            id='type-badge-checkbox'
-                                            multiple
-                                            value={typeFilter}
-                                            onChange={handleTypeFilterChange}
-                                            input={<OutlinedInput label='Badge' />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            MenuProps={MenuProps}
-                                            sx={SelectStyles}
-                                        >
-                                            {types.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
-                                                >
-                                                    <Checkbox checked={typeFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl
-                                        sx={{
-                                            borderRadius: 2,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'end',
-                                            minWidth: 120
-                                        }}
-                                    >
-                                        <InputLabel size='small' id='type-fw-label'>
-                                            Framework
-                                        </InputLabel>
-                                        <Select
-                                            size='small'
-                                            labelId='type-fw-label'
-                                            id='type-fw-checkbox'
-                                            multiple
-                                            value={frameworkFilter}
-                                            onChange={handleFrameworkFilterChange}
-                                            input={<OutlinedInput label='Badge' />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            MenuProps={MenuProps}
-                                            sx={SelectStyles}
-                                        >
-                                            {framework.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1 }}
-                                                >
-                                                    <Checkbox checked={frameworkFilter.indexOf(name) > -1} sx={{ p: 0 }} />
-                                                    <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                    </FormControl>
-                                </>
-                            }
-                            onSearchChange={onSearchChange}
-                            search={true}
-                            searchPlaceholder='Search Name/Description/Node'
-                            title='Agents'
-                        >
-                            <ToggleButtonGroup
-                                sx={{ borderRadius: 2, height: '100%' }}
-                                value={view}
-                                color='primary'
-                                exclusive
-                                onChange={handleViewChange}
-                            >
-                                <ToggleButton
-                                    sx={{
-                                        borderColor: theme.palette.grey[900] + 25,
-                                        borderRadius: 2,
-                                        color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                                    }}
-                                    variant='contained'
-                                    value='card'
-                                    title='Card View'
+                        <ViewHeader title='Agents'>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={() => inputRef.current.click()}
+                                    startIcon={<IconFileUpload />}
+                                    sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    <IconLayoutGrid />
-                                </ToggleButton>
-                                <ToggleButton
-                                    sx={{
-                                        borderColor: theme.palette.grey[900] + 25,
-                                        borderRadius: 2,
-                                        color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                                    }}
+                                    Load
+                                </Button>
+                                <input
+                                    style={{ display: 'none' }}
+                                    ref={inputRef}
+                                    type='file'
+                                    hidden
+                                    accept='.json'
+                                    onChange={(e) => handleFileUpload(e)}
+                                />
+                            </Box>
+                            <ButtonGroup disableElevation aria-label='outlined primary button group'>
+                                <StyledButton
                                     variant='contained'
-                                    value='list'
-                                    title='List View'
+                                    onClick={addNew}
+                                    startIcon={<IconPlus />}
+                                    sx={{ borderRadius: 2, height: 40 }}
                                 >
-                                    <IconList />
-                                </ToggleButton>
-                            </ToggleButtonGroup>
+                                    Create
+                                </StyledButton>
+                            </ButtonGroup>
                         </ViewHeader>
-                        {!view || view === 'card' ? (
-                            <>
-                                {isLoading ? (
-                                    <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                        <Skeleton variant='rounded' height={160} />
-                                        <Skeleton variant='rounded' height={160} />
-                                        <Skeleton variant='rounded' height={160} />
-                                    </Box>
-                                ) : (
-                                    <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                        {getAllAgentsApi.data
-                                            ?.filter(filterByBadge)
-                                            .filter(filterByType)
-                                            .filter(filterFlows)
-                                            .filter(filterByFramework)
-                                            .map((data, index) => (
-                                                <Box key={index}>
-                                                    {data.badge && (
-                                                        <Badge
-                                                            sx={{
-                                                                width: '100%',
-                                                                height: '100%',
-                                                                '& .MuiBadge-badge': {
-                                                                    right: 20
-                                                                }
-                                                            }}
-                                                            badgeContent={data.badge}
-                                                            color={data.badge === 'POPULAR' ? 'primary' : 'error'}
-                                                        >
-                                                            {(
-                                                                <ItemCard
-                                                                    onClick={() => goToCanvas(data)}
-                                                                    data={data}
-                                                                    images={images[data.id]}
-                                                                />
-                                                            )}
-                                                        </Badge>
-                                                    )}
-                                                    {!data.badge && (
-                                                        <ItemCard onClick={() => goToCanvas(data)} data={data} images={images[data.id]} />
-                                                    )}
-                                                </Box>
-                                            ))}
-                                    </Box>
-                                )}
-                            </>
+                        {isLoading ? (
+                            <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
+                                <Skeleton variant='rounded' height={160} />
+                                <Skeleton variant='rounded' height={160} />
+                                <Skeleton variant='rounded' height={160} />
+                            </Box>
                         ) : (
-                            <MarketplaceTable
-                                data={getAllAgentsApi.data}
-                                filterFunction={filterFlows}
-                                filterByType={filterByType}
-                                filterByBadge={filterByBadge}
-                                filterByFramework={filterByFramework}
-                                goToTool={goToTool}
-                                goToCanvas={goToCanvas}
-                                isLoading={isLoading}
-                                setError={setError}
-                            />
+                            <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
+                                {getAllAgentsApi.data &&
+                                    getAllAgentsApi.data.map((data, index) => (
+                                        <ItemCard data={data} key={index} onClick={() => edit(data)} />
+                                    ))}
+                            </Box>
                         )}
-
                         {!isLoading && (!getAllAgentsApi.data || getAllAgentsApi.data.length === 0) && (
                             <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
                                 <Box sx={{ p: 2, height: 'auto' }}>
                                     <img
-                                        style={{ objectFit: 'cover', height: '16vh', width: 'auto' }}
-                                        src={WorkflowEmptySVG}
-                                        alt='WorkflowEmptySVG'
+                                        style={{ objectFit: 'cover', height: '20vh', width: 'auto' }}
+                                        src={AgentEmptySVG}
+                                        alt='AgentEmptySVG'
                                     />
                                 </Box>
-                                <div>No Agent Yet</div>
+                                <div>No Agents Created Yet</div>
                             </Stack>
                         )}
                     </Stack>
                 )}
             </MainCard>
-            <ToolDialog
-                show={showToolDialog}
-                dialogProps={toolDialogProps}
-                onCancel={() => setShowToolDialog(false)}
-                onConfirm={() => setShowToolDialog(false)}
-                onUseTemplate={(tool) => onUseTemplate(tool)}
-            ></ToolDialog>
+            <AgentDialog
+                show={showDialog}
+                dialogProps={dialogProps}
+                onCancel={() => setShowDialog(false)}
+                onConfirm={onConfirm}
+                setError={setError}
+            ></AgentDialog>
         </>
     )
 }
 
-export default Agent
+export default Agents

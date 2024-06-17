@@ -110,6 +110,8 @@ const Tools = () => {
         }
     }, [getAllToolsApi.error])
 
+    console.error("Agents showDialog: ", showDialog)
+
     return (
         <>
             <MainCard>

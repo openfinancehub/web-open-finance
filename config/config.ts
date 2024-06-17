@@ -41,7 +41,7 @@ export default defineConfig({
       pathRewrite: { '^/chat-api': '/info' }
     },
     '/app-api': {
-      target: 'http://39.101.71.109/',
+      target: 'http://114.132.71.128/',
       changeOrigin: true,
       pathRewrite: { '^/app-api': '/app-api' }
     }
@@ -107,12 +107,7 @@ export default defineConfig({
           path: 'agents',
           // name: '事件',
           component: './Store/views/agents'
-        },
-        {
-          path: 'agents/:id',
-          // name: '事件',
-          component: './Store/views/agents/AgentCanvas'
-        },                  
+        },                 
         {
           path: 'skills',
           // name: '事件',
