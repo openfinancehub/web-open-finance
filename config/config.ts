@@ -111,23 +111,13 @@ export default defineConfig({
         {
           path: 'skills',
           // name: '事件',
-          component: './Store/views/chatflows'
-        },
-        {
-          path: 'skills/:id',
-          // name: '事件',
-          component: './Store/views/chatflows'
-        },           
+          component: './Store/views/skills'
+        },         
         {
           path: 'tools',
           // name: '事件',
           component: './Store/views/tools'
-        },   
-        {
-          path: 'tools/:id',
-          // name: '事件',
-          component: './Store/views/tools'
-        },        
+        },       
         {
           path: 'assistants',
           // name: '事件',

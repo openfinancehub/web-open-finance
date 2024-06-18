@@ -56,7 +56,7 @@ try {
 }`
 
 const SkillDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, setError }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const customization = useSelector((state) => state.customization)
     const dispatch = useDispatch()
@@ -88,18 +88,28 @@ const SkillDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, se
         []
     )
 
-    const addNewRow = () => {
+    const addNewRow = (stype) => {
         setTimeout(() => {
             setToolSchema((prevRows) => {
                 let allRows = [...cloneDeep(prevRows)]
                 const lastRowId = allRows.length ? allRows[allRows.length - 1].id + 1 : 1
-                allRows.push({
-                    id: lastRowId,
-                    property: '',
-                    description: '',
-                    type: '',
-                    required: false
-                })
+                if (stype === "role") {
+                    allRows.push({
+                        id: lastRowId,
+                        property: '',
+                        value: '',
+                        type: '',
+                        required: false
+                    })
+                } else {
+                    allRows.push({
+                        id: lastRowId,
+                        property: '',
+                        description: '',
+                        type: '',
+                        required: false
+                    })                    
+                }
                 return allRows
             })
         })
@@ -119,6 +129,31 @@ const SkillDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, se
     }
 
     const columns = useMemo(
+        () => [
+            { field: 'property', headerName: 'Property', editable: true, flex: 1 },
+            {
+                field: 'type',
+                headerName: 'Type',
+                type: 'singleSelect',
+                valueOptions: ['string', 'number', 'boolean', 'json'],
+                editable: true,
+                width: 120
+            },
+            { field: 'value', headerName: 'Value', editable: true, flex: 1 },
+            { field: 'required', headerName: 'Required', type: 'boolean', editable: true, width: 80 },
+            {
+                field: 'actions',
+                type: 'actions',
+                width: 80,
+                getActions: (params) => [
+                    <GridActionsCellItem key={'Delete'} icon={<DeleteIcon />} label='Delete' onClick={deleteItem(params.id)} />
+                ]
+            }
+        ],
+        [deleteItem]
+    )
+
+    const inputColumns = useMemo(
         () => [
             { field: 'property', headerName: 'Property', editable: true, flex: 1 },
             {
@@ -474,13 +509,27 @@ const SkillDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, se
                                 <TooltipWithParser title={'What is the input format in JSON?'} />
                             </Stack>
                             {dialogProps.type !== 'TEMPLATE' && (
-                                <Button variant='outlined' onClick={addNewRow} startIcon={<IconPlus />}>
+                                <Button variant='outlined' onClick={() => addNewRow("input")} startIcon={<IconPlus />}>
                                     Add Item
                                 </Button>
                             )}
                         </Stack>
-                        <Grid columns={columns} rows={toolSchema} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
-                    </Box>
+                        <Grid columns={inputColumns} rows={toolSchema.filter((a) => "description" in a)} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
+                    </Box>                     
+                    <Box>
+                        <Stack sx={{ position: 'relative', justifyContent: 'space-between' }} direction='row'>
+                            <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
+                                <Typography variant='overline'> Role Configuration </Typography>
+                                <TooltipWithParser title={'What is the input format in JSON?'} />
+                            </Stack>
+                            {dialogProps.type !== 'TEMPLATE' && (
+                                <Button variant='outlined' onClick={() => addNewRow("role")} startIcon={<IconPlus />}>
+                                    Add Item
+                                </Button>
+                            )}
+                        </Stack>
+                        <Grid columns={columns} rows={toolSchema.filter((a) => "value" in a)} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
+                    </Box>                  
                     <Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
@@ -539,7 +588,7 @@ const SkillDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, se
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 SkillDialog.propTypes = {
