@@ -72,7 +72,7 @@ function a11yProps(index) {
 }
 
 const ChatflowConfigurationDialog = ({ show, dialogProps, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const [tabValue, setTabValue] = useState(0)
 
     const component = show ? (
@@ -127,7 +127,7 @@ const ChatflowConfigurationDialog = ({ show, dialogProps, onCancel }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 ChatflowConfigurationDialog.propTypes = {

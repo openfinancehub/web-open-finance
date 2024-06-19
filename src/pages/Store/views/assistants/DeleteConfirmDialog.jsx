@@ -4,7 +4,7 @@ import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
 
 const DeleteConfirmDialog = ({ show, dialogProps, onCancel, onDelete, onDeleteBoth }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const component = show ? (
         <Dialog
@@ -32,7 +32,7 @@ const DeleteConfirmDialog = ({ show, dialogProps, onCancel, onDelete, onDeleteBo
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 DeleteConfirmDialog.propTypes = {

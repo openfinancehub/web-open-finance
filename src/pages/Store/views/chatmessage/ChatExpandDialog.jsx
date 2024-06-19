@@ -8,7 +8,7 @@ import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
 import { IconEraser } from '@tabler/icons-react'
 
 const ChatExpandDialog = ({ show, dialogProps, isAgentCanvas, onClear, onCancel, previews, setPreviews }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const customization = useSelector((state) => state.customization)
 
     const component = show ? (
@@ -59,7 +59,7 @@ const ChatExpandDialog = ({ show, dialogProps, isAgentCanvas, onClear, onCancel,
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 ChatExpandDialog.propTypes = {

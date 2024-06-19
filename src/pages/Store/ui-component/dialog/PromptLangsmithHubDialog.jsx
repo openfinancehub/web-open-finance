@@ -86,7 +86,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }))
 
 const PromptLangsmithHubDialog = ({ promptType, show, onCancel, onSubmit }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
     const customization = useSelector((state) => state.customization)
     const getAvailablePromptsApi = useApi(promptApi.getAvailablePrompts)
@@ -587,7 +587,7 @@ const PromptLangsmithHubDialog = ({ promptType, show, onCancel, onSubmit }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 PromptLangsmithHubDialog.propTypes = {

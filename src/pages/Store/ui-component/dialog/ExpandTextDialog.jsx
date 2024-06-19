@@ -23,7 +23,7 @@ import useApi from '@/pages/Store/hooks/useApi'
 import './ExpandTextDialog.css'
 
 const ExpandTextDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const theme = useTheme()
     const dispatch = useDispatch()
@@ -170,7 +170,7 @@ const ExpandTextDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 ExpandTextDialog.propTypes = {

@@ -16,7 +16,7 @@ import configApi from '@/pages/Store/api/config'
 import useApi from '@/pages/Store/hooks/useApi'
 
 const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
 
     const getNodeConfigApi = useApi(configApi.getNodeConfig)
@@ -191,7 +191,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 NodeInfoDialog.propTypes = {

@@ -6,7 +6,7 @@ import { Button, Dialog, DialogActions, DialogContent, OutlinedInput, DialogTitl
 import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
 
 const SaveChatflowDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const [chatflowName, setChatflowName] = useState('')
     const [isReadyToSave, setIsReadyToSave] = useState(false)
@@ -48,7 +48,7 @@ const SaveChatflowDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 SaveChatflowDialog.propTypes = {

@@ -14,7 +14,7 @@ import useNotifier from '@/pages/Store/utils/useNotifier'
 import StarterPrompts from '@/pages/Store/ui-component/extended/StarterPrompts'
 
 const StarterPromptsDialog = ({ show, dialogProps, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
 
     useNotifier()
@@ -43,7 +43,7 @@ const StarterPromptsDialog = ({ show, dialogProps, onCancel }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 StarterPromptsDialog.propTypes = {

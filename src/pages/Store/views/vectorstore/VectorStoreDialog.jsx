@@ -79,7 +79,7 @@ function a11yProps(index) {
 }
 
 const VectorStoreDialog = ({ show, dialogProps, onCancel, onIndexResult }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const { reactFlowInstance } = useContext(flowContext)
     const dispatch = useDispatch()
 
@@ -612,7 +612,7 @@ formData.append("openAIApiKey[openAIEmbeddings_0]", "sk-my-openai-2nd-key")`
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 VectorStoreDialog.propTypes = {

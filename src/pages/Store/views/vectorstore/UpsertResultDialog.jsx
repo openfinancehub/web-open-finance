@@ -8,7 +8,7 @@ import StatsCard from '@/pages/Store/ui-component/cards/StatsCard'
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/pages/Store/store/actions'
 
 const UpsertResultDialog = ({ show, dialogProps, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
     const customization = useSelector((state) => state.customization)
 
@@ -81,7 +81,7 @@ const UpsertResultDialog = ({ show, dialogProps, onCancel }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 UpsertResultDialog.propTypes = {

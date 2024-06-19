@@ -84,7 +84,7 @@ const messageImageStyle = {
 }
 
 const ViewMessagesDialog = ({ show, dialogProps, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
     const theme = useTheme()
     const customization = useSelector((state) => state.customization)
@@ -1018,7 +1018,7 @@ const ViewMessagesDialog = ({ show, dialogProps, onCancel }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 ViewMessagesDialog.propTypes = {

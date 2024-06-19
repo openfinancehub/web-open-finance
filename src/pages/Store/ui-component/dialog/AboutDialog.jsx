@@ -7,7 +7,7 @@ import axios from 'axios'
 import { baseURL } from '@/pages/Store/store/constant'
 
 const AboutDialog = ({ show, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const [data, setData] = useState({})
 
@@ -84,9 +84,9 @@ const AboutDialog = ({ show, onCancel }) => {
             </DialogContent>
         </Dialog>
     ) : null
-    console.log(component)
-    console.log(portalElement)
-    // return createPortal(component, portalElement)
+    // console.log(component)
+    // console.log(portalElement)
+    return createPortal(component, portalElement)
 }
 
 AboutDialog.propTypes = {

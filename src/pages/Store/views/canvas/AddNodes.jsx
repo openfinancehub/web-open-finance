@@ -182,8 +182,8 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
             setCategoryExpanded(accordianCategories)
         } else {
             const taggedNodes = groupByTags(nodes, newTabValue)
-            console.log("taggedNodes: ", taggedNodes)
-            console.log("newTabValue: ", newTabValue)            
+            // console.log("taggedNodes: ", taggedNodes)
+            // console.log("newTabValue: ", newTabValue)            
             const accordianCategories = {}
             const result = taggedNodes.reduce(function (r, a) {
                 r[a.category] = r[a.category] || []

@@ -7,7 +7,7 @@ import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
 import { Input } from '@/pages/Store/ui-component/input/Input'
 
 const LoginDialog = ({ show, dialogProps, onConfirm }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const usernameInput = {
         label: 'Username',
         name: 'username',
@@ -58,7 +58,7 @@ const LoginDialog = ({ show, dialogProps, onConfirm }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 LoginDialog.propTypes = {
