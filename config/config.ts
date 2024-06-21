@@ -69,7 +69,7 @@ export default defineConfig({
       component: './Home'
     },
     {
-      name: 'Store',      
+      name: 'Store',
       path: '/store',
       component: './Store',
       routes: [
@@ -82,7 +82,7 @@ export default defineConfig({
           path: 'chatflows/:id',
           // name: '市场',
           component: './Store/views/chatflows'
-        },        
+        },
         {
           path: 'canvas',
           // name: '事件',
@@ -92,7 +92,7 @@ export default defineConfig({
           path: 'canvas/:id',
           // name: '事件',
           component: './Store/views/canvas'
-        },        
+        },
         {
           path: 'marketplaces',
           // name: '事件',
@@ -107,17 +107,17 @@ export default defineConfig({
           path: 'agents',
           // name: '事件',
           component: './Store/views/agents'
-        },                 
+        },
         {
           path: 'skills',
           // name: '事件',
           component: './Store/views/skills'
-        },         
+        },
         {
           path: 'tools',
           // name: '事件',
           component: './Store/views/tools'
-        },       
+        },
         {
           path: 'assistants',
           // name: '事件',
@@ -138,7 +138,7 @@ export default defineConfig({
           // name: '事件',
           component: './Store/views/docstore'
         }
-      ]    
+      ]
     },
     {
       name: 'Quant',
@@ -172,28 +172,12 @@ export default defineConfig({
       path: '/home/news/market',
       name: 'Market',
       component: './Home/components/News',
-      // routes: [
-      //   {
-      //     path: 'market',
-      //     // name: '市场',
-      //     component: './Home/components/News/'
-      //   },
-      //   {
-      //     path: 'events',
-      //     // name: '事件',
-      //     component: './Home/components/News/Events/'
-      //   },
-      //   {
-      //     path: 'stocks',
-      //     // name: '股票',
-      //     component: './Home/components/News/Stocks/'
-      //   },
-      //   {
-      //     path: 'mine',
-      //     // name: '我的',
-      //     component: './Home/components/News/Mine/'
-      //   }
-      // ]
+    },
+    {
+      path: '/old',
+      // name: 'Old',
+      component: './Home/old',
+      exact: true
     },
     {
       name: 'Users',

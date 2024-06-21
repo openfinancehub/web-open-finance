@@ -2,7 +2,6 @@ import React, { useRef } from 'react'
 import { Button, NavBar, Space, Swiper, Toast } from 'antd-mobile'
 import { history } from 'umi';
 import { SearchOutline, MoreOutline, CloseOutline } from 'antd-mobile-icons'
-// import { TabsComponent } from '@/pages/Home/components/News/index'
 import { useParams, useLocation } from 'react-router-dom'
 const Demo: React.FC<{}> = () => {
 

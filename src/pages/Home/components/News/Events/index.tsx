@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { List, Rate, Image, Grid, Collapse, Button, DatePicker, Footer, DotLoading } from 'antd-mobile';
-import { getEvents } from '../../../service';
+import { MarketService } from '../../../service/';
 import { economicType, eventType, countryFlags } from './data.d';
 import moment from "moment";
-import styles from '../styles.less';
 import { useNavigate, } from 'react-router-dom';
 
 export default () => {
@@ -25,7 +24,7 @@ export default () => {
         try {
             const time = eTime.getFullYear() + "-" + (eTime.getMonth() + 1) + "-" + eTime.getDate();
 
-            const response = await getEvents(time);
+            const response = await MarketService.getEvents(time);
 
             if (!response || !response.data) {
                 console.warn("Invalid response data", response);
@@ -102,7 +101,7 @@ export default () => {
     }, []);
 
     return (
-        <div className={styles.content} style={{ height: window.innerHeight - 150, touchAction: 'none' }}>
+        <div style={{ height: window.innerHeight - 150, touchAction: 'none' }}>
             <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }} columns={3} gap={16}>
                 <Grid.Item>
                     <Button onClick={() => {

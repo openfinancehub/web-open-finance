@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, message, UploadFile } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { uploadFileService } from '@/pages/Home/service';
+import { FactorService } from '../../service/';
 const { Dragger } = Upload;
 
 const FileUploadDownloadPage = () => {
@@ -13,7 +13,7 @@ const FileUploadDownloadPage = () => {
     formData.append('file', options.file);
     // console.log(formData.get('file'));
     try {
-      const response = await uploadFileService(options.file)
+      const response = await FactorService.uploadFileService(options.file)
       if (response.ret_code == 0) {
         // 处理成功响应
         options.onSuccess(response, options.file);

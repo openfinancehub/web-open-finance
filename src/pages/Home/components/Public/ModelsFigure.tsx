@@ -4,7 +4,7 @@ import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, Popover, Radio } from 'antd';
 import { Tabs, message as Message } from 'antd';
 import { CompanyList } from '@/pages/Finchat/components';
-import { getEval } from '@/pages/Home/service';
+import { FactorService } from '../../service/';
 import styles from './style.less'
 import { FinchatServices } from '@/services';
 import { history, useModel } from '@umijs/max';
@@ -70,7 +70,7 @@ const ModelsFigure: React.FC<{
       }
       // console.log(company, '请求后台company')
       // console.log(inputValue, '请求后台inputValue')
-      const evalJson = await getEval('', model, inputValue)
+      const evalJson = await FactorService.getEval('', model, inputValue)
 
       const result = processJson(evalJson);
       setMessage([]);

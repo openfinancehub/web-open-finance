@@ -3,8 +3,7 @@ import { InfiniteScroll, List, Grid, Ellipsis, AutoCenter, } from 'antd-mobile'
 import EChartsGauge from './Gauge'
 import Risk from './Risk'
 import { Col, Divider, Row, Statistic, } from 'antd';
-import { getSentiment, getDanger } from '../../../service'
-
+import { MarketService } from '../../../service/';
 export default () => {
 
   const [dangerList, setFeaturesList] = useState<any[]>([]);
@@ -18,34 +17,38 @@ export default () => {
   const fetchDataAndProcess = async (url: () => Promise<any>, setList: any,
     setText: any, setSize: any) => {
     const response = await url();
-    const { features = [], summary = {} } = response.result || {};
+    if (response) {
 
-    Object.keys(features).forEach(feature => {
-      const time = features[feature].TIME
-      const result = features[feature].result
-      const text = features[feature].text
 
-      const keys = Object.keys(time)[0];
-      if (typeof time[keys] === 'object' && !Array.isArray(time)) {
-        const r = time[keys].map((item: any, index: string | number) => {
-          return [item, result[keys][index]]
-        });
-        setList(prevState => [...prevState, { title: feature, data: r, text: text }]);
+      const { features = [], summary = {} } = response.result || {};
 
-      } else {
-        const r = [time, result];
-        setList(prevState => [...prevState, { title: feature, data: r, text: text }]);
-      }
-    });
+      Object.keys(features).forEach(feature => {
+        const time = features[feature].TIME
+        const result = features[feature].result
+        const text = features[feature].text
 
-    const textContent = summary.text;
-    const shangZhiZhenShu = summary['上证指数'];
+        const keys = Object.keys(time)[0];
+        if (typeof time[keys] === 'object' && !Array.isArray(time)) {
+          const r = time[keys].map((item: any, index: string | number) => {
+            return [item, result[keys][index]]
+          });
+          setList(prevState => [...prevState, { title: feature, data: r, text: text }]);
 
-    const substring = shangZhiZhenShu.toString().substring(0, 4)
-    const floatNum = parseFloat(substring)
-    const res = parseFloat((floatNum / 100).toFixed(2))
-    setSize(res);
-    setText(textContent)
+        } else {
+          const r = [time, result];
+          setList(prevState => [...prevState, { title: feature, data: r, text: text }]);
+        }
+      });
+
+      const textContent = summary.text;
+      const shangZhiZhenShu = summary['上证指数'];
+
+      const substring = shangZhiZhenShu.toString().substring(0, 4)
+      const floatNum = parseFloat(substring)
+      const res = parseFloat((floatNum / 100).toFixed(2))
+      setSize(res);
+      setText(textContent)
+    }
   };
 
   const sentData = sentList.map((feature, index) => {
@@ -56,6 +59,17 @@ export default () => {
         stack: 'Total',
         data: feature.data
       },
+      dataZoom: [
+        {
+          type: 'inside',
+          start: feature.data.length < 20 ? 0 : 80,
+          end: feature.data.length < 20 ? 100 : 100,
+        },
+        {
+          start: 50,
+          end: 100,
+        }
+      ],
       textContent: feature.text
     }
   });
@@ -68,13 +82,24 @@ export default () => {
         stack: 'Total',
         data: feature.data
       },
+      dataZoom: [
+        {
+          type: 'inside',
+          start: feature.data.length < 20 ? 0 : 80,
+          end: feature.data.length < 20 ? 100 : 100,
+        },
+        {
+          start: 10,
+          end: 100,
+        }
+      ],
       textContent: feature.text
     }
   });
 
   useEffect(() => {
-    fetchDataAndProcess(getSentiment, setSentList, setSentText, setSentSize);
-    fetchDataAndProcess(getDanger, setFeaturesList, setDangerText, setDangerSize);
+    fetchDataAndProcess(MarketService.getSentiment, setSentList, setSentText, setSentSize);
+    fetchDataAndProcess(MarketService.getDanger, setFeaturesList, setDangerText, setDangerSize);
   }, []);
 
   return (
@@ -104,7 +129,9 @@ export default () => {
         return (
           <Row key={index}>
             <Col key={index} span={24} >
-              <Risk legendData={[item.echartsConf.name]} seriesData={item.echartsConf} />
+              <Risk legendData={[item.echartsConf.name]}
+                dataZoom={item.dataZoom}
+                seriesData={item.echartsConf} />
             </Col>
             <Col style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item.echartsConf.name} span={24} >
               <AutoCenter  >
@@ -143,7 +170,9 @@ export default () => {
         return (
           <Grid key={index} columns={1} gap={8}>
             <Grid.Item key={index} span={8}>
-              <Risk legendData={[item.echartsConf.name]} seriesData={item.echartsConf} />
+              <Risk legendData={[item.echartsConf.name]}
+                dataZoom={item.dataZoom}
+                seriesData={item.echartsConf} />
             </Grid.Item>
             <Grid.Item style={{ marginTop: 10, marginBottom: 40 }} key={index + '' + item.echartsConf.name} span={8}>
               <AutoCenter>

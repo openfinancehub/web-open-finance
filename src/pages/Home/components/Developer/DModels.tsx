@@ -5,7 +5,7 @@ import { Description, ModelsItem, ListCategoryType, header, modelsData } from '.
 import './style.less';
 import ModelsItems from './component/DModelsItems';
 import { Collapse } from 'antd';
-import { categoryJson, getModels } from '../../service';
+import { FactorService } from '../../service/';
 const { Panel } = Collapse;
 
 interface ModelsProps {
@@ -33,7 +33,7 @@ const DModels: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper
 
     const fetchCategoryJson = async () => {
         try {
-            const response = await categoryJson();
+            const response = await FactorService.categoryJson();
             console.log(response)
             const titles = Object.keys(response.category);
             const descriptions = Object.values(response.category);
@@ -55,7 +55,7 @@ const DModels: React.FC<ModelsProps> = ({ data, company, setCompany, isDeveloper
 
     const handleTriggerEvent = async (factor: string) => {
         const [_, afterAtSymbol] = factor.split('@');
-        const dataJson = await getModels(afterAtSymbol);
+        const dataJson = await FactorService.getModels(afterAtSymbol);
 
         if (dataJson.models != null && dataJson.ret_code == 0) {
             addElement(factor, dataJson.models)
