@@ -1,5 +1,5 @@
 import { ProCard } from '@ant-design/pro-components';
-import { Button, InputNumber, Space, DatePicker, Radio, Select } from 'antd';
+import { Button, InputNumber, Space, DatePicker, Radio, Select, Modal, Card, message } from 'antd';
 import type { DatePickerProps } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
@@ -42,15 +42,16 @@ export default function PublicStrategy(props: string) {
     const [lineIdent, setLineIdent] = useState([])
     const [demoEndData, setDemoEndData] = useState([])
     const [raderData, setRaderData] = useState([{ name: '', max: '' }])
-    const [eightOne,setEightOne] = useState('')
+    const [eightOne, setEightOne] = useState('')
     const [selectedButton, setSelectedButton] = useState('')
     const [raderValue, setRaderValue] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [minTime, setMinTime] = useState(5)
     // stop 
     const [stopDemo, setStopDemo] = useState(0)
     const firstKargs: any = []
     let synthesis: any = []
-    
+
     const strtegylist = () => {
         const data = {
             uid: 1,
@@ -65,17 +66,17 @@ export default function PublicStrategy(props: string) {
         }).then((res) => {
             setListName(res.data.list[0])
             setSelectedButton(res.data.list[0])
-            let options = res.data.list.map((item: string,index:number) => {
+            let options = res.data.list.map((item: string, index: number) => {
                 return {
                     value: item,
                     lable: item,
                     index: index,
                 }
             })
-            setListData(options)   
+            setListData(options)
             setDetailsData(res.data.details)
-            console.log(detailsData,"选择项");
-            
+            console.log(detailsData, "选择项");
+
         }).catch(err => { console.log(err) })
     }
 
@@ -90,30 +91,31 @@ export default function PublicStrategy(props: string) {
                 'Content-Type': 'application/json',
             },
             data: JSON.stringify(data)
-        }).then((res) => {
+        }).then((res:any) => {
             const list = demoTime + 20
-            // 当测试时间超过80s时停止测试
             if (demoTime > 80) {
                 setStopDemo(res.code)
-                console.log(stopDemo);
                 return demoTime
             }
-            if(res.code === 801){
+            if (res.code === 801) {
                 setEightOne(res.message)
+            }
+            if(res.code === 500){
+                return message.error(res.message)
             }
             if (res.code === 300 && demoTime <= 140) {
                 setTimeout(() => {
                     GetStrategy(uid, list)
                 }, 2000)
             } else {
-                let destArr:object[] = []
-                let raderArr:object[] = []
-                let radervalue:number[] = []
-                let linedata:any = []
-                let lineDataTime:string[] = []
+                let destArr: object[] = []
+                let raderArr: object[] = []
+                let radervalue: number[] = []
+                let linedata: any = []
+                let lineDataTime: string[] = []
                 // 买入卖出节点
-                let longAndshort:object[] = []
-                res.data.result.forEach((item:any) => {
+                let longAndshort: object[] = []
+                res.data.result.forEach((item: any) => {
                     if (item.indicator_flag === 'True') {
                         destArr.push({ name: item.name, desc: item.desc, value: item.value.toFixed(4) })
                         raderArr.push({ name: item.name, max: item.max })
@@ -121,7 +123,7 @@ export default function PublicStrategy(props: string) {
                     }
                 });
                 if (!backData) {
-                    res.data.raw_data.forEach((list:any) => {
+                    res.data.raw_data.forEach((list: any) => {
                         linedata.push(Object.values(list)[0])
                         lineDataTime.push(Object.keys(list)[0])
                         for (let i = 0; i < res.data.decision_long.length; i++) {
@@ -203,11 +205,14 @@ export default function PublicStrategy(props: string) {
             },
             data: JSON.stringify(data)
         }).then((res) => {
-            console.log(res.uid)
-            if (res.uid) {
-                GetStrategy(res.uid, 0)
-                handleStopTime()
-
+            if(res.code === 200){
+                if (res.uid) {
+                    GetStrategy(res.uid, 0)
+                    handleStopTime()
+                }
+            }else{
+                message.error(res.message)
+                setIsdemoBtn(true)
             }
         }).catch(err => { console.log(err) })
     }
@@ -349,12 +354,12 @@ export default function PublicStrategy(props: string) {
     const demoDaysChange = (value: number) => {
         setDemoDays(value)
     }
-    
-    const handleChangeValue = (value:any,option:any) =>{
+
+    const handleChangeValue = (value: any, option: any) => {
         console.log(option.index);
         setListName(value)
         setindexDetails(option.index)
-        console.log(indexdetails,"选择的键值");
+        console.log(indexdetails, "选择的键值");
         setSelectedButton(value)
     }
     const nuberOnChange = (name: string, value: number) => {
@@ -366,151 +371,174 @@ export default function PublicStrategy(props: string) {
         console.log(firstKargs);
 
     }
-    const minTimeChange = (value:number) => {
+    const minTimeChange = (value: number) => {
         setMinTime(value)
     }
-    console.log(selectedButton,"选择框的初始值");
+    const handleOk = () => {
+        setIsModalOpen(false)
+    }
+    const handleOpen = () => {
+        setIsModalOpen(true)
+    }
+    const handleCancel = () => {
+        setIsModalOpen(false)
+    }
     return (
-        <div>
-            <ProCard gutter={16} ghost wrap>
-                <ProCard
-                    bordered
-                    style={{ textAlign: 'center', height: 225, overflowY: 'scroll' }}
-                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
-                    <Space wrap align="center">
-                        <Select
-                            value={selectedButton}
-                            style={{
-                                width: 200,
-                                textAlign:"center"
-                            }}
-                            onChange={handleChangeValue}
-                            options={listData}
-                        />
-                    </Space>
-                    <div>
-                        {
-                            detailsData[selectedButton] && detailsData[selectedButton].map((item, index) => {
-                                return (
-                                    <div style={{ marginTop: '20px' }} key={index} data-name={item.name}>{item.desc} : <InputNumber min={1} defaultValue={item.value}
-                                        onChange={(value) => { nuberOnChange(item.name, value) }}
-                                    /> </div>
-                                )
-                            })
-                        }
-                    </div>
-                </ProCard>
-                <ProCard
-                    style={{ textAlign: 'center', height: 225 }}
-                    bordered
-                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
-                    <div className="numberSele">
-                        <InputNumber
-                            size={size}
-                            min={1}
-                            max={10}
-                            addonBefore="测试天数"
-                            addonAfter="天"
-                            defaultValue={5}
-                            onChange={demoDaysChange}
-                        />
-                        <InputNumber
-                            size={size}
-                            min={1}
-                            addonBefore="最大交易次数"
-                            addonAfter="次"
-                            defaultValue={1}
-                            onChange={shopOrder}
-                        />
-                    </div>
-                    <div className="numberSele">
-                        <Select
-                            placeholder="最小时间单位（分钟）"
-                            onChange={minTimeChange}
-                            options={[
-                                {
-                                    value: 1,
-                                    label: '最小时间单位1分钟',
-                                },
-                                {
-                                    value: 5,
-                                    label: '最小时间单位5分钟',
-                                },
-                                {
-                                    value: 15,
-                                    label: '最小时间单位15分钟',
-                                },
-                                {
-                                    value: 30,
-                                    label: '最小时间单位30分钟',
-                                },
-                                {
-                                    value: 60,
-                                    label: '最小时间单位60分钟',
-                                },
-                            ]}
-                        />
+        <div style={{ height: "100%" }} >
 
-                        <DatePicker onChange={dateTime} />
-                        是否滚动测评:
-                        <Radio.Group onChange={backOrder} value={backData}>
-                            <Radio value={0}>否</Radio>
-                            <Radio value={1}>是</Radio>
-                        </Radio.Group>
-                    </div>
-                    {isdemoBtn && <Button
-                        size={size}
-                        style={{
-                            background: 'rgb(1,108,102)',
-                            color: '#fff',
-                            marginBottom: 20
-                        }}
-                        onClick={demoBtn}
-                    >
-                        {stopDemo ? "重新测试" : "测试"}
-                    </Button>}
-                    {
-                        !isdemoBtn && <Button
+
+            <div style={{ display: 'none' }} >
+                <ProCard style={{ height: 360 }}>
+                    <ProCard
+                        style={{ height: '100%' }}
+                        colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}
+                        bordered>
+                        <div className="demoResult">
+                            <div>测试结果：</div><br></br>
+                            {demoEndData.map((item: any, index) => {
+                                return (
+                                    <div style={{ fontWeight: 'bole' }} key={index}>
+                                        <p > <span>{index + 1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
+                                        <p>{item.desc}</p>
+                                    </div>
+                                )
+                            })}
+                            {eightOne}
+                        </div>
+                    </ProCard>
+                    <ProCard
+                        style={{ height: '100%' }}
+                        colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
+                        bordered>
+                        <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
+                    </ProCard>
+                </ProCard>
+                <ProCard style={{ height: 460, width: '90%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
+                    <div ref={lineRef} style={{ height: "100%" }}></div>
+                </ProCard>
+            </div>
+
+            <Card title="自定义策略" hoverable style={{ width: '300px' }} onClick={handleOpen} >
+                <p>测试天数</p>
+                <p>交易次数</p>
+                <p>是否滚动测评</p>
+                <p>......</p>
+            </Card>
+            <Modal title="自定义策略" open={isModalOpen} onOk={handleOk} width={1200} onCancel={handleCancel} >
+                <ProCard gutter={16} ghost wrap style={{width:'100%'}}>
+                    <ProCard
+                        bordered
+                        style={{ textAlign: 'center', height: 225, overflowY: 'scroll' }}
+                        colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
+                        <Space wrap align="center">
+                            因子：<Select
+                                value={selectedButton}
+                                style={{
+                                    width: 200,
+                                    textAlign: "center"
+                                }}
+                                onChange={handleChangeValue}
+                                options={listData}
+                            />
+                        </Space>
+                        <div>
+                            {
+                                detailsData[selectedButton] && detailsData[selectedButton].map((item, index) => {
+                                    return (
+                                        <div style={{ marginTop: '20px' }} key={index} data-name={item.name}>{item.desc} : <InputNumber min={1} defaultValue={item.value}
+                                            onChange={(value) => { nuberOnChange(item.name, value) }}
+                                        /> </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </ProCard>
+                    <ProCard
+                        style={{ textAlign: 'center', height: 225 }}
+                        bordered
+                        colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
+                        <div className="numberSele">
+                            <InputNumber
+                                size={size}
+                                min={1}
+                                max={10}
+                                addonBefore="测试天数"
+                                addonAfter="天"
+                                defaultValue={5}
+                                onChange={demoDaysChange}
+                            />&nbsp;
+                            <InputNumber
+                                size={size}
+                                min={1}
+                                addonBefore="最大交易次数"
+                                addonAfter="次"
+                                defaultValue={1}
+                                onChange={shopOrder}
+                            />
+                        </div>
+                        <div className="numberSele">
+
+                            <Select
+                                placeholder="最小时间单位（分钟）"
+                                onChange={minTimeChange}
+                                options={[
+                                    {
+                                        value: 1,
+                                        label: '最小时间单位1分钟',
+                                    },
+                                    {
+                                        value: 5,
+                                        label: '最小时间单位5分钟',
+                                    },
+                                    {
+                                        value: 15,
+                                        label: '最小时间单位15分钟',
+                                    },
+                                    {
+                                        value: 30,
+                                        label: '最小时间单位30分钟',
+                                    },
+                                    {
+                                        value: 60,
+                                        label: '最小时间单位60分钟',
+                                    },
+                                ]}
+                            />
+
+                            <DatePicker onChange={dateTime} />
+                            是否滚动测评:
+                            <Radio.Group onChange={backOrder} value={backData}>
+                                <Radio value={0}>否</Radio>
+                                <Radio value={1}>是</Radio>
+                            </Radio.Group>
+                        </div>
+                        {isdemoBtn && <Button
                             size={size}
                             style={{
                                 background: 'rgb(1,108,102)',
                                 color: '#fff',
                                 marginBottom: 20
                             }}
+                            onClick={demoBtn}
                         >
-                            正在测试...
-                        </Button>
-                    }
+                            {stopDemo ? "重新测试" : "测试"}
+                        </Button>}
+                        {
+                            !isdemoBtn && <Button
+                                size={size}
+                                style={{
+                                    background: 'rgb(1,108,102)',
+                                    color: '#fff',
+                                    marginBottom: 20
+                                }}
+                            >
+                                正在测试...
+                            </Button>
+                        }
+                    </ProCard>
                 </ProCard>
-            </ProCard>
-            <ProCard style={{ height: 360 }}>
-                <ProCard
-                    style={{ height: '100%' }}
-                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}
-                    bordered>
-                    <div className="demoResult">
-                        <div>测试结果：</div><br></br>
-                        {demoEndData.map((item:any, index) => {
-                            return (
-                                <div style={{ fontWeight: 'bole' }} key={index}>
-                                    <p > <span>{index + 1}、</span> {item.name ? `${item.name}(${item.value}):` : ''}</p>
-                                    <p>{item.desc}</p>
-                                </div>
-                            )
-                        })}
-                        {eightOne}
-                    </div>
-                </ProCard>
-                <ProCard
-                    style={{ height: '100%' }}
-                    colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
-                    bordered>
-                    <div ref={radarRef} style={{ width: "100%", height: "100%" }}></div>
-                </ProCard>
-            </ProCard>
-            <ProCard style={{ height: 460, width: '90%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
-                <div ref={lineRef} style={{ height: "100%" }}></div>
-            </ProCard>
+            </Modal>
+            
         </div>
     )
 }
