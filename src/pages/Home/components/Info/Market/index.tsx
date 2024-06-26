@@ -1,188 +1,105 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, Card, Col, Divider, Typography } from 'antd';
-import { MarketService } from '../../../service';
+import React from 'react';
+import {
+    AppstoreOutlined,
+    BarChartOutlined,
+    CloudOutlined,
+    ShopOutlined,
+    TeamOutlined,
+    UploadOutlined,
+    UserOutlined,
+    VideoCameraOutlined,
+} from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Divider, Layout, Menu, Typography, theme } from 'antd';
 import { ProCard } from '@ant-design/pro-components';
 import SearchCompany from '../../FinanceModels/SearchCompany';
-import CustomMenu from './CustomMenu'
-import FeatureCard from './FeatureCard'
+import MarketContent from './MarketContent';
+import Stocks from '../../News/Stocks';
 
-interface MenuItem {
-    key: string;
-    label: string;
-    type?: string;
-    children?: MenuItem[];
-}
+const { Header, Content, Footer, Sider } = Layout;
 
-interface FeatureItem {
-    title: string;
-    data: any[][];
-    text: string;
-}
-
-
-const MsgCard: React.FC = () => {
-    const [loading, setLoading] = useState(true);
-
-    const [dangerList, setFeaturesList] = useState<any[]>([]);
-    const [dangerSize, setDangerSize] = useState<number>(0);
-    const [dangerText, setDangerText] = useState<string>('');
-
-    const [sentList, setSentList] = useState<any[]>([]);
-    const [sentSize, setSentSize] = useState<number>(0);
-    const [sentText, setSentText] = useState<string>('');
-
-    const [NavList, setNavList] = useState<any[]>([]);
-
-    // 在组件的state中添加一个refs对象来存储图表的ref
-    const [chartRefs, setChartRefs] = useState<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
-
-
-    const fetchDataAndProcess = async (url: () => Promise<any>,
-        setList: any,
-        setText: any, setSize: any) => {
-
-        const response = await url();
-        if (response) {
-            const { features = [], summary = {} } = response.result || {};
-            let textsToAppend: string[] = [];
-            Object.keys(features).forEach(feature => {
-                const time = features[feature].TIME
-                const result = features[feature].result
-                const text = features[feature].text
-
-                textsToAppend.push(text);
-                const keys = Object.keys(time)[0];
-                if (typeof time[keys] === 'object' && !Array.isArray(time)) {
-                    const r = time[keys].map((item: any, index: string | number) => {
-                        return [item, result[keys][index]]
-                    });
-                    setList((prevState: any) => [...prevState, { title: feature, data: r, text: text }]);
-
-                } else {
-                    const r = [time, result];
-                    setList((prevState: any) => [...prevState, { title: feature, data: r, text: text }]);
-                }
-            });
-            setNavList((prevState: any[]) => [...prevState, ...textsToAppend]);
-
-            const textContent = summary.text;
-            const shangZhiZhenShu = summary['上证指数'];
-
-            const substring = shangZhiZhenShu.toString().substring(0, 4)
-            const floatNum = parseFloat(substring)
-            const res = parseFloat((floatNum / 100).toFixed(2))
-            setSize(res);
-            setText(textContent)
-            onChange(true)
-        }
-    };
-
-    const items: MenuItem[] = [
-        {
-            key: 'grp',
-            label: '导航',
-            type: 'group',
-            children: NavList.map((item, index) => ({
-                key: item,
-                label: item
-            })),
-        },
-    ];
-    // 抽取图表所需要的数据
-    const mapToEchartsConfig = (list: FeatureItem[], zoomStart: number, zoomEnd: number): any[] => {
-        return list.map((feature, index) => ({
-            echartsConf: {
-                name: feature.title,
-                type: 'line',
-                stack: 'Total',
-                data: feature.data
+// 修改items数组以包含子菜单项
+const items: MenuProps['items'] = [
+    {
+        key: '1',
+        icon: React.createElement(AppstoreOutlined),
+        label: `市场`,
+    },
+    {
+        key: '2',
+        icon: React.createElement(VideoCameraOutlined),
+        label: `事件`,
+        children: [ // 添加子菜单项
+            {
+                key: '2-1',
+                icon: React.createElement(UploadOutlined),
+                label: `Subnav 1`,
             },
-            dataZoom: [
-                {
-                    type: 'inside',
-                    start: feature.data.length < 20 ? 0 : zoomStart,
-                    end: feature.data.length < 20 ? 100 : zoomEnd,
-                    zoomLock: true,
-                },
-                {
-                    start: zoomStart,
-                    end: zoomEnd,
-                }
-            ],
-            textContent: feature.text
-        }));
-    };
+            {
+                key: '2-2',
+                icon: React.createElement(BarChartOutlined),
+                label: `Subnav 2`,
+            },
+        ],
+    },
+    {
+        key: '3',
+        icon: React.createElement(CloudOutlined),
+        label: `股票`,
+    },
+    {
+        key: '4',
+        icon: React.createElement(UserOutlined),
+        label: `个人`,
+    },
+];
 
-    const sentData = mapToEchartsConfig(sentList, 80, 100);
-    const seriesData = mapToEchartsConfig(dangerList, 80, 100);
-
-    useEffect(() => {
-        fetchDataAndProcess(MarketService.getSentiment, setSentList, setSentText, setSentSize);
-        fetchDataAndProcess(MarketService.getDanger, setFeaturesList, setDangerText, setDangerSize);
-    }, []);
-
-    const onChange = (checked: boolean) => {
-        setLoading(!checked);
-    };
-
-    // 初始化refs对象
-    useEffect(() => {
-        const newRefs: { [key: string]: React.RefObject<HTMLDivElement> } = {};
-        NavList.forEach(item => {
-            newRefs[item] = React.createRef();
-        });
-        setChartRefs(newRefs);
-    }, [NavList]);
+const CustomMenu: React.FC = () => {
+    const [selectedKey, setSelectedKey] = React.useState('1');
 
     return (
-        <ProCard gutter={16} ghost wrap>
-            <ProCard colSpan={{ xs: 24, sm: 24, md: 6, lg: 6, xl: 6 }} >
-                <CustomMenu navList={items} scrollToElement={
-                    function (key: string): void {
-                        const targetRef = chartRefs[key];
-                        if (targetRef && targetRef.current) {
-                            targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }} />
-
-            </ProCard>
-
-            <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 18, lg: 18, xl: 18 }} direction="column" headerBordered>
-                <ProCard headerBordered>
-                    <SearchCompany />
-                </ProCard>
-                <ProCard headerBordered >
-                    <Typography>
-                        <blockquote style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'red' }}>今日热度</blockquote>
-                    </Typography>
-                    <Divider />
-
-                    {sentData.map((item, index) => (
-                        <FeatureCard
-                            key={index}
-                            item={item}
-                            loading={loading}
-                            refCallback={chartRefs[item.textContent]}
-                        />
-                    ))}
-                    <Typography>
-                        <blockquote style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'red' }}>危险指数</blockquote>
-                    </Typography>
-                    <Divider />
-
-                    {seriesData.map((item, index) => (
-                        <FeatureCard
-                            key={index}
-                            item={item}
-                            loading={loading}
-                            refCallback={chartRefs[item.textContent]}
-                        />
-                    ))}
-                </ProCard>
-            </ProCard>
-        </ProCard>
-
+        <Layout hasSider>
+            <Sider
+                style={{ overflow: 'auto', height: `calc(100vh - 60px)`, background: 'white', position: 'fixed', left: 0, top: 60, bottom: 0 }}
+            >
+                <div className="demo-logo-vertical" />
+                <Menu theme="light" mode="inline"
+                    selectedKeys={[selectedKey]}
+                    onClick={({ key }) => setSelectedKey(key)}
+                    defaultSelectedKeys={['1']} items={items} />
+            </Sider>
+            <Layout style={{ marginLeft: 200 }}>
+                {/* <Header style={{ padding: 0, }} /> */}
+                <Content style={{ overflow: 'initial' }}>
+                    {selectedKey === '1' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>
+                            <MarketContent />
+                        </div>
+                    )}
+                    {selectedKey === '2' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>Parent Content for nav 2</div>
+                    )}
+                    {selectedKey === '2-1' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>Content for Subnav 1</div>
+                    )}
+                    {selectedKey === '2-2' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>Content for Subnav 2</div>
+                    )}
+                    {selectedKey === '3' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>
+                            <Stocks />
+                        </div>
+                    )}
+                    {!['1', '2', '2-1', '2-2', '3', '4'].includes(selectedKey) && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>No content matched</div>
+                    )}
+                </Content>
+                <Footer style={{ textAlign: 'center' }}>
+                    Open Finance ©{new Date().getFullYear()} Happy
+                </Footer>
+            </Layout>
+        </Layout>
     );
 };
 
-export default MsgCard;
+export default CustomMenu;

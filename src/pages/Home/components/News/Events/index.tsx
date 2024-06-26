@@ -5,7 +5,7 @@ import { economicType, eventType, countryFlags } from './data.d';
 import moment from "moment";
 import { useNavigate, } from 'react-router-dom';
 
-export default () => {
+const Event: React.FC = () => {
     const navigate = useNavigate();
     const [visible, setVisible] = useState(false);
     const [dateTime, setDateTime] = useState(new Date());
@@ -259,3 +259,5 @@ export default () => {
         </div >
     )
 }
+
+export default Event;

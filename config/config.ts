@@ -66,7 +66,7 @@ export default defineConfig({
     {
       name: 'Factors',
       path: '/home',
-      component: './Home'
+      component: './Home',
     },
     {
       name: 'Store',
@@ -168,11 +168,11 @@ export default defineConfig({
       props: true,
       exact: true
     },
-    {
-      path: '/home/news/market',
-      name: 'Market',
-      component: './Home/components/News',
-    },
+    // {
+    //   path: '/home/news/market',
+    //   name: 'Market',
+    //   component: './Home/components/News',
+    // },
     {
       path: '/old',
       // name: 'Old',
