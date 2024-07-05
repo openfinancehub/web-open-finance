@@ -10,7 +10,11 @@ import { history, useModel } from '@umijs/max';
 import ReactEcharts from 'echarts-for-react';
 import { Button, Card, Input, message as Message, Popover, Radio, Typography, Tooltip, Table  } from 'antd';
 import _ from 'lodash';
+
 import { useEffect, useState } from 'react';
+import { MemoizedReactMarkdown } from '@/pages/Store/ui-component/markdown/MemoizedReactMarkdown'
+import remarkGfm from 'remark-gfm'
+
 import { ChatList, CompanyList, TaskList, HistoryList} from './components';
 
 import styles from './index.less';
@@ -341,10 +345,13 @@ const Finchat = () => {
                     )
                   }                                   
                   {item.content && (
-                    <div
-                      style={{ padding: '0 16px 0 0' }}
-                      dangerouslySetInnerHTML={{ __html: item.content }}
-                    />
+                    // <div
+                    //   style={{ padding: '0 16px 0 0' }}
+                    //   dangerouslySetInnerHTML={{ __html: item.content }}
+                    // />
+                    <MemoizedReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {item.content}
+                    </MemoizedReactMarkdown>
                   )}
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />

@@ -25,10 +25,10 @@ const useWebSocket = (url: string): WebSocketHook => {
     };
 
     newSocket.onmessage = event => {
-      console.log(event, 99);
+      // console.log(event, 99);
       const response = JSON.parse(event.data || '{}');
       let content = response.output?.answer;
-      content = content.replace(/\n/g, '<br>');
+      // content = content.replace(/\n/g, '<br>');
       let chart = response.output?.chart;
       if (typeof chart === 'object' && Object.keys(chart).length === 0) {
         chart = null;
