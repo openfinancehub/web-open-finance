@@ -9,7 +9,7 @@ import assistantsApi from '@/pages/Store/api/assistants'
 import useApi from '@/pages/Store/hooks/useApi'
 
 const LoadAssistantDialog = ({ show, dialogProps, onCancel, onAssistantSelected, setError }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const getAllAvailableAssistantsApi = useApi(assistantsApi.getAllAvailableAssistants)
 
@@ -108,7 +108,7 @@ const LoadAssistantDialog = ({ show, dialogProps, onCancel, onAssistantSelected,
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 LoadAssistantDialog.propTypes = {

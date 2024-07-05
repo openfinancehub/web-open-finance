@@ -30,7 +30,7 @@ import { baseURL, REDACTED_CREDENTIAL_VALUE } from '@/pages/Store/store/constant
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/pages/Store/store/actions'
 
 const AddEditCredentialDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const dispatch = useDispatch()
 
@@ -297,7 +297,7 @@ const AddEditCredentialDialog = ({ show, dialogProps, onCancel, onConfirm, setEr
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 AddEditCredentialDialog.propTypes = {

@@ -199,6 +199,7 @@ const Canvas = () => {
     }
 
     const handleSaveFlow = (chatflowName) => {
+        console.log("handleSaveFlow: ", chatflowName)
         if (reactFlowInstance) {
             const nodes = reactFlowInstance.getNodes().map((node) => {
                 const nodeData = cloneDeep(node.data)
@@ -268,12 +269,12 @@ const Canvas = () => {
             event.preventDefault()
             const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect()
             let nodeData = event.dataTransfer.getData('application/reactflow')
-            console.log("1 onDrop nodeData:", nodeData)
+            // console.log("1 onDrop nodeData:", nodeData)
             // check if the dropped element is valid
             if (typeof nodeData === 'undefined' || !nodeData) {
                 return
             }
-            console.log("2 onDrop nodeData:", nodeData)
+            // console.log("2 onDrop nodeData:", nodeData)
             nodeData = JSON.parse(nodeData)
 
             const position = reactFlowInstance.project({

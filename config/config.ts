@@ -119,6 +119,16 @@ export default defineConfig({
           component: './Store/views/tools'
         },
         {
+          path: 'llmfactors',
+          // name: '事件',
+          component: './Store/views/llmfactors'
+        },
+        {
+          path: 'quantfactors',
+          // name: '事件',
+          component: './Store/views/quantfactors'
+        },                 
+        {
           path: 'assistants',
           // name: '事件',
           component: './Store/views/assistants'

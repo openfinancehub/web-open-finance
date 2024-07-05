@@ -97,7 +97,7 @@ const assistantAvailableModels = [
 ]
 
 const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     useNotifier()
     const dispatch = useDispatch()
     const enqueueSnackbar = (...args) => dispatch(enqueueSnackbarAction(...args))
@@ -1070,7 +1070,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 AssistantDialog.propTypes = {

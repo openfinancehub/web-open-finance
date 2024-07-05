@@ -14,7 +14,7 @@ import useNotifier from '@/pages/Store/utils/useNotifier'
 import ChatFeedback from '@/pages/Store/ui-component/extended/ChatFeedback'
 
 const ChatFeedbackDialog = ({ show, dialogProps, onCancel }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
 
     useNotifier()
@@ -43,7 +43,7 @@ const ChatFeedbackDialog = ({ show, dialogProps, onCancel }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 ChatFeedbackDialog.propTypes = {

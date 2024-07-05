@@ -34,7 +34,7 @@ const dashboard = {
             title: '分析员',
             type: 'item',
             url: '/store/agents',
-            icon: icons.IconBuildingStore,
+            icon: icons.IconUsersGroup,
             breadcrumbs: true
         },        
         {
@@ -63,11 +63,27 @@ const dashboard = {
             breadcrumbs: true
         },
         {
+            id: 'llmfactor',
+            title: 'LLM因子',
+            type: 'item',
+            url: '/store/llmfactors',
+            icon: icons.IconRobot,
+            breadcrumbs: true
+        },
+        {
+            id: 'quantfactor',
+            title: '量化因子',
+            type: 'item',
+            url: '/store/quantfactors',
+            icon: icons.IconRobot,
+            breadcrumbs: true
+        },                
+        {
             id: 'assistants',
             title: '模型',
             type: 'item',
             url: '/store/assistants',
-            icon: icons.IconRobot,
+            icon: icons.IconBuildingStore,
             breadcrumbs: true
         },
         {

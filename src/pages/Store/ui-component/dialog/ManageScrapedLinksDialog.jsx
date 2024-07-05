@@ -34,7 +34,7 @@ import {
 } from '@/pages/Store/store/actions'
 
 const ManageScrapedLinksDialog = ({ show, dialogProps, onCancel, onSave }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
 
     useNotifier()
@@ -229,7 +229,7 @@ const ManageScrapedLinksDialog = ({ show, dialogProps, onCancel, onSave }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 ManageScrapedLinksDialog.propTypes = {

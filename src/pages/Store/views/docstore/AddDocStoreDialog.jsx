@@ -26,7 +26,7 @@ import documentStoreApi from '@/pages/Store/api/documentstore'
 import useNotifier from '@/pages/Store/utils/useNotifier'
 
 const AddDocStoreDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
 
     const dispatch = useDispatch()
 
@@ -215,7 +215,7 @@ const AddDocStoreDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 AddDocStoreDialog.propTypes = {

@@ -11,7 +11,7 @@ import { baseURL } from '@/pages/Store/store/constant'
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/pages/Store/store/actions'
 
 const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelected }) => {
-    const portalElement = document.getElementById('portal')
+    const portalElement = document.getElementById('root')
     const dispatch = useDispatch()
     const theme = useTheme()
     const [searchValue, setSearchValue] = useState('')
@@ -162,7 +162,7 @@ const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelecte
         </Dialog>
     ) : null
 
-    // return createPortal(component, portalElement)
+    return createPortal(component, portalElement)
 }
 
 CredentialListDialog.propTypes = {

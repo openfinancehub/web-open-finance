@@ -174,6 +174,7 @@ const CanvasHeader = ({ chatflow, isAgentCanvas, handleSaveFlow, handleDeleteFlo
     const onSaveChatflowClick = () => {
         if (chatflow.id) handleSaveFlow(flowName)
         else setFlowDialogOpen(true)
+        // console.log("flowDialogOpen: ", flowDialogOpen)
     }
 
     const onConfirmSaveName = (flowName) => {
