@@ -4,7 +4,7 @@ import Models from './components/FinanceModels/Models'
 import CategoryFigure from './components/FinanceModels/CategoryFigure'
 import React, { useState } from 'react';
 import SearchCompany from './components/FinanceModels/SearchCompany'
-import MsgCard from './components/Info/Market'
+import MsgCard from './components/Info'
 
 const Home: React.FC = () => {
   const [isActivePage, setActivePage] = useState(false);

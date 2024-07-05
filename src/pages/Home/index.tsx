@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd';
 import { Anchor, Col, Menu, Row } from 'antd';
 import { ProCard } from '@ant-design/pro-components';
 import SearchCompany from './components/FinanceModels/SearchCompany';
-import MsgCard from './components/Info/Market';
+import MsgCard from './components/Info';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
