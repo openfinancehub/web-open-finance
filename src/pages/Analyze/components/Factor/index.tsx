@@ -21,6 +21,7 @@ import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../Public/left"
 // import {Linedata,lineType,linealldata} from "./stock-DJI"
 import { Select, InputNumber, Button,Table } from 'antd'
+import { method } from 'lodash';
 echarts.use([
     ToolboxComponent,
     TooltipComponent,
@@ -188,6 +189,7 @@ const Factor = () => {
            beforGetUid(res.uid,1)
         }).catch(err => { console.log(err) })
     }
+
     // 切换股票
     const handleDataFromChild = (butttonId: string, buttonNum: string,buttonStr:string) => {
         getstock_kline(butttonId)
