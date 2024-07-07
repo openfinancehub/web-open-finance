@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getCode, updateCode } from '@/pages/Home/service';
+import { FactorService } from '../../service/';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { Button, message, Space, Form, Input, Radio, Tooltip, Col, Row } from 'antd';
@@ -49,7 +49,7 @@ const ModelsCode: React.FC<{
       try {
         // 开始加载  
         toggleLoading(0, true);
-        const response = await updateCode(factorValue, modelValue, modelCode, modelText, '');
+        const response = await FactorService.updateCode(factorValue, modelValue, modelCode, modelText, '');
         // console.log(response);
         // 处理响应数据  
         if (response && response.ret_code === 0) {
@@ -75,7 +75,7 @@ const ModelsCode: React.FC<{
   //初始化数据
   const handleTriggerEvent = async () => {
     if (modelValue && factorValue) {
-      const dataJson = await getCode(factorValue, modelValue);
+      const dataJson = await FactorService.getCode(factorValue, modelValue);
       // dataJson?.result
       // console.log(dataJson)
       // console.log(dataJson?.result.data)

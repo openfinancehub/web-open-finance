@@ -1,8 +1,7 @@
-import { getStock } from '@/pages/Home/service';
 import type { ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
-
+import { MarketService } from '../../../service/';
 
 interface StockData {
   // name: string;
@@ -85,7 +84,7 @@ export default () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await getStock();
+      const response = await MarketService.getStock();
       const { features = [], summary = [] } = response.result || {};
 
       const newColumns = createNewColumns(features);

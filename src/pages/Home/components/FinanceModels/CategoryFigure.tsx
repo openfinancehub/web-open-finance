@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import G6 from '@antv/g6';
 import { message } from 'antd';
-import { getModels, categoryJson } from '../../service';
+import { FactorService } from '../../service/';
 
 const transformData = (inputData: { [x: string]: any[]; }) => {
   const categories = Object.keys(inputData);
@@ -22,7 +22,7 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
 
   //初始化因子结构数据
   const handleTriggerEvent = async (factor: string) => {
-    const dataJson = await getModels(factor);
+    const dataJson = await FactorService.getModels(factor);
     if (dataJson != null) {
       onFilterFinance(dataJson.models);
     }
@@ -32,7 +32,7 @@ const CategoryRadialTreeGraph = ({ onFilterFinance }: { onFilterFinance: (data: 
     containerRef: React.RefObject<HTMLDivElement>,
   ) => {
     try {
-      const dataJson = await categoryJson();
+      const dataJson = await FactorService.categoryJson();
       const transformedData = transformData(dataJson.category);
 
       const container = containerRef.current;

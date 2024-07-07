@@ -3,7 +3,8 @@ import { Button, Input, Tag } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { LikeOutlined, StarOutlined } from '@ant-design/icons';
 import { Description, ModelsItem, ListCategoryType, modelsData } from '../../data';
-import { getModels, categoryJson } from '../../service';
+import { FactorService } from '../../service/';
+
 
 const IconText = ({ text, icon }: { text: string, icon: React.ReactElement; }) => (
   <span>
@@ -36,15 +37,15 @@ function CategoryItem({ onFilterFinance }: { onFilterFinance: (data: any) => voi
   const [selectedFactor, setSelectedFactor] = useState('');
   //初始化因子结构数据
   const handleTriggerEvent = async (factor: string) => {
-    const dataJson = await getModels(factor);
+    const dataJson = await FactorService.getModels(factor);
     // console.log(dataJson)
-    if (dataJson.models != null && dataJson.ret_code == 0) {
+    if (dataJson && dataJson.models != null && dataJson.ret_code == 0) {
       onFilterFinance(dataJson.models);
     }
   };
   const fetchCategoryJson = async () => {
     try {
-      const response = await categoryJson();
+      const response = await FactorService.categoryJson();
       // console.log(response.data.category)
       const titles = Object.keys(response.category);
       const descriptions = Object.values(response.category);

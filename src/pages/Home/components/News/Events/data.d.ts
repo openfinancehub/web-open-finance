@@ -1,7 +1,7 @@
 import {
     America, China, Britain, Japan, Australia, Germany, Singapore, Brazil, Korea,
     France, Eurobond, Switzerland, Italy, Canada, Russia, HongKong, Taiwan, Sweden, Israel
-} from '../Image';
+} from './Image';
 
 export interface economicType {
     actual: string,

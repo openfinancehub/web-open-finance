@@ -12,7 +12,6 @@ import {
 import { LineChart, CustomChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import { Restore } from '@mui/icons-material';
 
 echarts.use([
     TitleComponent,
@@ -30,34 +29,26 @@ echarts.use([
 
 const WindChart = ({
     seriesData = {},
-    dataZoom = {},
-    legendData = {},
+    legendData,
 }) => {
     const chartRef = useRef(null);
 
     // 图表的配置
     const option = {
-        // title: {
-        //     text: ''
-        // },
+        title: {
+            text: ''
+        },
         tooltip: {
             trigger: 'axis'
         },
         legend: {
             data: legendData
         },
-        grid: {
-            left: '4%',   // 调整左侧距离，给图例留空间
-            right: '4%',
-            // containLabel: true,
-        },
+        grid: {},
         toolbox: {
             feature: {
-                saveAsImage: {},
-                restore: {},
-            },
-            right: 10,
-            top: 'top',
+                saveAsImage: {}
+            }
         },
         xAxis: {
             type: 'category',
@@ -66,7 +57,17 @@ const WindChart = ({
         yAxis: {
             type: 'value'
         },
-        dataZoom: dataZoom,
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 80,
+                end: 100,
+            },
+            {
+                start: 80,
+                end: 100,
+            }
+        ],
         series: seriesData
     };
 
