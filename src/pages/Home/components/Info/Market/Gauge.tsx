@@ -9,7 +9,7 @@ echarts.use([GaugeChart, CanvasRenderer]);
 type EChartsOption = echarts.ComposeOption<GaugeSeriesOption>;
 
 const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
-    console.log(size, '收到得size')
+    // console.log(size, '收到得size')
     const chartRef = React.useRef<HTMLDivElement>(null);
     const getOption = (): EChartsOption => {
         return {
