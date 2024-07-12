@@ -1,98 +1,88 @@
-import type { ProColumns } from '@ant-design/pro-components';
-import { ProTable } from '@ant-design/pro-components';
-import { useEffect, useState } from 'react';
+import { ProTable, type ProColumns } from '@ant-design/pro-components';
+import { useCallback, useEffect, useState } from 'react';
 import { MarketService } from '../../../service/';
-import { Button } from 'antd';
+import { Button, Drawer, Table } from 'antd';
+import Gauge from './barChart';
+
+interface StockResponse {
+  result: {
+    features: Record<string, { result: any; TIME: any }>;
+    summary: any;
+  };
+}
 
 interface StockData {
   key: string;
-  // number?: number; // 明确定义number属性
-  [key: string]: string | number; // 允许其他数值类型的属性
+  stockRate: number;
 }
 
-// 排序逻辑
-const numberSorter = (a: StockData, b: StockData) => {
-  const numA = (a.number ?? 0) as number;
-  const numB = (b.number ?? 0) as number;
+const initialColumns: ProColumns<StockData>[] = [
+  {
+    title: '股票名称',
+    width: 30,
+    // fixed: 'left',
+    dataIndex: 'name',
+    render: (_, record) => <a>{record.key}</a>,
+  },
+  {
+    title: '推荐指数',
+    width: 60,
+    // fixed: 'left',
+    sorter: (a, b) => {
+      const numA = a.stockRate as unknown as number;
+      const numB = b.stockRate as unknown as number;
+      if (numA < 0 && numB >= 0) {
+        return -1; // 负数排在前面
+      } else if (numA >= 0 && numB < 0) {
+        return 1; // 正数排在前面
+      } else {
+        return numA - numB; // 保持默认的数字排序
+      }
+    },
+    dataIndex: 'number',
+    render: (_, record) => record.stockRate,
+  },
+];
 
-  if (numA < 0 && numB >= 0) return -1;
-  if (numA >= 0 && numB < 0) return 1;
-  return numA - numB;
-};
-
-function createNewColumns(features: Record<string, any>) {
-  return Object.entries(features).map(([titleName, featureObj]) => ({
-    title: titleName,
-    dataIndex: titleName,
-    key: titleName,
-    width: 80,
-    sorter: numberSorter,
+function generateTargetData(summary: { [s: string]: number; }): StockData[] {
+  return Object.entries(summary).map(([name, stockRate]) => ({
+    key: name,
+    stockRate,
   }));
 }
 
-function generateTargetData(features: Record<string, any>, summary: Record<string, number>): StockData[] {
-  const stockNames = Object.values(features)[0].TIME;
-
-  return Object.entries(stockNames).map(([stockName]) => {
-    const stockData: StockData = { key: stockName };
-
-    const summaryValue = summary[stockName];
-    if (summaryValue !== undefined) {
-      stockData['number'] = summaryValue.toFixed(2);
-    }
-
-    Object.entries(features).forEach(([featureName, featureObj]) => {
-      const value = featureObj.result[stockName];
-      stockData[featureName] = value !== undefined && value !== null ? parseFloat(value.toFixed(3)) : 0;
-    });
-
-    return stockData;
-  });
-}
-
-const EnhancedRender = ({ record }: { record: StockData }) => (
-  <div>
-    <p>{record.key} 的内容</p>
-  </div>
-);
-const extendedRender = (record: StockData) => <EnhancedRender record={record} />;
-
 export default function StockTable() {
-  const initialColumns: ProColumns<StockData>[] = [
-    {
-      title: '股票名称',
-      width: 60,
-      fixed: 'left',
-      dataIndex: 'key',
-      render: (text, record) => <a>{record.key}</a>,
-    },
-    {
-      title: '推荐指数',
-      width: 80,
-      sorter: numberSorter,
-      dataIndex: 'number',
-      render: (text, record) => <a>{record.number}</a>,
-    },
-  ];
 
-  const [data, setData] = useState<StockData[]>([]);
-  const [originalData, setOriginalData] = useState<StockData[]>([]);
-  const [columns, setColumns] = useState<ProColumns<StockData>[]>(initialColumns);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [stockKey, setStockKey] = useState<string>('');
+  const [indicatorsData, setIndicatorsData] = useState<{ [key: string]: { [company: string]: any[] } }>({});
+  const [data, setData] = useState<any[]>([]);
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const response = await MarketService.getStock();
-      const { features = [], summary = {} } = response.result || {};
+      const { result } = response as StockResponse;
 
-      const newColumns = createNewColumns(features);
-      setColumns([...initialColumns, ...newColumns]);
-
-      const targetData = generateTargetData(features, summary);
-      console.log('Generated Data:', targetData);
+      const targetData = generateTargetData(result.summary);
+      // console.log(targetData)
       setData(targetData);
-      setOriginalData(targetData);
+
+      const newIndicatorsData = Object.entries(result.features).reduce(
+        (acc, [key, value]) => {
+          if (value?.result?.[stockKey] && value.TIME?.[stockKey]) {
+            acc[key] = {
+              xData: value.result[stockKey],
+              yData: value.TIME[stockKey],
+            };
+          }
+          return acc;
+        },
+        {} as { [key: string]: { xData: any[], yData: any[] } }
+      );
+      console.log(newIndicatorsData, 'newIndicatorsData');
+
+      setIndicatorsData(newIndicatorsData);
     } catch (error) {
       console.error('Fetch data error:', error);
     } finally {
@@ -100,83 +90,103 @@ export default function StockTable() {
     }
   };
 
-  const handleSearch = (params: any) => {
-    const filteredData = originalData.filter(item => item.key.includes(params));
-    setData(filteredData);
-  };
-
-  const exportExcel = (params: any) => {
-    console.log(params, 'params');
-    // 当params同时包含current和pageSize，且没有其他额外属性时，执行setData(originalData)
-    if ('current' in params && 'pageSize' in params && Object.keys(params).length === 2) {
-      setData(originalData);
-    }
-    // 当params同时包含current和pageSize，以及有其他任意数据时，执行过滤并setData(filteredData)
-    else if ('current' in params && 'pageSize' in params) {
-      const filteredData = originalData.filter(item => item.key.includes(params.key));
-      setData(filteredData);
-    }
-    // 如果params不包含current和pageSize，则进行过滤操作
-    else {
-      const filteredData = originalData.filter(item => item.key.includes(params));
-      setData(filteredData);
-    }
-    // return filteredData
-  };
+  const handleViewClick = useCallback(() => {
+    // 这里可以添加额外的逻辑，例如更新其他状态或触发其他操作
+    setOpen(true);
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [stockKey]);
+
+  const [open, setOpen] = useState(false);
+  const onClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <ProTable
-      loading={isLoading}
-      columns={columns}
-      dataSource={data}
-      // params={params}
-      request={(params) => {
-        return exportExcel(params)
-      }}
-      scroll={{ x: 2000 }}
-      // options={{
-      //   search: {
-      //     title: '股票名称',
-      //     placeholder: '请输入股票名称',
-      //     onSearch: handleSearch,
-      //   },
-      // }}
-      search={{
-        labelWidth: 100,
-        span: 12,
-        optionRender: ({ searchText, resetText }, { form }, dom) => [
-          <Button
-            key="searchText"
-            type="primary"
-            onClick={() => {
-              form?.submit();
-            }}
-          >
-            {searchText}
-          </Button>,
-          <Button
-            key="resetText"
-            onClick={() => {
-              form?.resetFields();
-            }}
-          >
-            {resetText}
-          </Button>
-        ]
-      }}
-      pagination={{
-        pageSize: 10,
-      }
-      }
-      expandable={{
-        columnWidth: 17,
-        expandedRowRender: extendedRender,
-      }}
-      rowKey="key"
-    />
+    <div>
+      <div>
+        <ProTable
+          loading={isLoading}
+          columns={initialColumns}
+          dataSource={data}
+          scroll={{ x: 800 }}
+          options={false}
+          search={false}
+          rowSelection={{
+            // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
+            // 注释该行则默认不显示下拉选项
+            type: 'radio',
+            selections: false,
+            // selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
+            // defaultSelectedRowKeys: [1],
+            onChange: (selectedRowKeys, selectedRows) => {
+              // 当选择项改变时，你可以在这里处理逻辑
+              // selectedRowKeys 是选中的行的键的数组，selectedRows 是选中的行对象数组
+              if (selectedRowKeys.length > 0) {
+                setStockKey(selectedRows[0].key);
+              }
+            },
+          }}
+          tableAlertRender={({
+            selectedRowKeys,
+            selectedRows,
+            onCleanSelected,
+          }) => {
+            // console.log(selectedRowKeys, selectedRows);
+            // 当有行被选中时，设置 selectedStock
+            if (selectedRowKeys.length > 0) {
+              setStockKey(selectedRows[0].key);
+            }
+            return (
+              <div >
+                {/* <span>
+                  已选 {selectedRowKeys.length} 项
+                  <a style={{ marginInlineStart: 8 }} onClick={onCleanSelected}>
+                    取消选择
+                  </a>
+                </span> */}
+                <span>{`当前选择: ${selectedRowKeys.length > 0 ? selectedRows[0].key : ''}`}</span>
+              </div>
+            );
+          }}
+          tableAlertOptionRender={() => {
+            return (
+              <div>
+                <a onClick={handleViewClick}>查看详细内容</a>
+              </div>
+            );
+          }}
+          pagination={{
+            pageSize: 10,
+          }}
+          rowKey="key"
+        />
+      </div>
+      <div>
+        <Drawer
+          title={stockKey}
+          placement="right"
+          size={'large'}
+          onClose={onClose}
+          open={open}
+        // extra={
+        //   <Space>
+        //     <Button onClick={onClose}>Cancel</Button>
+        //     <Button type="primary" onClick={onClose}>
+        //       OK
+        //     </Button>
+        //   </Space>
+        // }
+        >
+          {Object.entries(indicatorsData).map(([titleName, { xData, yData }], index) => (
+            <div key={index}>
+              <Gauge titleName={titleName} xData={xData} yData={yData} />
+            </div>
+          ))}
+        </Drawer>
+      </div>
+    </div >
   );
 }
