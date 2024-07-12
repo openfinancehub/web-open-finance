@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProCard } from '@ant-design/pro-components';
 import { PoweroffOutlined } from '@ant-design/icons';
-import { Link, request } from 'umi';
+import { request } from 'umi';
 import './style.less'
 import * as echarts from 'echarts/core';
 import {
@@ -19,8 +19,8 @@ import {
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../Public/left"
-// import {Linedata,lineType,linealldata} from "./stock-DJI"
 import { Select, InputNumber, Button,Table } from 'antd'
+import { method } from 'lodash';
 echarts.use([
     ToolboxComponent,
     TooltipComponent,
@@ -117,8 +117,6 @@ const Factor = () => {
         }).then((res) => {
             const data = JSON.parse(res.data)[60].factors
             const data1 = JSON.parse(res.data)[60].time
-
-            console.log(data1,"折线的数据");
             setFactorTime(data1)
             setHistoryData(data)
             let dataFactorkey = Object.keys(data)
@@ -188,6 +186,7 @@ const Factor = () => {
            beforGetUid(res.uid,1)
         }).catch(err => { console.log(err) })
     }
+
     // 切换股票
     const handleDataFromChild = (butttonId: string, buttonNum: string,buttonStr:string) => {
         getstock_kline(butttonId)

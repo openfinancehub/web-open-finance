@@ -3,9 +3,7 @@ import {Tabs,TabsProps, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import './style.less';
 import Left from '../Public/left'
-import Custom from './component/Custom'
 import PublicStrategy from './component/PublicStrategy';
-import OwnStrategy from './component/OwnStrategy';
 const Strategy = () => {
   const size = 'large';
   const [buttonId,setButtonId] = useState('')
