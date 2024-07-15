@@ -9,7 +9,8 @@ const Settings: LayoutSettings & {
   // primaryColor: '#1890ff',
   layout: 'mix',
   splitMenus: true,
-  logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',  
+  // logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',  
+  logo: '～@/components/assets/images/openfinance_dark_log.png',
   menu: {
     locale: false
   },

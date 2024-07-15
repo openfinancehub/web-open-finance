@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles'
-import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from '@mui/material'
+import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery} from '@mui/material'
 
 // project imports
 import Header from './Header'
@@ -58,7 +58,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 
 const MainLayout = ({menulist}) => {
     // console.log("menulist", menulist)
-    const theme = useTheme()
+    const theme = useTheme()   
     const matchDownMd = useMediaQuery(theme.breakpoints.down('lg'))
 
     // Handle left drawer
@@ -67,7 +67,6 @@ const MainLayout = ({menulist}) => {
     const handleLeftDrawerToggle = () => {
         dispatch({ type: SET_MENU, opened: !leftDrawerOpened })
     }
-
     useEffect(() => {
         setTimeout(() => dispatch({ type: SET_MENU, opened: !matchDownMd }), 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,7 +76,7 @@ const MainLayout = ({menulist}) => {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             {/* header */}
-            <AppBar
+            {/* <AppBar
                 enableColorOnDark
                 position='fixed'
                 color='inherit'
@@ -87,10 +86,10 @@ const MainLayout = ({menulist}) => {
                     transition: leftDrawerOpened ? theme.transitions.create('width') : 'none'
                 }}
             >
-                <Toolbar sx={{ height: `${headerHeight}px`, borderBottom: '1px solid', borderColor: theme.palette.primary[200] + 75 }}>
-                    <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
+                <Toolbar sx={{ height: `${headerHeight}px`, borderBottom: '1px solid', borderColor: theme.palette.primary[200] + 75 }}>                     
+                    <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />            
                 </Toolbar>
-            </AppBar>
+            </AppBar> */}
 
             {/* drawer */}
             <Sidebar drawerOpen={leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} menulist={menulist}/>

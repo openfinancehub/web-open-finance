@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 // material-ui
 import { useTheme } from '@mui/material/styles'
-import { Avatar, Box, ButtonBase, Switch } from '@mui/material'
+import { Avatar, Box, ButtonBase, Switch, Tabs, Tab} from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 // project imports
@@ -72,8 +72,12 @@ const Header = ({ handleLeftDrawerToggle }) => {
     const navigate = useNavigate()
 
     const customization = useSelector((state) => state.customization)
+    const [value, setValue] = useState(0)
 
     const [isDark, setIsDark] = useState(customization.isDarkMode)
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };     
     const dispatch = useDispatch()
 
     const changeDarkMode = () => {
@@ -125,6 +129,12 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     </Avatar>
                 </ButtonBase>
             </Box>
+            {/* <Box sx={{ flexGrow: 0.05 }} />    
+            <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary">
+                <Tab label="市场" />
+                <Tab label="量化" />
+                <Tab label="问答" />
+            </Tabs>             */}
             <Box sx={{ flexGrow: 1 }} />
             <MaterialUISwitch checked={isDark} onChange={changeDarkMode} />
             <Box sx={{ ml: 2 }}></Box>
