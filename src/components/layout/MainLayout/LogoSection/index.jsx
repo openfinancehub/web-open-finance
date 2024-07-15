@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ButtonBase } from '@mui/material'
 
 // project imports
-import config from '@/pages/Store/config'
+import config from '@/pages/config'
 import Logo from '@/components//extended/Logo'
 
 // ==============================|| MAIN LOGO ||============================== //

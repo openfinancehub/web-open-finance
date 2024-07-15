@@ -7,9 +7,9 @@ import { useTheme } from '@mui/material/styles'
 import { IconMessage, IconX, IconEraser, IconArrowsMaximize } from '@tabler/icons-react'
 
 // project import
-import { StyledFab } from '@/pages/Store/ui-component/button/StyledFab'
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import Transitions from '@/pages/Store/ui-component/extended/Transitions'
+import { StyledFab } from '@/components//button/StyledFab'
+import MainCard from '@/components//cards/MainCard'
+import Transitions from '@/components//extended/Transitions'
 import { ChatMessage } from './ChatMessage'
 import ChatExpandDialog from './ChatExpandDialog'
 

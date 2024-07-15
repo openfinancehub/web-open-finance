@@ -27,9 +27,9 @@ import { alpha, styled, useTheme } from '@mui/material/styles'
 import { tableCellClasses } from '@mui/material/TableCell'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
+import MainCard from '@/components//cards/MainCard'
 import AddDocStoreDialog from '@/pages/Store/views/docstore/AddDocStoreDialog'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 import DocumentLoaderListDialog from '@/pages/Store/views/docstore/DocumentLoaderListDialog'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
@@ -47,12 +47,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import FileDeleteIcon from '@mui/icons-material/Delete'
 import FileEditIcon from '@mui/icons-material/Edit'
 import FileChunksIcon from '@mui/icons-material/AppRegistration'
-import doc_store_details_emptySVG from '@/pages/Store/assets/images/doc_store_details_empty.svg'
+import doc_store_details_emptySVG from '@/components/assets/images/doc_store_details_empty.svg'
 
 // store
 import { closeSnackbar as closeSnackbarAction, enqueueSnackbar as enqueueSnackbarAction } from '@/pages/Store/store/actions'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import { StyledButton } from '@/components//button/StyledButton'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 
 // ==============================|| DOCUMENTS ||============================== //
 

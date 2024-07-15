@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 // material-ui
 import { useTheme } from '@mui/material/styles'
 import { Avatar, Box, ButtonBase, Typography, Stack } from '@mui/material'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import { StyledButton } from '@/components//button/StyledButton'
 
 // icons
 import { IconCopy, IconChevronLeft } from '@tabler/icons-react'

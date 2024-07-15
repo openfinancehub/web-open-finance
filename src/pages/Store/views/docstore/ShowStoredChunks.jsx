@@ -8,14 +8,14 @@ import { Box, Card, Button, Grid, IconButton, Stack, Typography } from '@mui/mat
 import { useTheme, styled } from '@mui/material/styles'
 import CardContent from '@mui/material/CardContent'
 import { IconLanguage, IconX, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
-import chunks_emptySVG from '@/pages/Store/assets/images/chunks_empty.svg'
+import chunks_emptySVG from '@/components/assets/images/chunks_empty.svg'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import { BackdropLoader } from '@/pages/Store/ui-component/loading/BackdropLoader'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import MainCard from '@/components//cards/MainCard'
+import { BackdropLoader } from '@/components//loading/BackdropLoader'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 import ExpandedChunkDialog from './ExpandedChunkDialog'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 
 // API
 import documentsApi from '@/pages/Store/api/documentstore'

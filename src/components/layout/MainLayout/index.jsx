@@ -56,8 +56,8 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
-const MainLayout = () => {
-    // console.log("MainLayout")
+const MainLayout = ({menulist}) => {
+    // console.log("menulist", menulist)
     const theme = useTheme()
     const matchDownMd = useMediaQuery(theme.breakpoints.down('lg'))
 
@@ -93,7 +93,7 @@ const MainLayout = () => {
             </AppBar>
 
             {/* drawer */}
-            <Sidebar drawerOpen={leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+            <Sidebar drawerOpen={leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} menulist={menulist}/>
 
             {/* main content */}
             <Main theme={theme} open={leftDrawerOpened}>

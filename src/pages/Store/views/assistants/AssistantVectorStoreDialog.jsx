@@ -9,11 +9,11 @@ import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackba
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, OutlinedInput, Typography } from '@mui/material'
 
 // Project imports
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
-import { SwitchInput } from '@/pages/Store/ui-component/switch/Switch'
-import { Dropdown } from '@/pages/Store/ui-component/dropdown/Dropdown'
-import { BackdropLoader } from '@/pages/Store/ui-component/loading/BackdropLoader'
+import { StyledButton } from '@/components//button/StyledButton'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
+import { SwitchInput } from '@/components//switch/Switch'
+import { Dropdown } from '@/components//dropdown/Dropdown'
+import { BackdropLoader } from '@/components//loading/BackdropLoader'
 
 // Icons
 import { IconX } from '@tabler/icons-react'

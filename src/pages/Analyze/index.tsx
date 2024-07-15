@@ -3,6 +3,7 @@ import { Tabs, TabsProps } from 'antd';
 import Factor from './components/Factor'
 import Strategy from './components/Strategy'
 import Screen from "./components/Screen";
+
 const HomePage: React.FC = () => {
   const items: TabsProps['items'] = [
     {

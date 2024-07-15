@@ -13,8 +13,8 @@ import {
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Typography, OutlinedInput } from '@mui/material'
 
 // Project imports
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import { StyledButton } from '@/components//button/StyledButton'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 
 // Icons
 import { IconX, IconFiles } from '@tabler/icons-react'

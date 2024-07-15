@@ -8,8 +8,8 @@ import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackba
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Typography, OutlinedInput } from '@mui/material'
 
 // Project imports
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import { StyledButton } from '@/components//button/StyledButton'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 
 // Icons
 import { IconX, IconVariable } from '@tabler/icons-react'
@@ -24,7 +24,7 @@ import useNotifier from '@/pages/Store/utils/useNotifier'
 
 // const
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/pages/Store/store/actions'
-import { Dropdown } from '@/pages/Store/ui-component/dropdown/Dropdown'
+import { Dropdown } from '@/components//dropdown/Dropdown'
 
 const variableTypes = [
     {

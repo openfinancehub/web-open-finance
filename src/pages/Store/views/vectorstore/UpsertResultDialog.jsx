@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import ReactJson from 'flowise-react-json-view'
 import { Typography, Card, CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import StatsCard from '@/pages/Store/ui-component/cards/StatsCard'
+import StatsCard from '@/components//cards/StatsCard'
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/pages/Store/store/actions'
 
 const UpsertResultDialog = ({ show, dialogProps, onCancel }) => {

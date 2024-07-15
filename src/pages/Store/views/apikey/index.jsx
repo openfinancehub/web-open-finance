@@ -26,11 +26,11 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import { useTheme, styled } from '@mui/material/styles'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import MainCard from '@/components//cards/MainCard'
+import { StyledButton } from '@/components//button/StyledButton'
 import APIKeyDialog from './APIKeyDialog'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 // API
@@ -45,7 +45,7 @@ import useNotifier from '@/pages/Store/utils/useNotifier'
 
 // Icons
 import { IconTrash, IconEdit, IconCopy, IconChevronsUp, IconChevronsDown, IconX, IconPlus, IconEye, IconEyeOff } from '@tabler/icons-react'
-import APIEmptySVG from '@/pages/Store/assets/images/api_empty.svg'
+import APIEmptySVG from '@/components/assets/images/api_empty.svg'
 
 // ==============================|| APIKey ||============================== //
 

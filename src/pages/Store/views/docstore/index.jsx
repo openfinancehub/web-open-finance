@@ -21,12 +21,12 @@ import {
 import { useTheme } from '@mui/material/styles'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import DocumentStoreCard from '@/pages/Store/ui-component/cards/DocumentStoreCard'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import MainCard from '@/components//cards/MainCard'
+import DocumentStoreCard from '@/components//cards/DocumentStoreCard'
+import { StyledButton } from '@/components//button/StyledButton'
 import AddDocStoreDialog from '@/pages/Store/views/docstore/AddDocStoreDialog'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import DocumentStoreStatus from '@/pages/Store/views/docstore/DocumentStoreStatus'
 
 // API
@@ -35,7 +35,7 @@ import documentsApi from '@/pages/Store/api/documentstore'
 
 // icons
 import { IconPlus, IconLayoutGrid, IconList } from '@tabler/icons-react'
-import doc_store_empty from '@/pages/Store/assets/images/doc_store_empty.svg'
+import doc_store_empty from '@/components/assets/images/doc_store_empty.svg'
 
 // const
 import { baseURL, gridSpacing } from '@/pages/Store/store/constant'

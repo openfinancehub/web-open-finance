@@ -6,7 +6,7 @@ import { IconButton } from '@mui/material'
 import { IconEdit } from '@tabler/icons-react'
 
 // project import
-import { AsyncDropdown } from '@/pages/Store/ui-component/dropdown/AsyncDropdown'
+import { AsyncDropdown } from '@/components//dropdown/AsyncDropdown'
 import AddEditCredentialDialog from '@/pages/Store/views/credentials/AddEditCredentialDialog'
 import CredentialListDialog from '@/pages/Store/views/credentials/CredentialListDialog'
 

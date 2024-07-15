@@ -14,12 +14,12 @@ import { useTheme, styled } from '@mui/material/styles'
 import { IconScissors, IconArrowLeft, IconDatabaseImport, IconBook, IconX, IconEye } from '@tabler/icons-react'
 
 // Project import
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import { BackdropLoader } from '@/pages/Store/ui-component/loading/BackdropLoader'
+import MainCard from '@/components//cards/MainCard'
+import { StyledButton } from '@/components//button/StyledButton'
+import { BackdropLoader } from '@/components//loading/BackdropLoader'
 import DocStoreInputHandler from '@/pages/Store/views/docstore/DocStoreInputHandler'
-import { Dropdown } from '@/pages/Store/ui-component/dropdown/Dropdown'
-import { StyledFab } from '@/pages/Store/ui-component/button/StyledFab'
+import { Dropdown } from '@/components//dropdown/Dropdown'
+import { StyledFab } from '@/components//button/StyledFab'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 import ExpandedChunkDialog from './ExpandedChunkDialog'
 

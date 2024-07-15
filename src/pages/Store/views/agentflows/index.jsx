@@ -6,15 +6,15 @@ import { Box, Skeleton, Stack, ToggleButton, ToggleButtonGroup } from '@mui/mate
 import { useTheme } from '@mui/material/styles'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import ItemCard from '@/pages/Store/ui-component/cards/ItemCard'
+import MainCard from '@/components//cards/MainCard'
+import ItemCard from '@/components//cards/ItemCard'
 import { gridSpacing } from '@/pages/Store/store/constant'
-import AgentsEmptySVG from '@/pages/Store/assets/images/agents_empty.svg'
-import LoginDialog from '@/pages/Store/ui-component/dialog/LoginDialog'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
-import { FlowListTable } from '@/pages/Store/ui-component/table/FlowListTable'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import AgentsEmptySVG from '@/components/assets/images/agents_empty.svg'
+import LoginDialog from '@/components//dialog/LoginDialog'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
+import { FlowListTable } from '@/components//table/FlowListTable'
+import { StyledButton } from '@/components//button/StyledButton'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 // API

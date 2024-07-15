@@ -6,13 +6,13 @@ import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackba
 import { cloneDeep } from 'lodash'
 
 import { Box, Button, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Stack, OutlinedInput } from '@mui/material'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import { Grid } from '@/pages/Store/ui-component/grid/Grid'
-import { TooltipWithParser } from '@/pages/Store/ui-component/tooltip/TooltipWithParser'
+import { StyledButton } from '@/components//button/StyledButton'
+import { Grid } from '@/components//grid/Grid'
+import { TooltipWithParser } from '@/components//tooltip/TooltipWithParser'
 import { GridActionsCellItem } from '@mui/x-data-grid'
 import DeleteIcon from '@mui/icons-material/Delete'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
-import { CodeEditor } from '@/pages/Store/ui-component/editor/CodeEditor'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
+import { CodeEditor } from '@/components//editor/CodeEditor'
 import HowToUseFunctionDialog from './HowToUseFunctionDialog'
 
 // Icons
