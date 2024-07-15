@@ -23,10 +23,10 @@ import {
 } from '@mui/material'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import MainCard from '@/components//cards/MainCard'
+import { StyledButton } from '@/components//button/StyledButton'
 import CredentialListDialog from './CredentialListDialog'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 import AddEditCredentialDialog from './AddEditCredentialDialog'
 
 // API
@@ -41,12 +41,12 @@ import useNotifier from '@/pages/Store/utils/useNotifier'
 
 // Icons
 import { IconTrash, IconEdit, IconX, IconPlus } from '@tabler/icons-react'
-import CredentialEmptySVG from '@/pages/Store/assets/images/credential_empty.svg'
+import CredentialEmptySVG from '@/components/assets/images/credential_empty.svg'
 
 // const
 import { baseURL } from '@/pages/Store/store/constant'
 import { SET_COMPONENT_CREDENTIALS } from '@/pages/Store/store/actions'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

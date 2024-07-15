@@ -64,12 +64,12 @@ export default defineConfig({
       redirect: '/login'
     },
     {
-      name: 'Factors',
+      name: '首页',
       path: '/home',
       component: './Home',
     },
     {
-      name: 'Store',
+      name: '广场',
       path: '/store',
       component: './Store',
       routes: [
@@ -151,12 +151,12 @@ export default defineConfig({
       ]
     },
     {
-      name: 'Quant',
+      name: '量化',
       path: '/analyze',
       component: './Analyze'
     },
     {
-      name: 'FinChat',
+      name: '问答',
       path: '/finchat',
       component: './Finchat'
     },
@@ -178,19 +178,8 @@ export default defineConfig({
       props: true,
       exact: true
     },
-    // {
-    //   path: '/home/news/market',
-    //   name: 'Market',
-    //   component: './Home/components/News',
-    // },
     {
-      path: '/old',
-      // name: 'Old',
-      component: './Home/old',
-      exact: true
-    },
-    {
-      name: 'Users',
+      name: '用户',
       path: '/user',
       routes: [
         {

@@ -11,8 +11,8 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import Transitions from '@/pages/Store/ui-component/extended/Transitions'
+import MainCard from '@/components//cards/MainCard'
+import Transitions from '@/components//extended/Transitions'
 import settings from '@/pages/Store/menu-items/settings'
 import agentsettings from '@/pages/Store/menu-items/agentsettings'
 

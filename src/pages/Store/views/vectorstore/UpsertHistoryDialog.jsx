@@ -35,9 +35,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { IconChevronsUp, IconChevronsDown, IconTrash, IconX } from '@tabler/icons-react'
 
 // Project imports
-import { TableViewOnly } from '@/pages/Store/ui-component/table/Table'
-import { TooltipWithParser } from '@/pages/Store/ui-component/tooltip/TooltipWithParser'
-import HistoryEmptySVG from '@/pages/Store/assets/images/upsert_history_empty.svg'
+import { TableViewOnly } from '@/components//table/Table'
+import { TooltipWithParser } from '@/components//tooltip/TooltipWithParser'
+import HistoryEmptySVG from '@/components/assets/images/upsert_history_empty.svg'
 
 // Api
 import vectorstoreApi from '@/pages/Store/api/vectorstore'

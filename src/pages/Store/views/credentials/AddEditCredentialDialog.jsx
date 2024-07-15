@@ -9,8 +9,8 @@ import parser from 'html-react-parser'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, OutlinedInput, Typography } from '@mui/material'
 
 // Project imports
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import { StyledButton } from '@/components//button/StyledButton'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 import CredentialInputHandler from './CredentialInputHandler'
 
 // Icons

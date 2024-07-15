@@ -8,8 +8,8 @@ import { Box, Typography, Button, Switch, OutlinedInput, Popover, Stack, IconBut
 import { useTheme } from '@mui/material/styles'
 
 // Project import
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import { TooltipWithParser } from '@/pages/Store/ui-component/tooltip/TooltipWithParser'
+import { StyledButton } from '@/components//button/StyledButton'
+import { TooltipWithParser } from '@/components//tooltip/TooltipWithParser'
 
 // Icons
 import { IconX, IconCopy, IconArrowUpRightCircle } from '@tabler/icons-react'

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { IconDatabaseImport, IconX } from '@tabler/icons-react'
 
 // project import
-import { StyledFab } from '@/pages/Store/ui-component/button/StyledFab'
+import { StyledFab } from '@/components//button/StyledFab'
 import VectorStoreDialog from './VectorStoreDialog'
 import UpsertResultDialog from './UpsertResultDialog'
 

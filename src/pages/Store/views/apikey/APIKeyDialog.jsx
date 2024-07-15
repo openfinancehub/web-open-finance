@@ -18,7 +18,7 @@ import {
     Popover
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import { StyledButton } from '@/components//button/StyledButton'
 
 // Icons
 import { IconX, IconCopy } from '@tabler/icons-react'

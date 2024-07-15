@@ -21,13 +21,13 @@ import {
     OutlinedInput
 } from '@mui/material'
 
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import { TooltipWithParser } from '@/pages/Store/ui-component/tooltip/TooltipWithParser'
-import { Dropdown } from '@/pages/Store/ui-component/dropdown/Dropdown'
-import { MultiDropdown } from '@/pages/Store/ui-component/dropdown/MultiDropdown'
+import { StyledButton } from '@/components//button/StyledButton'
+import { TooltipWithParser } from '@/components//tooltip/TooltipWithParser'
+import { Dropdown } from '@/components//dropdown/Dropdown'
+import { MultiDropdown } from '@/components//dropdown/MultiDropdown'
 import CredentialInputHandler from '@/pages/Store/views/canvas/CredentialInputHandler'
-import { File } from '@/pages/Store/ui-component/file/File'
-import { BackdropLoader } from '@/pages/Store/ui-component/loading/BackdropLoader'
+import { File } from '@/components//file/File'
+import { BackdropLoader } from '@/components//loading/BackdropLoader'
 import DeleteConfirmDialog from './DeleteConfirmDialog'
 import AssistantVectorStoreDialog from './AssistantVectorStoreDialog'
 

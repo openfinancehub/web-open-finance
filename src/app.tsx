@@ -4,6 +4,7 @@
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
 import RightContent from '@/components/RightContent';
 import { history } from 'umi';
+
 export async function getInitialState() {
   if (history.location.pathname !== '/login') {
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -30,6 +31,8 @@ export async function getInitialState() {
 export const layout = () => {
   return {
     logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
+    // logo: "～@/components/assets/images/workflow_empty.svg",
+    // logo: '～@/components/assets/images/openfinance_dark_log.png',
     menu: {
       locale: false
     },

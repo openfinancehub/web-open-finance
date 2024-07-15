@@ -19,15 +19,15 @@ import {
     Typography
 } from '@mui/material'
 
-import { CheckboxInput } from '@/pages/Store/ui-component/checkbox/Checkbox'
-import { BackdropLoader } from '@/pages/Store/ui-component/loading/BackdropLoader'
-import { TableViewOnly } from '@/pages/Store/ui-component/table/Table'
+import { CheckboxInput } from '@/components//checkbox/Checkbox'
+import { BackdropLoader } from '@/components//loading/BackdropLoader'
+import { TableViewOnly } from '@/components//table/Table'
 
 import { IconX, IconBulb } from '@tabler/icons-react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import pythonSVG from '@/pages/Store/assets/images/python.svg'
-import javascriptSVG from '@/pages/Store/assets/images/javascript.svg'
-import cURLSVG from '@/pages/Store/assets/images/cURL.svg'
+import pythonSVG from '@/components/assets/images/python.svg'
+import javascriptSVG from '@/components/assets/images/javascript.svg'
+import cURLSVG from '@/components/assets/images/cURL.svg'
 
 import useApi from '@/pages/Store/hooks/useApi'
 import configApi from '@/pages/Store/api/config'

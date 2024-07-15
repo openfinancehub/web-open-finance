@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles'
 
 // project imports
-import NodeCardWrapper from '@/pages/Store/ui-component/cards/NodeCardWrapper'
-import NodeTooltip from '@/pages/Store/ui-component/tooltip/NodeTooltip'
+import NodeCardWrapper from '@/components//cards/NodeCardWrapper'
+import NodeTooltip from '@/components//tooltip/NodeTooltip'
 import { IconButton, Box } from '@mui/material'
 import { IconCopy, IconTrash } from '@tabler/icons-react'
-import { Input } from '@/pages/Store/ui-component/input/Input'
+import { Input } from '@/components//input/Input'
 
 // const
 import { flowContext } from '@/pages/Store/store/context/ReactFlowContext'

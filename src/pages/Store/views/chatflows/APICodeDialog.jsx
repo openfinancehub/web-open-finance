@@ -21,7 +21,7 @@ import { CopyBlock, atomOneDark } from 'react-code-blocks'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 // Project import
-import { Dropdown } from '@/pages/Store/ui-component/dropdown/Dropdown'
+import { Dropdown } from '@/components//dropdown/Dropdown'
 import ShareChatbot from './ShareChatbot'
 import EmbedChat from './EmbedChat'
 
@@ -30,12 +30,12 @@ import { baseURL } from '@/pages/Store/store/constant'
 import { SET_CHATFLOW } from '@/pages/Store/store/actions'
 
 // Images
-import pythonSVG from '@/pages/Store/assets/images/python.svg'
-import javascriptSVG from '@/pages/Store/assets/images/javascript.svg'
-import cURLSVG from '@/pages/Store/assets/images/cURL.svg'
-import EmbedSVG from '@/pages/Store/assets/images/embed.svg'
-import ShareChatbotSVG from '@/pages/Store/assets/images/sharing.png'
-import settingsSVG from '@/pages/Store/assets/images/settings.svg'
+import pythonSVG from '@/components/assets/images/python.svg'
+import javascriptSVG from '@/components/assets/images/javascript.svg'
+import cURLSVG from '@/components/assets/images/cURL.svg'
+import EmbedSVG from '@/components/assets/images/embed.svg'
+import ShareChatbotSVG from '@/components/assets/images/sharing.png'
+import settingsSVG from '@/components/assets/images/settings.svg'
 import { IconBulb } from '@tabler/icons-react'
 
 // API
@@ -45,8 +45,8 @@ import configApi from '@/pages/Store/api/config'
 
 // Hooks
 import useApi from '@/pages/Store/hooks/useApi'
-import { CheckboxInput } from '@/pages/Store/ui-component/checkbox/Checkbox'
-import { TableViewOnly } from '@/pages/Store/ui-component/table/Table'
+import { CheckboxInput } from '@/components//checkbox/Checkbox'
+import { TableViewOnly } from '@/components//table/Table'
 
 // Helpers
 import { unshiftFiles, getConfigExamplesForJS, getConfigExamplesForPython, getConfigExamplesForCurl } from '@/pages/Store/utils/genericHelper'

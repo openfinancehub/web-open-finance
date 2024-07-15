@@ -32,14 +32,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import Transitions from '@/pages/Store/ui-component/extended/Transitions'
-import { StyledFab } from '@/pages/Store/ui-component/button/StyledFab'
+import MainCard from '@/components//cards/MainCard'
+import Transitions from '@/components//extended/Transitions'
+import { StyledFab } from '@/components//button/StyledFab'
 
 // icons
 import { IconPlus, IconSearch, IconMinus, IconX } from '@tabler/icons-react'
-import OpenfinancePNG from '@/pages/Store/assets/images/openfinance_dark_log.png'
-import LangChainPNG from '@/pages/Store/assets/images/langchain.png'
+import OpenfinancePNG from '@/components/assets/images/openfinance_dark_log.png'
+import LangChainPNG from '@/components/assets/images/langchain.png'
 
 // const
 import { baseURL } from '@/pages/Store/store/constant'

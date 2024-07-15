@@ -12,7 +12,7 @@ import { Button, Card, Input, message as Message, Popover, Radio, Typography, To
 import _ from 'lodash';
 
 import { useEffect, useState } from 'react';
-import { MemoizedReactMarkdown } from '@/pages/Store/ui-component/markdown/MemoizedReactMarkdown'
+import { MemoizedReactMarkdown } from '@/components//markdown/MemoizedReactMarkdown'
 import remarkGfm from 'remark-gfm'
 
 import { ChatList, CompanyList, TaskList, HistoryList} from './components';

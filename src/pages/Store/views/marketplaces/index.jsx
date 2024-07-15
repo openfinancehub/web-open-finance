@@ -21,10 +21,10 @@ import { useTheme } from '@mui/material/styles'
 import { IconLayoutGrid, IconList } from '@tabler/icons-react'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import ItemCard from '@/pages/Store/ui-component/cards/ItemCard'
+import MainCard from '@/components//cards/MainCard'
+import ItemCard from '@/components//cards/ItemCard'
 import { gridSpacing } from '@/pages/Store/store/constant'
-import WorkflowEmptySVG from '@/pages/Store/assets/images/workflow_empty.svg'
+import WorkflowEmptySVG from '@/components/assets/images/workflow_empty.svg'
 import ToolDialog from '@/pages/Store/views/tools/ToolDialog'
 
 // API
@@ -36,9 +36,9 @@ import useApi from '@/pages/Store/hooks/useApi'
 // const
 import { baseURL } from '@/pages/Store/store/constant'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { MarketplaceTable } from '@/pages/Store/ui-component/table/MarketplaceTable'
+import { MarketplaceTable } from '@/components//table/MarketplaceTable'
 import MenuItem from '@mui/material/MenuItem'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 function TabPanel(props) {

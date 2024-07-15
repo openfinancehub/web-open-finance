@@ -5,7 +5,7 @@ import { Tabs, Tab, Box } from '@mui/material'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
 
 // Project import
-import { CheckboxInput } from '@/pages/Store/ui-component/checkbox/Checkbox'
+import { CheckboxInput } from '@/components//checkbox/Checkbox'
 
 // Const
 import { baseURL } from '@/pages/Store/store/constant'
