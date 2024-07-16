@@ -1,5 +1,4 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
-// import RightContent from '@/components/RightContent';
 
 const Settings: LayoutSettings & {
   pwa?: boolean;
@@ -14,8 +13,6 @@ const Settings: LayoutSettings & {
   menu: {
     locale: false
   },
-  // rightContentRender: () => <RightContent />
-
 };
 
 export default Settings;

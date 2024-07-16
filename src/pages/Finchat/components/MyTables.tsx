@@ -1,4 +1,4 @@
-function createTable(data) {  
+function createTable(data: any){  
   // 检查data是否为空
   let tabledata = null
   if (!data || !data.columns || !data.tabledata || data.columns.length === 0 || data.tabledata.length === 0) {  
@@ -6,7 +6,7 @@ function createTable(data) {
   }  
   
   // 根据列名列表构造列配置  
-  const columns = data.columns.map((columnName) => ({  
+  const columns = data.columns.map((columnName: any) => ({  
     title: columnName.toUpperCase(), // 列标题可以转换为大写  
     dataIndex: columnName, // 列数据在数据项中的字段名  
     key: columnName, // 列的唯一标识  
