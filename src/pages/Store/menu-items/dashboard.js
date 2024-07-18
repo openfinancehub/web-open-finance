@@ -20,15 +20,7 @@ const dashboard = {
     id: 'dashboard',
     title: '',
     type: 'group',
-    children: [
-        {
-            id: 'supermarket',
-            title: '商城',
-            type: 'item',
-            url: '/store/marketplaces',
-            icon: icons.IconBuildingStore,
-            breadcrumbs: true
-        },    
+    children: [  
         {
             id: 'agents',
             title: '分析员',

@@ -31,8 +31,6 @@ export async function getInitialState() {
 export const layout = () => {
   return {
     logo: 'https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg',
-    // logo: "～@/components/assets/images/workflow_empty.svg",
-    // logo: '～@/components/assets/images/openfinance_dark_log.png',
     menu: {
       locale: false
     },
