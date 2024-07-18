@@ -105,7 +105,7 @@ const EChartsComponent: React.FC<{ size: number }> = ({ size }) => {
     }, [size]);
 
     return (
-        <div ref={chartRef} style={{ width: "100%", height: "350px", float: 'inline-start' }} />
+        <div ref={chartRef} style={{ width: "50%", height: "350px", float: 'inline-start' }} />
     )
 
 };

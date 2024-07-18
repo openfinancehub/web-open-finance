@@ -29,7 +29,9 @@ echarts.use([
 ]);
 
 const WindChart = ({
+    // 图表数据
     seriesData = {},
+    // 缩放数据比例
     dataZoom = {},
     legendData = {},
 }) => {
@@ -38,16 +40,16 @@ const WindChart = ({
     // 图表的配置
     const option = {
         // title: {
-        //     text: ''
+        //     text: legendData
         // },
         tooltip: {
             trigger: 'axis'
         },
-        legend: {
-            data: legendData
-        },
+        // legend: {
+        //     data: legendData
+        // },
         grid: {
-            left: '4%',   // 调整左侧距离，给图例留空间
+            left: '4%',
             right: '4%',
             // containLabel: true,
         },

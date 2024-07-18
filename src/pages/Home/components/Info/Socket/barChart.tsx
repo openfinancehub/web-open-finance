@@ -64,6 +64,20 @@ const EChartsComponent: React.FC<{ titleName: string, xData: any[], yData: numbe
         };
     };
 
+    // useEffect(() => {
+    //     const initChart = () => {
+    //         if (chartRef.current) {
+    //             const myChart = echarts.init(chartRef.current);
+    //             const option = getOption();
+    //             myChart.setOption(option);
+    //         }
+    //     };
+
+    //     requestAnimationFrame(initChart);
+    // }, [xData, yData]);
+
+    let animationFrameId: number;
+
     useEffect(() => {
         const initChart = () => {
             if (chartRef.current) {
@@ -72,8 +86,14 @@ const EChartsComponent: React.FC<{ titleName: string, xData: any[], yData: numbe
                 myChart.setOption(option);
             }
         };
-        requestAnimationFrame(initChart);
+
+        animationFrameId = requestAnimationFrame(initChart);
+
+        return () => {
+            cancelAnimationFrame(animationFrameId); // 添加清理函数，取消动画帧请求
+        };
     }, [xData, yData]);
+
 
     return (
         <div ref={chartRef} style={{ width: "100%", height: "350px", float: 'inline-start' }} />

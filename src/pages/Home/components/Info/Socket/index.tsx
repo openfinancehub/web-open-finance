@@ -68,6 +68,19 @@ export default function StockTable() {
       // console.log(targetData)
       setData(targetData);
 
+    } catch (error) {
+      console.error('Fetch data error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchCompData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await MarketService.getStock();
+      const { result } = response as StockResponse;
+
       const newIndicatorsData = Object.entries(result.features).reduce(
         (acc, [key, value]) => {
           if (value?.result?.[stockKey] && value.TIME?.[stockKey]) {
@@ -91,12 +104,18 @@ export default function StockTable() {
   };
 
   const handleViewClick = useCallback(() => {
-    // 这里可以添加额外的逻辑，例如更新其他状态或触发其他操作
+    // 点击查看按钮之后添加额外的逻辑
     setOpen(true);
   }, []);
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (stockKey) {
+      fetchCompData();
+    }
   }, [stockKey]);
 
   const [open, setOpen] = useState(false);
@@ -115,7 +134,6 @@ export default function StockTable() {
           options={false}
           search={false}
           rowSelection={{
-            // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
             // 注释该行则默认不显示下拉选项
             type: 'radio',
             selections: false,
@@ -123,7 +141,6 @@ export default function StockTable() {
             // defaultSelectedRowKeys: [1],
             onChange: (selectedRowKeys, selectedRows) => {
               // 当选择项改变时，你可以在这里处理逻辑
-              // selectedRowKeys 是选中的行的键的数组，selectedRows 是选中的行对象数组
               if (selectedRowKeys.length > 0) {
                 setStockKey(selectedRows[0].key);
               }
@@ -134,8 +151,6 @@ export default function StockTable() {
             selectedRows,
             onCleanSelected,
           }) => {
-            // console.log(selectedRowKeys, selectedRows);
-            // 当有行被选中时，设置 selectedStock
             if (selectedRowKeys.length > 0) {
               setStockKey(selectedRows[0].key);
             }
@@ -171,14 +186,6 @@ export default function StockTable() {
           size={'large'}
           onClose={onClose}
           open={open}
-        // extra={
-        //   <Space>
-        //     <Button onClick={onClose}>Cancel</Button>
-        //     <Button type="primary" onClick={onClose}>
-        //       OK
-        //     </Button>
-        //   </Space>
-        // }
         >
           {Object.entries(indicatorsData).map(([titleName, { xData, yData }], index) => (
             <div key={index}>
