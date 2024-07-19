@@ -10,7 +10,7 @@ import { Button, Dialog, IconButton, DialogContent, DialogTitle, Typography } fr
 import { IconEdit, IconTrash, IconX, IconLanguage } from '@tabler/icons-react'
 
 // Project imports
-import { CodeEditor } from '@/pages/Store/ui-component/editor/CodeEditor'
+import { CodeEditor } from '@/components//editor/CodeEditor'
 
 const ExpandedChunkDialog = ({ show, dialogProps, onCancel, onChunkEdit, onDeleteChunk, isReadOnly }) => {
     const portalElement = document.getElementById('root')

@@ -12,10 +12,10 @@ import { IconSettings, IconChevronLeft, IconDeviceFloppy, IconPencil, IconCheck,
 
 // project imports
 import Settings from '@/pages/Store/views/settings'
-import SaveChatflowDialog from '@/pages/Store/ui-component/dialog/SaveChatflowDialog'
+import SaveChatflowDialog from '@/components//dialog/SaveChatflowDialog'
 import APICodeDialog from '@/pages/Store/views/chatflows/APICodeDialog'
-import ViewMessagesDialog from '@/pages/Store/ui-component/dialog/ViewMessagesDialog'
-import ChatflowConfigurationDialog from '@/pages/Store/ui-component/dialog/ChatflowConfigurationDialog'
+import ViewMessagesDialog from '@/components//dialog/ViewMessagesDialog'
+import ChatflowConfigurationDialog from '@/components//dialog/ChatflowConfigurationDialog'
 import UpsertHistoryDialog from '@/pages/Store/views/vectorstore/UpsertHistoryDialog'
 
 // API
@@ -28,7 +28,7 @@ import useApi from '@/pages/Store/hooks/useApi'
 import { generateExportFlowData } from '@/pages/Store/utils/genericHelper'
 import { uiBaseURL } from '@/pages/Store/store/constant'
 import { SET_CHATFLOW } from '@/pages/Store/store/actions'
-import ViewLeadsDialog from '@/pages/Store/ui-component/dialog/ViewLeadsDialog'
+import ViewLeadsDialog from '@/components//dialog/ViewLeadsDialog'
 
 // ==============================|| CANVAS HEADER ||============================== //
 

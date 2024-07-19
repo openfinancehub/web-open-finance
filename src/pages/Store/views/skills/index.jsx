@@ -4,11 +4,11 @@ import { useEffect, useState, useRef } from 'react'
 import { Box, Stack, Button, ButtonGroup, Skeleton } from '@mui/material'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import ItemCard from '@/pages/Store/ui-component/cards/ItemCard'
+import MainCard from '@/components//cards/MainCard'
+import ItemCard from '@/components//cards/ItemCard'
 import { gridSpacing } from '@/pages/Store/store/constant'
-import ToolEmptySVG from '@/pages/Store/assets/images/tools_empty.svg'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
+import ToolEmptySVG from '@/components/assets/images/tools_empty.svg'
+import { StyledButton } from '@/components//button/StyledButton'
 import SkillDialog from './SkillDialog'
 
 // API
@@ -19,7 +19,7 @@ import useApi from '@/pages/Store/hooks/useApi'
 
 // icons
 import { IconPlus, IconFileUpload } from '@tabler/icons-react'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 // ==============================|| CHATFLOWS ||============================== //

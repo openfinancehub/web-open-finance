@@ -3,7 +3,7 @@ import { FullPageChat } from 'flowise-embed-react'
 import { useNavigate } from 'react-router-dom'
 
 // Project import
-import LoginDialog from '@/pages/Store/ui-component/dialog/LoginDialog'
+import LoginDialog from '@/components//dialog/LoginDialog'
 
 // API
 import chatflowsApi from '@/pages/Store/api/chatflows'

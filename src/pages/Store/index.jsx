@@ -2,7 +2,7 @@ import React from 'react'
 import App from '@/pages/Store/App'
 import { store } from '@/pages/Store/store'
 // style + assets
-import '@/pages/Store/assets/scss/style.scss'
+import '@/components/assets/scss/style.scss'
 
 // third party
 

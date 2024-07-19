@@ -4,6 +4,7 @@
 // 更多信息见文档：https://umijs.org/docs/api/runtime-config#getinitialstate
 import RightContent from '@/components/RightContent';
 import { history } from 'umi';
+
 export async function getInitialState() {
   if (history.location.pathname !== '/login') {
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');

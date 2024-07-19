@@ -24,9 +24,9 @@ import {
 } from '@mui/material'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
-import { StyledButton } from '@/pages/Store/ui-component/button/StyledButton'
-import ConfirmDialog from '@/pages/Store/ui-component/dialog/ConfirmDialog'
+import MainCard from '@/components//cards/MainCard'
+import { StyledButton } from '@/components//button/StyledButton'
+import ConfirmDialog from '@/components//dialog/ConfirmDialog'
 
 // API
 import variablesApi from '@/pages/Store/api/variables'
@@ -40,12 +40,12 @@ import useNotifier from '@/pages/Store/utils/useNotifier'
 
 // Icons
 import { IconTrash, IconEdit, IconX, IconPlus, IconVariable } from '@tabler/icons-react'
-import VariablesEmptySVG from '@/pages/Store/assets/images/variables_empty.svg'
+import VariablesEmptySVG from '@/components/assets/images/variables_empty.svg'
 
 // const
 import AddEditVariableDialog from './AddEditVariableDialog'
 import HowToUseVariablesDialog from './HowToUseVariablesDialog'
-import ViewHeader from '@/pages/Store/layout/MainLayout/ViewHeader'
+import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

@@ -6,14 +6,14 @@ import { styled, useTheme } from '@mui/material/styles'
 import { Box, Typography, Divider, Button } from '@mui/material'
 
 // project imports
-import MainCard from '@/pages/Store/ui-component/cards/MainCard'
+import MainCard from '@/components//cards/MainCard'
 import NodeInputHandler from '@/pages/Store/views/canvas/NodeInputHandler'
 import NodeOutputHandler from '@/pages/Store/views/canvas/NodeOutputHandler'
-import AdditionalParamsDialog from '@/pages/Store/ui-component/dialog/AdditionalParamsDialog'
+import AdditionalParamsDialog from '@/components//dialog/AdditionalParamsDialog'
 
 // const
 import { baseURL } from '@/pages/Store/store/constant'
-import OpenfinancePNG from '@/pages/Store/assets/images/openfinance_dark_log.png'
+import OpenfinancePNG from '@/components/assets/images/openfinance_dark_log.png'
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     background: theme.palette.card.main,

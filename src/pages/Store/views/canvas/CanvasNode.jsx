@@ -8,18 +8,18 @@ import { IconButton, Box, Typography, Divider, Button } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 
 // project imports
-import NodeCardWrapper from '@/pages/Store/ui-component/cards/NodeCardWrapper'
-import NodeTooltip from '@/pages/Store/ui-component/tooltip/NodeTooltip'
+import NodeCardWrapper from '@/components//cards/NodeCardWrapper'
+import NodeTooltip from '@/components//tooltip/NodeTooltip'
 import NodeInputHandler from './NodeInputHandler'
 import NodeOutputHandler from './NodeOutputHandler'
-import AdditionalParamsDialog from '@/pages/Store/ui-component/dialog/AdditionalParamsDialog'
-import NodeInfoDialog from '@/pages/Store/ui-component/dialog/NodeInfoDialog'
+import AdditionalParamsDialog from '@/components//dialog/AdditionalParamsDialog'
+import NodeInfoDialog from '@/components//dialog/NodeInfoDialog'
 
 // const
 import { baseURL } from '@/pages/Store/store/constant'
 import { IconTrash, IconCopy, IconInfoCircle, IconAlertTriangle } from '@tabler/icons-react'
 import { flowContext } from '@/pages/Store/store/context/ReactFlowContext'
-import OpenfinancePNG from '@/pages/Store/assets/images/openfinance_dark_log.png'
+import OpenfinancePNG from '@/components/assets/images/openfinance_dark_log.png'
 
 // ===========================|| CANVAS NODE ||=========================== //
 
