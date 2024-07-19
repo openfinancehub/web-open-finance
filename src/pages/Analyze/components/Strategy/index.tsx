@@ -1,11 +1,9 @@
 import { ProCard } from '@ant-design/pro-components';
-import {Tabs,TabsProps, Button } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './style.less';
 import Left from '../Public/left'
 import PublicStrategy from './component/PublicStrategy';
 const Strategy = () => {
-  const size = 'large';
   const [buttonId,setButtonId] = useState('')
   /**
  * 接收导航的数据,切换股票

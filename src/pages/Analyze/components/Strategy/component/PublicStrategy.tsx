@@ -311,9 +311,11 @@ export default function PublicStrategy(props: string) {
           setDetailsModelOpen(true);
           setIsdemoBtn(true);
           setIsModalOpen(false);
-          initBasicEchart();
-          initLineEchart();
           synthesis = [];
+          setTimeout(() => {
+            initBasicEchart();
+            initLineEchart();
+          }, 300);
         }
       })
       .catch(err => {
@@ -601,6 +603,7 @@ export default function PublicStrategy(props: string) {
         title="分析详情"
         open={detailsModalOpen}
         width={1300}
+        onCancel={handleCancelDetails}
         onOk={handleCancelDetails}>
         <ProCard style={{ height: 260 }}>
           <ProCard
@@ -633,7 +636,7 @@ export default function PublicStrategy(props: string) {
           </ProCard>
         </ProCard>
         <ProCard
-          style={{ height: 300, width: '90%' }}
+          style={{ height: 300, width: '100%' }}
           colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
           <div ref={lineRef} style={{ height: '100%' }}></div>
         </ProCard>
