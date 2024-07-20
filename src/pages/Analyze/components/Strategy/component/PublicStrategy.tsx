@@ -1,5 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
+import { getFactorList } from "../api/indexApi";
 import {
   Button,
   Card,
@@ -199,6 +200,10 @@ export default function PublicStrategy(props: string) {
   };
   // 量化因子
   const getQuantList = () => {
+
+    // getFactorList().then((res)=>{
+      
+    // })
     request('http://129.204.166.171:5009/api/v1/quantfactors/', {
       method: 'GET',
       headers: {
