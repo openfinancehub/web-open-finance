@@ -19,7 +19,9 @@ import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
-
+import { FundOutlined } from '@ant-design/icons';
+import ModelAnaly from "./ModelAnaly";
+import StrategyCard from "./StrategyCard";
 echarts.use([
   TitleComponent,
   LegendComponent,
@@ -57,7 +59,6 @@ export default function PublicStrategy(props: string) {
   const [selectedButton, setSelectedButton] = useState('');
   const [raderValue, setRaderValue] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cardList, setCardList] = useState([]);
   const [detailsModalOpen, setDetailsModelOpen] = useState(false);
   const [quantSelectData, setSelectData] = useState([]);
   const [minTime, setMinTime] = useState(5);
@@ -200,28 +201,13 @@ export default function PublicStrategy(props: string) {
   };
   // 量化因子
   const getQuantList = () => {
-
-    // getFactorList().then((res)=>{
-      
-    // })
-    request('http://129.204.166.171:5009/api/v1/quantfactors/', {
+    request('http://129.204.166.171:5003/api/v1/factor/', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     }).then(res => {
       setSelectData(res);
-    });
-  };
-  // 分析员
-  const getAgentsList = () => {
-    request('http://129.204.166.171:5009/api/v1/agents/', {
-      method: 'GET',
-      header: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res => {
-      setCardList(res);
     });
   };
   const GetStrategy = (uid: number, demoTime: number) => {
@@ -380,7 +366,6 @@ export default function PublicStrategy(props: string) {
   useEffect(() => {
     strtegylist();
     getQuantList();
-    getAgentsList();
   }, []);
   const backOrder = (e: any) => {
     setbackData(e.target.value);
@@ -440,24 +425,26 @@ export default function PublicStrategy(props: string) {
     setDetailsModelOpen(false);
   };
   return (
-    <div style={{ height: '100%' }}>
-      <PageHeader title="Agents">
-        <div className="cardList">
-          {cardList.map((item, index) => {
+    <div style={{ height: '88vh', }}>
+    <PageHeader title="因子" >
+    </PageHeader>
+    <div style={{ height: '14vh', overflow: "auto", paddingBottom:'0.5vh',paddingTop:'0.5vh'  }} >
+    <div className="cardList" >
+          {quantSelectData.map((item, index) => {
             return (
               <Card
-                key={index}
-                title={item?.name}
+                key={index} 
                 hoverable
                 style={{ width: '300px' }}
                 onClick={handleOpen}>
-                <p>{item?.description}</p>
+                <FundOutlined /> <p>{item?.name}</p>
               </Card>
             );
           })}
-        </div>
-      </PageHeader>
-
+    </div>
+    </div>
+    <ModelAnaly></ModelAnaly>
+    <StrategyCard></StrategyCard>
       <Modal
         title="策略分析"
         open={isModalOpen}
@@ -506,23 +493,7 @@ export default function PublicStrategy(props: string) {
             style={{ textAlign: 'center' }}
             bordered
             colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
-            <div className="numberSele" style={{ textAlign: 'left' }}>
-              <Space wrap>
-                量化因子：
-                <Select
-                  placeholder="请选择要分析的因子"
-                  style={{
-                    width: 200,
-                    textAlign: 'center'
-                  }}
-                  options={quantSelectData}
-                  fieldNames={{
-                    label: 'name',
-                    value: 'id'
-                  }}
-                />
-              </Space>
-            </div>
+     
             <div className="numberSele">
               <InputNumber
                 size={size}
