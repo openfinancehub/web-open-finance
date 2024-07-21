@@ -51,7 +51,7 @@ const Screen = () => {
       mode: modeLi,
       val: inputValue
     };
-    request('quent-api/fetch', {
+    request('/quent-api/fetch', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

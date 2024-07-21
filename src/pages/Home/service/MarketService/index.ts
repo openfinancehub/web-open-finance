@@ -3,17 +3,17 @@
 import { GETRequest } from '../apiConfig';
 import { PostRequest } from '../apiConfig';
 
-const apiPushUrl = 'http://129.204.166.171:5002/api/';
+const apiPushUrl = 'http://129.204.166.171:5002/api/market/';
 // const apiUrl = 'http://129.204.166.171:5002/api/info/';
 
 export class MarketService {
     // 获取情绪热度
     public static getSentiment(): Promise<any> {
-        return GETRequest(`${apiPushUrl}` + 'strategy/sentiment')
+        return GETRequest(`${apiPushUrl}` + 'sentiment')
     }
     // 获取危险指数
     public static getDanger(): Promise<any> {
-        return GETRequest(`${apiPushUrl}` + 'strategy/danger')
+        return GETRequest(`${apiPushUrl}` + 'danger')
     };
 
     // 获取事件信息
@@ -24,12 +24,12 @@ export class MarketService {
             date: time,
             extra: 'extra',
         };
-        return PostRequest(`${apiPushUrl}` + 'strategy/event', dataStr);
+        return PostRequest(`${apiPushUrl}` + 'event', dataStr);
     };
 
 
     // 获取公司推荐
     public static getStock(): Promise<any> {
-        return GETRequest(`${apiPushUrl}` + 'strategy/stock')
+        return GETRequest(`${apiPushUrl}` + 'stock')
     };
 }
