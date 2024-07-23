@@ -3,7 +3,7 @@
 import { GETRequest } from '../apiConfig';
 import { PostRequest } from '../apiConfig';
 
-const apiPushUrl = 'http://129.204.166.171:5002/api/market/';
+const apiPushUrl = 'http://129.204.166.171:5002/api/v1/market/';
 // const apiUrl = 'http://129.204.166.171:5002/api/info/';
 
 export class MarketService {

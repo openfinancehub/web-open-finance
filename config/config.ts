@@ -26,19 +26,24 @@ export default defineConfig({
       pathRewrite: { '^/api': '/api' }
     },
     '/quent-api': {
-      target: 'http://129.204.166.171:5002/api/v1/model/',
+      target: 'http://129.204.166.171:5003/api/v1/',
       changeOrigin: true,
-      pathRewrite: { '^/quent-api': '' }
+      pathRewrite: { '^/quent-api': 'model' }
     },
+    '/company-api': {
+      target: 'http://129.204.166.171:5002/api/v1/',
+      changeOrigin: true,
+      pathRewrite: { '^/company-api': 'company' }
+    },    
     '/quant': {
       target: 'http://8.138.96.163:8081/',
       changeOrigin: true,
       pathRewrite: { '^/quant': '/quant' }
     },
     '/chat-api': {
-      target: 'http://129.204.166.171:5002/api/',
+      target: 'http://129.204.166.171:5002/api/v1/',
       changeOrigin: true,
-      pathRewrite: { '^/chat-api': '/info' }
+      pathRewrite: { '^/chat-api': '/chat' }
     },
     '/app-api': {
       target: 'http://114.132.71.128/',
