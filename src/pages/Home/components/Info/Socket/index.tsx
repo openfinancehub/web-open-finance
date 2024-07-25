@@ -1,7 +1,7 @@
 
 import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useCallback, useEffect, useState } from 'react';
 import { MarketService } from '../../../service/';
-import { Button, Card, Carousel, Col, Drawer, Input, Row, Typography } from 'antd';
+import { Button, Card, Carousel, Col, Drawer, Input, Row, Spin, Typography } from 'antd';
 import DefaultChart from './DefaultChart';
 import ReactMarkdown from 'react-markdown';
 
@@ -34,13 +34,12 @@ export default function StockTable() {
 
   const fetchStockData = async () => {
     try {
-      setIsLoading(true);
       const response = await MarketService.getStockData(company);
 
-      setData(response);
-
-      console.log(data, 'data')
-      setIsLoading(false);
+      if (response && Object.keys(response).length > 0) {
+        setData(response);
+        console.log(data, 'data');
+      }
     } catch (error) {
       console.error('Fetch data error:', error);
     } finally {
@@ -67,40 +66,46 @@ export default function StockTable() {
           style={{ width: 304 }}
         />
       </Col>
-      {Object.entries(data).map(([key, value], index) => (
-        <Col span={24}>
-          <Card
-            loading={isLoading}
-            headStyle={{ textAlign: 'left' }}
-            title={<h2>{key}</h2>}
-          >
-            <Carousel key={`charts` + index} arrows dotPosition="bottom" infinite={false} dots>
-              {value.charts.map((chartData) => (
-                <div key={`chartData` + index}>
-                  <DefaultChart optionData={chartData.chart} width={'90%'} height={'300px'} />
-                  <Typography.Paragraph
-                    ellipsis={{
-                      expandable: true,
-                      onExpand: (event) => event.altKey,
-                    }}
-                    copyable
-                  >
-                    {chartData.result}
-                  </Typography.Paragraph>
-                </div>
-              ))}
-            </Carousel>
-            <div key={`docs` + index}>
-              {value.docs.map((docData) => (
-                <ReactMarkdown key={`ReactMarkdown` + index}>
-                  {`docs中的文本` + docData.doc}
-                </ReactMarkdown>
-              ))}
-            </div>
-          </Card>
+      {isLoading ? (
+        <Col offset={8} span={8} style={{ height: '300px', }}>
+          <Spin size="large" />
         </Col>
+      ) : (
+        Object.entries(data).map(([key, value], index) => (
+          <Col span={24} key={index}>
+            <Card
+              loading={isLoading}
+              headStyle={{ textAlign: 'left' }}
+              title={<h2>{key}</h2>}
+            >
+              <Carousel key={`charts` + index} arrows dotPosition="bottom" infinite={false} dots>
+                {value.charts.map((chartData) => (
+                  <div key={`chartData` + index}>
+                    <DefaultChart optionData={chartData.chart} width={'90%'} height={'300px'} />
+                    <Typography.Paragraph
+                      ellipsis={{
+                        expandable: true,
+                        onExpand: (event) => event.altKey,
+                      }}
+                      copyable
+                    >
+                      {chartData.result}
+                    </Typography.Paragraph>
+                  </div>
+                ))}
+              </Carousel>
+              <div key={`docs` + index}>
+                {value.docs.map((docData) => (
+                  <ReactMarkdown key={`ReactMarkdown` + index}>
+                    {`docs中的文本` + docData.doc}
+                  </ReactMarkdown>
+                ))}
+              </div>
+            </Card>
+          </Col>
+        ))
       )
-      )}
+      }
     </Row >
   );
 }

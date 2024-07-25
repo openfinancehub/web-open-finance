@@ -8,14 +8,19 @@ import {
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import ReactEcharts from 'echarts-for-react';
-import { Button, Card, Input, message as Message, Popover, Radio, Typography, Tooltip, Table  } from 'antd';
+import { Button, Card, Input, message as Message, Popover, Avatar, Typography, Tooltip, Table  } from 'antd';
+import { ToolOutlined, FileSearchOutlined, AreaChartOutlined} from '@ant-design/icons';
+
+import FlexRow from './components/FlexRow';
+import SelectableTextCard from './components/SelectableTextCard';
+
 import _ from 'lodash';
 
 import { useEffect, useState } from 'react';
 import { MemoizedReactMarkdown } from '@/components//markdown/MemoizedReactMarkdown'
 import remarkGfm from 'remark-gfm'
 
-import { ChatList, CompanyList, TaskList, HistoryList} from './components';
+import { ShareWithOthers, ChatList, CompanyList, TaskList, HistoryList} from './components';
 
 import styles from './index.less';
 import useWebSocket from './useWebsocket';
@@ -23,29 +28,17 @@ import useWebSocket from './useWebsocket';
 const { Search } = Input;
 const { Text } = Typography;
 
-// const suffix = (
-//   <AudioOutlined
-//     style={{
-//       fontSize: 16,
-//       color: '#1677ff'
-//     }}
-//   />
-// );
-
 const Finchat = () => {
   const {
     initialState: { currentUser }
   } = useModel('@@initialState');
 
   const [inputValue, setInputValue] = useState<string>('');
-  const [activeKey, setActiveKey] = useState<string>('a');
+  const [activeKey, setActiveKey] = useState<boolean>(true);
   // 左边历史记录
   const [historyList, setHistoryList] = useState<any[]>([]);
   // 单条历史记录
   const [singleList, setSingleList] = useState<any[]>([]);
-  const [roleList, setRoleList] = useState<any[]>([]);
-  const [taskList, setTaskList] = useState<any[]>([]);
-  const [stockList, setStockList] = useState<any[]>([]);
   const [selectedCom, setSelectedCom] = useState<any>([]);
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [selectedTask, setSelectedTask] = useState<any>(null);
@@ -67,29 +60,12 @@ const Finchat = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+    setActiveKey(false);
   };
 
-  const fetchSidebar = async () => {
-    try {
-      // const jsonStr = JSON.stringify({ user: 'admin' });
-      // const encodedData = encodeURIComponent(jsonStr);
-      const res = await FinchatServices.fetchSidebar({
-        header: commonHeader
-      });
-      const {
-        history_list = [],
-        role_list = [],
-        task_list = [],
-        stock_list = []
-      } = res.output || {};
-      setHistoryList(history_list);
-      setRoleList(role_list);
-      setInitCompanyList(stock_list);
-      setStockList(stock_list);
-      setTaskList(task_list);
-    } catch (error) {
-      console.log(error, 'error');
-    }
+  const handleUserSelect = (user) => {
+    setSelectedRole(user);
+    setActiveKey(false);
   };
 
   const fetchHistoryList = async (session_id: any) => {
@@ -118,48 +94,13 @@ const Finchat = () => {
     }
   };
 
-  useEffect(() => {
-    fetchSidebar();
-  }, []);
 
   useEffect(() => {
     setMessageList([...singleList, ...message])
   }, [message]);
 
-  useEffect(() => {
-    console.log(JSON.parse(sessionStorage.getItem("role")), "effect")
-    setSelectedRole(JSON.parse(sessionStorage.getItem("role")))
-  }, []);
-
-  const onSearch = async (value: string) => {
-    try {
-      if (!value) {
-        setStockList(initCompanyList);
-        return;
-      }
-      const res = await FinchatServices.queryCompany({
-        header: commonHeader,
-        data: { query: value }
-      });
-      const list = res.output?.result || [];
-      setStockList(list);
-    } catch (error: any) {
-      Message.error(error?.msg);
-    }
-  };
-
-  const onChange = _.debounce((e: any) => {
-    const str = e.target.value;
-    if (!str) {
-      setStockList(initCompanyList);
-      return;
-    }
-    const list = stockList.filter(i => i.company.indexOf(str) !== -1);
-    setStockList(list);
-  }, 1000);
 
   const handleSendMessage = () => {
-    // console.log(selectedRole);
     if (!inputValue) return;
      let s_id = selectedSessionId;
     if (!s_id) {
@@ -174,46 +115,32 @@ const Finchat = () => {
       task: selectedTask
     }, s_id);
     setInputValue('');
+    setActiveKey(false);
   };
 
-  //  const handleSendMessage = () => {
-  //    if (inputValue && socket) {
-  //      socket.emit('message', inputValue);
-  //      // setMessages([...messages, { content: inputValue, sender: 'user' }]);
-  //      setInputValue('');
-  //    }
-  //    setMessages([...messages, { content: inputValue, sender: 'user' }]);
-  //    setInputValue('');
-  //  };
-
-  const handleChange = (e: any) => {
-    const val = e.target.value;
-    // if (val === 'b') {
-    //   setSelectedCom(null);
-    // }
-    setActiveKey(val);
-  };
-
-  const handleRole = (item: any) => {    
-    setSelectedRole(item);
-    clearMessage();
-  };
-
-  const handleCompany = (list: any[]) => {
-    if (selectedTask !== 'compare') {
-      setActiveKey('c');
+  const fetchSidebar = async () => {
+    try {
+      const res = await FinchatServices.fetchSidebar({
+        header: commonHeader
+      });
+      const {
+        history_list = [],
+        role_list = [],
+        task_list = [],
+        stock_list = []
+      } = res.output || {};
+      setHistoryList(history_list);
+    } catch (error) {
+      console.log(error, 'error');
     }
-    setSelectedCom(list);
   };
 
-  const handleTask = item => {
-    setSelectedTask(item);
-    setActiveKey('b');
-  };
+  useEffect(() => {
+    fetchSidebar();
+  }, []);
 
   const handleViewLists = (item) => {
     fetchHistoryList(item.session_id)
-    
   }
 
   const handlePublish = () => {
@@ -224,9 +151,10 @@ const Finchat = () => {
   };
 
   const handleNewChat = () => {
-    setMessageList([]);
+    setMessageList([])
     setSingleList([])
     setSelectedSessionId(null)
+    setActiveKey(true)
   }
 
   const histotyTmp = (
@@ -237,50 +165,22 @@ const Finchat = () => {
     </>
   )
   const disabled = !(selectedTask || selectedCom || selectedRole);
-  
+
   return (
     <div className={styles.wrapFinchat}>
       <div className={styles.left}>
-       
-        {
-        historyList?.length ? (
-           <div className={styles.wrapHistory}>
-              <HistoryList data={historyList} handleViewList={ handleViewLists} />
-           </div>
-        ) : null
-        }
          <Button
-          style={{ width: '80%' }}
+          className={styles.newchat}
           icon={<PlusOutlined />} onClick={handleNewChat}>
-          New Chat
+          开始新对话
         </Button>
-        <Radio.Group
-          defaultValue={activeKey}
-          value={activeKey}
-          buttonStyle="solid"
-          onChange={handleChange}>
-          <Radio.Button value="a">Task</Radio.Button>
-          <Radio.Button value="b">Companies</Radio.Button>
-          <Radio.Button value="c">Roles</Radio.Button>
-        </Radio.Group>
-        {activeKey === 'b' && (
-          <Search
-            placeholder="Search by name or ticker"
-            allowClear
-            onSearch={onSearch}
-            onChange={onChange}
-            style={{ width: '80%', margin: '0 0 12px 0' }}
-          />
-        )}
-        {activeKey === 'a' && (
-          <TaskList list={taskList} handleProps={handleTask} />
-        )}
-        {activeKey === 'b' && (
-          <CompanyList list={stockList} handleProps={handleCompany} />
-        )}
-        {activeKey === 'c' && (
-          <ChatList list={roleList} handleProps={handleRole} />
-        )}
+        {
+          historyList?.length ? (
+            <div className={styles.wrapHistory}>
+                <HistoryList data={historyList} handleViewList={ handleViewLists} />
+            </div>
+          ) : null
+        }
       </div>
       <div className={styles.right}>
         <div className={styles.wrapCopy}>
@@ -291,17 +191,55 @@ const Finchat = () => {
             />
           </Popover>
         </div>
-
+        <div className={styles.infobox}>
+          {
+            activeKey && (
+              <div className={styles.cardcontainer}>
+                <FlexRow>
+                  <Card title="角色" style={{ width: 'calc(50% - 16px)', maxHeight: '300px', overflowY: 'auto' }}>
+                      <ShareWithOthers onUserSelect={handleUserSelect}/>
+                  </Card>
+                  <Card title="大家都在问" style={{ width: 'calc(33.333% - 16px)', maxHeight: '300px', overflowY: 'auto' }}>
+                    <SelectableTextCard texts={null}/>
+                  </Card>
+                  <Card
+                      style={{ width: 'calc(33.333% - 16px)', maxHeight: '300px', overflowY: 'auto' }}
+                    >
+                      <Card.Meta
+                        avatar={<Avatar icon={<FileSearchOutlined />} />}
+                        title="筛选"
+                        description="@pick 设定选择条件，选择你感兴趣的公司"
+                      />
+                  </Card> 
+                  <Card
+                      style={{ width: 'calc(33.333% - 16px)', maxHeight: '300px', overflowY: 'auto' }}
+                    >
+                      <Card.Meta
+                        avatar={<Avatar icon={<ToolOutlined />} />}
+                        title="搜索"
+                        description="@search 搜索任何你感兴趣的公司行业市场宏观等等信息"
+                      />
+                  </Card>                   
+                  <Card
+                      style={{ width: 'calc(33.333% - 16px)', maxHeight: '300px', overflowY: 'auto' }}
+                    >
+                      <Card.Meta
+                        avatar={<Avatar icon={< AreaChartOutlined/>} />}
+                        title="分析"
+                        description="@analsis 分析你任何感兴趣的公司行业宏观市场信息"
+                      />
+                  </Card>                 
+                </FlexRow>                  
+              </div>
+            )
+          }
+        </div>
         <div className={styles.content}>
           {selectedRole?.role && (
             <div className={styles.user}>
-              <Card style={{ width: 300 }}>{`hello！my name is ${
+              <Card style={{ width: 300 }}>{`你好～我是${
                 selectedRole.role
-              }, ${
-                selectedCom?.length
-                  ? `你选择了${selectedCom.map(i => i.company).join('、')}`
-                  : ''
-                }, 请输入您要咨询的问题?`}{histotyTmp}</Card>
+              }, ${''}, 请输入您要咨询的问题?`}{histotyTmp}</Card>
             </div>
           )}
           {messageList.map((item, index) => {
@@ -341,14 +279,12 @@ const Finchat = () => {
                         columns={item.table.columns}
                         rowSelection={{}}
                         dataSource={item.table.data}
+                        style= {{width: '1080px'}}
+                        scroll={{x: 'max-content'}}
                       />
                     )
                   }                                   
                   {item.content && (
-                    // <div
-                    //   style={{ padding: '0 16px 0 0' }}
-                    //   dangerouslySetInnerHTML={{ __html: item.content }}
-                    // />
                     <MemoizedReactMarkdown remarkPlugins={[remarkGfm]}>
                       {item.content}
                     </MemoizedReactMarkdown>
@@ -362,12 +298,6 @@ const Finchat = () => {
           })}
         </div>
         <div className={styles.wrapTxt}>
-          <div className={styles.top}>
-            <Button>Regenerate</Button>
-            <Button icon={<PlusOutlined />} style={{ margin: '0 0 0 20px' }} onClick={handleNewChat}>
-              New Chat
-            </Button>
-          </div>
           <div className={styles.bottom}>
             <Input
               placeholder="@search 中国的GDP是多少"
@@ -381,7 +311,7 @@ const Finchat = () => {
               type="primary"
               onClick={handleSendMessage}
               disabled={disabled}>
-              send
+              发送
             </Button>
           </div>
         </div>

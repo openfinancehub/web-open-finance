@@ -5,6 +5,6 @@ export const ApiUrl = {
   SIDEBAR: '/chat-api/sidebar',
   HISTORY: '/chat-api/history',
   CREATE_ARTICLE: '/article/createArticle',
-  QUERY_COMPANY: '/chat-api/search',
+  QUERY_COMPANY: '/company-api/search',
   SEARCH_AGENT: '/chat-api/role',
 };
