@@ -14,18 +14,6 @@ interface FeatureCardProps {
     loading?: boolean;
 }
 
-const CustomPrevBtn = ({ onClick }: { onClick: () => void }) => (
-    <div className="custom-arrow" onClick={onClick}>
-        ‹
-    </div>
-);
-
-const CustomNextBtn = ({ onClick }: { onClick: () => void }) => (
-    <div className="custom-arrow" onClick={onClick}>
-        ›
-    </div>
-);
-
 const FeatureCard: React.FC<FeatureCardProps> = ({ items, loading }) => {
     // console.log(items)
 
@@ -59,8 +47,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ items, loading }) => {
     return (
         <Carousel
             arrows
-            dotPosition="top"
+            // dotPosition="top"
             infinite={false}
+            dots
         // autoplay={true}
         // autoplaySpeed={3000}
         >

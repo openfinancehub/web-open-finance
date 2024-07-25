@@ -35,10 +35,10 @@ export const PostRequest = async (url: string, data: any) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                header,
+            body: JSON.stringify(
+                // header,
                 data,
-            })
+            )
         };
 
         const response = await fetch(`${url}`, requestConfig);

@@ -4,6 +4,7 @@ import { MarketService } from '../../../service/';
 import { economicType, eventType, countryFlags } from './data.d';
 import moment from "moment";
 import { useNavigate, } from 'react-router-dom';
+import CalendarList from './CalendarList';
 
 const Event: React.FC = () => {
     const navigate = useNavigate();
@@ -62,12 +63,7 @@ const Event: React.FC = () => {
         }
     };
 
-    const changeDateValue = (value: number) => {
-        const newDateTime = new Date(dateTime);
-        newDateTime.setDate(newDateTime.getDate() + value);
-        setDateTime(newDateTime);
-        getEventList(newDateTime);
-    };
+
 
     const labelRenderer = useCallback((type: string, data: number) => {
         switch (type) {
@@ -101,38 +97,11 @@ const Event: React.FC = () => {
     }, []);
 
     return (
-        <div style={{ height: window.innerHeight - 150, touchAction: 'none' }}>
-            <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }} columns={3} gap={16}>
-                <Grid.Item>
-                    <Button onClick={() => {
-                        changeDateValue(-1)
-                    }}> 前一日
-                    </Button>
-                </Grid.Item>
-                <Grid.Item>
-                    <span style={{ fontSize: 18, }}
-                        onClick={() => {
-                            setVisible(true)
-                        }}  >
-                        {dateTime.getFullYear()}年{dateTime.getMonth() + 1}月{dateTime.getDate()}日
-                    </span>
-                </Grid.Item>
-                <Grid.Item>
-                    <Button onClick={() => {
-                        changeDateValue(1)
-                    }}> 后一日
-                    </Button>
-                </Grid.Item>
-            </Grid>
-            <DatePicker
-                visible={visible}
-                onClose={setVisibleCallback}
-                onConfirm={(vTime) => {
-                    setDateTime(vTime);
-                    getEventList(vTime)
-                }}
-                renderLabel={labelRenderer}
-            />
+        <div style={{ touchAction: 'none' }}>
+            <div>
+                <CalendarList />
+            </div>
+
             <Collapse  >
                 <Collapse.Panel key='1' title='经济数据一览' >
                     {isLoading ? (

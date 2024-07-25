@@ -1,73 +1,46 @@
-import { ProTable, type ProColumns } from '@ant-design/pro-components';
-import { useCallback, useEffect, useState } from 'react';
+
+import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useCallback, useEffect, useState } from 'react';
 import { MarketService } from '../../../service/';
-import { Button, Drawer, Table } from 'antd';
-import Gauge from './barChart';
+import { Button, Card, Carousel, Col, Drawer, Input, Row, Typography } from 'antd';
+import DefaultChart from './DefaultChart';
+import ReactMarkdown from 'react-markdown';
 
-interface StockResponse {
-  result: {
-    features: Record<string, { result: any; TIME: any }>;
-    summary: any;
-  };
+const { Search } = Input;
+interface StockAnalysis {
+  [section: string]: SectionData;
 }
 
-interface StockData {
-  key: string;
-  stockRate: number;
+interface SectionData {
+  indicator: string[];
+  charts: ChartData[];
+  docs: DocData[];
+}
+interface ChartData {
+  result: string;
+  chart: any;
 }
 
-const initialColumns: ProColumns<StockData>[] = [
-  {
-    title: '股票名称',
-    width: 30,
-    // fixed: 'left',
-    dataIndex: 'name',
-    render: (_, record) => <a>{record.key}</a>,
-  },
-  {
-    title: '推荐指数',
-    width: 60,
-    // fixed: 'left',
-    sorter: (a, b) => {
-      const numA = a.stockRate as unknown as number;
-      const numB = b.stockRate as unknown as number;
-      if (numA < 0 && numB >= 0) {
-        return -1; // 负数排在前面
-      } else if (numA >= 0 && numB < 0) {
-        return 1; // 正数排在前面
-      } else {
-        return numA - numB; // 保持默认的数字排序
-      }
-    },
-    dataIndex: 'number',
-    render: (_, record) => record.stockRate,
-  },
-];
-
-function generateTargetData(summary: { [s: string]: number; }): StockData[] {
-  return Object.entries(summary).map(([name, stockRate]) => ({
-    key: name,
-    stockRate,
-  }));
+interface DocData {
+  title: string;
+  doc: string;
+  source: string;
 }
 
 export default function StockTable() {
 
   const [isLoading, setIsLoading] = useState(true);
+  const [company, setCompany] = useState<string>('贵州茅台');
+  const [data, setData] = useState<StockAnalysis>({});
 
-  const [stockKey, setStockKey] = useState<string>('');
-  const [indicatorsData, setIndicatorsData] = useState<{ [key: string]: { [company: string]: any[] } }>({});
-  const [data, setData] = useState<any[]>([]);
-  const fetchData = async () => {
+  const fetchStockData = async () => {
     try {
       setIsLoading(true);
-      const response = await MarketService.getStock();
-      const { result } = response as StockResponse;
+      const response = await MarketService.getStockData(company);
 
-      const targetData = generateTargetData(result.summary);
-      // console.log(targetData)
-      setData(targetData);
+      setData(response);
 
+      console.log(data, 'data')
+      setIsLoading(false);
     } catch (error) {
       console.error('Fetch data error:', error);
     } finally {
@@ -75,125 +48,59 @@ export default function StockTable() {
     }
   };
 
-  const fetchCompData = async () => {
-    try {
-      setIsLoading(true);
-      const response = await MarketService.getStock();
-      const { result } = response as StockResponse;
-
-      const newIndicatorsData = Object.entries(result.features).reduce(
-        (acc, [key, value]) => {
-          if (value?.result?.[stockKey] && value.TIME?.[stockKey]) {
-            acc[key] = {
-              xData: value.result[stockKey],
-              yData: value.TIME[stockKey],
-            };
-          }
-          return acc;
-        },
-        {} as { [key: string]: { xData: any[], yData: any[] } }
-      );
-      console.log(newIndicatorsData, 'newIndicatorsData');
-
-      setIndicatorsData(newIndicatorsData);
-    } catch (error) {
-      console.error('Fetch data error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleViewClick = useCallback(() => {
-    // 点击查看按钮之后添加额外的逻辑
-    setOpen(true);
-  }, []);
+  const onSearch = (value: string) => {
+    console.log(value);
+  }
 
   useEffect(() => {
-    fetchData();
+    fetchStockData();
   }, []);
-
-  useEffect(() => {
-    if (stockKey) {
-      fetchCompData();
-    }
-  }, [stockKey]);
-
-  const [open, setOpen] = useState(false);
-  const onClose = () => {
-    setOpen(false);
-  };
 
   return (
-    <div>
-      <div>
-        <ProTable
-          loading={isLoading}
-          columns={initialColumns}
-          dataSource={data}
-          scroll={{ x: 800 }}
-          options={false}
-          search={false}
-          rowSelection={{
-            // 注释该行则默认不显示下拉选项
-            type: 'radio',
-            selections: false,
-            // selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT],
-            // defaultSelectedRowKeys: [1],
-            onChange: (selectedRowKeys, selectedRows) => {
-              // 当选择项改变时，你可以在这里处理逻辑
-              if (selectedRowKeys.length > 0) {
-                setStockKey(selectedRows[0].key);
-              }
-            },
-          }}
-          tableAlertRender={({
-            selectedRowKeys,
-            selectedRows,
-            onCleanSelected,
-          }) => {
-            if (selectedRowKeys.length > 0) {
-              setStockKey(selectedRows[0].key);
-            }
-            return (
-              <div >
-                {/* <span>
-                  已选 {selectedRowKeys.length} 项
-                  <a style={{ marginInlineStart: 8 }} onClick={onCleanSelected}>
-                    取消选择
-                  </a>
-                </span> */}
-                <span>{`当前选择: ${selectedRowKeys.length > 0 ? selectedRows[0].key : ''}`}</span>
-              </div>
-            );
-          }}
-          tableAlertOptionRender={() => {
-            return (
-              <div>
-                <a onClick={handleViewClick}>查看详细内容</a>
-              </div>
-            );
-          }}
-          pagination={{
-            pageSize: 10,
-          }}
-          rowKey="key"
+    <Row gutter={[16, 16]}>
+      <Col offset={16} span={8}>
+        <Search
+          placeholder={`当前搜索公司为:` + company}
+          allowClear
+          enterButton="Search"
+          onSearch={onSearch}
+          style={{ width: 304 }}
         />
-      </div>
-      <div>
-        <Drawer
-          title={stockKey}
-          placement="right"
-          size={'large'}
-          onClose={onClose}
-          open={open}
-        >
-          {Object.entries(indicatorsData).map(([titleName, { xData, yData }], index) => (
-            <div key={index}>
-              <Gauge titleName={titleName} xData={xData} yData={yData} />
+      </Col>
+      {Object.entries(data).map(([key, value], index) => (
+        <Col span={24}>
+          <Card
+            loading={isLoading}
+            headStyle={{ textAlign: 'left' }}
+            title={<h2>{key}</h2>}
+          >
+            <Carousel key={`charts` + index} arrows dotPosition="bottom" infinite={false} dots>
+              {value.charts.map((chartData) => (
+                <div key={`chartData` + index}>
+                  <DefaultChart optionData={chartData.chart} width={'90%'} height={'300px'} />
+                  <Typography.Paragraph
+                    ellipsis={{
+                      expandable: true,
+                      onExpand: (event) => event.altKey,
+                    }}
+                    copyable
+                  >
+                    {chartData.result}
+                  </Typography.Paragraph>
+                </div>
+              ))}
+            </Carousel>
+            <div key={`docs` + index}>
+              {value.docs.map((docData) => (
+                <ReactMarkdown key={`ReactMarkdown` + index}>
+                  {`docs中的文本` + docData.doc}
+                </ReactMarkdown>
+              ))}
             </div>
-          ))}
-        </Drawer>
-      </div>
-    </div >
+          </Card>
+        </Col>
+      )
+      )}
+    </Row >
   );
 }
