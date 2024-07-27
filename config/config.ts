@@ -1,7 +1,7 @@
 import { defineConfig } from '@umijs/max';
 import { resolve } from 'path';
 import defaultSettings from './defaultSettings';
-
+import { ProfileOutlined,OrderedListOutlined,FundOutlined,ClusterOutlined,FileSearchOutlined,UngroupOutlined } from '@ant-design/icons';
 export default defineConfig({
   esbuildMinifyIIFE: true,
   antd: {},
@@ -153,7 +153,41 @@ export default defineConfig({
     {
       name: '量化',
       path: '/analyze',
-      component: './Analyze'
+      
+      routes:[
+        {
+          path: 'assess',
+          name: '推荐因子',
+          icon:'ProfileOutlined',
+          component: './Analyze/Assess'
+        },
+        {
+          path:'screen',
+          name:'筛选列表',
+          icon:'OrderedListOutlined',
+          component:'./Analyze/Screen'
+        },
+        {
+          path:'factor',
+          name:'量化因子',
+          icon:'UngroupOutlined',
+          components:'./Analyze/Factor'
+        },
+        {
+          path:'strategy',
+          name:'策略分析器',
+          icon:'FileSearchOutlined',
+          components:'./Analyze/Strategy',
+        },
+        {
+          path:'model',
+          name:'模型',
+          icon:'ClusterOutlined',
+          components:'./Analyze/Model',
+        },
+       
+      ],
+     
     },
     {
       name: '问答',
