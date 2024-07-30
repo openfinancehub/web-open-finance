@@ -32,9 +32,10 @@ export default function StockTable() {
   const [company, setCompany] = useState<string>('贵州茅台');
   const [data, setData] = useState<StockAnalysis>({});
 
-  const fetchStockData = async () => {
+  const fetchStockData = async (value: string) => {
     try {
-      const response = await MarketService.getStockData(company);
+      setIsLoading(true);
+      const response = await MarketService.getStockData(value);
 
       if (response && Object.keys(response).length > 0) {
         setData(response);
@@ -48,12 +49,13 @@ export default function StockTable() {
   };
 
   const onSearch = (value: string) => {
+    setCompany(value)
     console.log(value);
   }
 
   useEffect(() => {
-    fetchStockData();
-  }, []);
+    fetchStockData(company);
+  }, [company]);
 
   return (
     <Row gutter={[16, 16]}>

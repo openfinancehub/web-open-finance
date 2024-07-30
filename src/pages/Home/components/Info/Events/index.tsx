@@ -5,6 +5,8 @@ import { economicType, eventType, countryFlags } from './data.d';
 import moment from "moment";
 import { useNavigate, } from 'react-router-dom';
 import CalendarList from './CalendarList';
+import Text from './Text';
+import { ProCard } from '@ant-design/pro-components';
 
 const Event: React.FC = () => {
     const navigate = useNavigate();
@@ -97,135 +99,133 @@ const Event: React.FC = () => {
     }, []);
 
     return (
-        <div style={{ touchAction: 'none' }}>
-            <div>
-                <CalendarList />
-            </div>
+        <ProCard direction="row" wrap>
 
-            <Collapse  >
-                <Collapse.Panel key='1' title='经济数据一览' >
-                    {isLoading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', height: '100%' }}>
-                            <DotLoading color="primary" />
-                        </div>
-                    ) : (
-                        economicList.length > 0 ? (
-                            economicList.map((item, index) =>
-                                <List.Item key={index}
-                                    prefix={
-                                        <Image src={countryFlagsMemo[item.country]}
-                                            style={{ borderRadius: 20 }}
-                                            fit='cover'
-                                            width={40}
-                                            height={40} />
-                                    }
-                                    arrow={false}
-                                    style={{}}
-                                >
-                                    <Grid columns={8} gap={2}>
-                                        <Grid.Item span={7}>
-                                            <Grid columns={10} gap={1}>
-                                                <Grid.Item span={7} >
-                                                    {formatTime(item.pub_time)}
-                                                </Grid.Item>
-                                                <Grid.Item span={3}>
-                                                    <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052', }} defaultValue={item.star} />
-                                                </Grid.Item>
-                                                <Grid.Item style={{ color: "#007ACC" }} span={10} onClick={() => navigate('/home/news/events/info', { state: item.name })}>
-                                                    {item.name}
-                                                </Grid.Item>
-                                                <Grid.Item span={4}>
-                                                    前值: {item.previous === null ? "---" : item.previous}
-                                                </Grid.Item>
-                                                <Grid.Item span={4}>
-                                                    公布: {item.actual === null ? "---" : item.actual}
-                                                </Grid.Item>
-                                                <Grid.Item span={2}>
-                                                    {item.video_url && item.video_url.length > 0 && (
-                                                        <Footer
-                                                            links={[
-                                                                {
-                                                                    text: '视频地址',
-                                                                    href: item.video_url,
-                                                                },
-                                                            ]}
-                                                        />
-                                                    )}
-                                                </Grid.Item>
-                                                <Grid.Item span={10}>
-                                                    vip内容:
-                                                    {item.vip_resource && item.vip_resource.length > 0 && (
-                                                        item.vip_resource ? '暂无内容' : ''
-                                                    )}
-                                                </Grid.Item>
-                                            </Grid>
-                                        </Grid.Item>
-                                    </Grid>
-                                </List.Item>
-                            )
-                        ) : <div>暂无数据</div>
-                    )}
-                </Collapse.Panel>
-                <Collapse.Panel key='2' title='重大事件'>
-                    {isLoading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', height: '100%' }}>
-                            <DotLoading color="primary" />
-                        </div>
-                    ) : (
-                        eventList.length > 0 ? (
-                            eventList.map((item, index) =>
-                                <List.Item key={index}
-                                    prefix={
-                                        <Image src={countryFlags[item.country]}
-                                            style={{ borderRadius: 20 }}
-                                            fit='cover'
-                                            width={40}
-                                            height={40} />
-                                    }
-                                    arrow={false}
-                                >
-                                    <Grid columns={8} gap={2}>
-                                        <Grid.Item span={7}>
-                                            <Grid columns={10} gap={1}>
-                                                <Grid.Item span={7} >
-                                                    {formatTime(item.event_time)}
-                                                </Grid.Item>
-                                                <Grid.Item span={3}>
-                                                    <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052' }} defaultValue={item.star} />
-                                                </Grid.Item>
-                                                <Grid.Item style={{ color: "#007ACC" }} span={10} onClick={() => navigate('/home/news/events/info', { state: item.event_content })}>
-                                                    {item.event_content}
-                                                </Grid.Item>
-                                                <Grid.Item span={3}>
-                                                    {/* <Footer
-                                                    chips={[{
-                                                        text: 'vip内容:',
-                                                    }]}
-                                                /> */}
-                                                    vip内容:
-                                                </Grid.Item>
-                                                <Grid.Item span={3}>
-                                                    {item.vip_resource && item.vip_resource.length > 0 && (
-                                                        <Footer
-                                                            links={[
-                                                                {
-                                                                    text: item.vip_resource ? '' : '网上直播',
-                                                                    href: (item.vip_resource ? '' : item.vip_resource[0].link) as string,
-                                                                },
-                                                            ]}
-                                                        />
-                                                    )}
-                                                </Grid.Item>
-                                            </Grid>
-                                        </Grid.Item>
-                                    </Grid>
-                                </List.Item>
-                            )
-                        ) : <div>暂无数据</div>
-                    )}
-                </Collapse.Panel>
-            </Collapse >
-        </div >
+            <ProCard >
+                <CalendarList />
+            </ProCard>
+
+            {/* <ProCard >
+                <Collapse  >
+                    <Collapse.Panel key='1' title='经济数据一览' >
+                        {isLoading ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', height: '100%' }}>
+                                <DotLoading color="primary" />
+                            </div>
+                        ) : (
+                            economicList.length > 0 ? (
+                                economicList.map((item, index) =>
+                                    <List.Item key={index}
+                                        prefix={
+                                            <Image src={countryFlagsMemo[item.country]}
+                                                style={{ borderRadius: 20 }}
+                                                fit='cover'
+                                                width={40}
+                                                height={40} />
+                                        }
+                                        arrow={false}
+                                        style={{}}
+                                    >
+                                        <Grid columns={8} gap={2}>
+                                            <Grid.Item span={7}>
+                                                <Grid columns={10} gap={1}>
+                                                    <Grid.Item span={7} >
+                                                        {formatTime(item.pub_time)}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={3}>
+                                                        <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052', }} defaultValue={item.star} />
+                                                    </Grid.Item>
+                                                    <Grid.Item style={{ color: "#007ACC" }} span={10} onClick={() => navigate('/home/news/events/info', { state: item.name })}>
+                                                        {item.name}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={4}>
+                                                        前值: {item.previous === null ? "---" : item.previous}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={4}>
+                                                        公布: {item.actual === null ? "---" : item.actual}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={2}>
+                                                        {item.video_url && item.video_url.length > 0 && (
+                                                            <Footer
+                                                                links={[
+                                                                    {
+                                                                        text: '视频地址',
+                                                                        href: item.video_url,
+                                                                    },
+                                                                ]}
+                                                            />
+                                                        )}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={10}>
+                                                        vip内容:
+                                                        {item.vip_resource && item.vip_resource.length > 0 && (
+                                                            item.vip_resource ? '暂无内容' : ''
+                                                        )}
+                                                    </Grid.Item>
+                                                </Grid>
+                                            </Grid.Item>
+                                        </Grid>
+                                    </List.Item>
+                                )
+                            ) : <div>暂无数据</div>
+                        )}
+                    </Collapse.Panel>
+                    <Collapse.Panel key='2' title='重大事件'>
+                        {isLoading ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', height: '100%' }}>
+                                <DotLoading color="primary" />
+                            </div>
+                        ) : (
+                            eventList.length > 0 ? (
+                                eventList.map((item, index) =>
+                                    <List.Item key={index}
+                                        prefix={
+                                            <Image src={countryFlags[item.country]}
+                                                style={{ borderRadius: 20 }}
+                                                fit='cover'
+                                                width={40}
+                                                height={40} />
+                                        }
+                                        arrow={false}
+                                    >
+                                        <Grid columns={8} gap={2}>
+                                            <Grid.Item span={7}>
+                                                <Grid columns={10} gap={1}>
+                                                    <Grid.Item span={7} >
+                                                        {formatTime(item.event_time)}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={3}>
+                                                        <Rate allowHalf readOnly style={{ '--star-size': '13px', '--active-color': '#E24052' }} defaultValue={item.star} />
+                                                    </Grid.Item>
+                                                    <Grid.Item style={{ color: "#007ACC" }} span={10} onClick={() => navigate('/home/news/events/info', { state: item.event_content })}>
+                                                        {item.event_content}
+                                                    </Grid.Item>
+                                                    <Grid.Item span={3}>
+                                                        vip内容:
+                                                    </Grid.Item>
+                                                    <Grid.Item span={3}>
+                                                        {item.vip_resource && item.vip_resource.length > 0 && (
+                                                            <Footer
+                                                                links={[
+                                                                    {
+                                                                        text: item.vip_resource ? '' : '网上直播',
+                                                                        href: (item.vip_resource ? '' : item.vip_resource[0].link) as string,
+                                                                    },
+                                                                ]}
+                                                            />
+                                                        )}
+                                                    </Grid.Item>
+                                                </Grid >
+                                            </Grid.Item >
+                                        </Grid >
+                                    </List.Item >
+                                )
+                            ) : <div>暂无数据</div>
+                        )}
+                    </Collapse.Panel >
+                </Collapse >
+            </ProCard > */}
+        </ProCard >
     )
 }
 
