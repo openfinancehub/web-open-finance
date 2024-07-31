@@ -89,6 +89,9 @@ const Factor = () => {
         getStockKline(data).then((res)=>{
             setFactorData(res.data)
             let list = []
+            if(!res.data){
+                return
+            }
             res.data.forEach((item) => {
                 list.push(item.time)
             })
@@ -169,17 +172,17 @@ const Factor = () => {
     }
 
     // 切换股票
-    const handleDataFromChild = (butttonId, buttonNum,buttonStr) => {
+    const handleDataFromChild = (butttonId,buttonStr) => {
         getstock_kline(butttonId)
         historyfactor(butttonId)
         setStockid(butttonId)
         setStockName(buttonStr)
     }
     // 刚进页面时调用
-    const handleOnInval = (buttonNum,buttonName) => {
-        getstock_kline(buttonNum)
-        historyfactor(buttonNum)
-        setStockid(buttonNum)
+    const handleOnInval = (buttonId,buttonName) => {
+        getstock_kline(buttonId)
+        historyfactor(buttonId)
+        setStockid(buttonId)
         setStockName(buttonName)
     }
     // 判断因子日期与k线日期是否一致

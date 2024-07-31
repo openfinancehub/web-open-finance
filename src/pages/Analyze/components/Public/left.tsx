@@ -43,6 +43,7 @@ export default function left({ onDataChange, onInval }) {
   ) => {
     setSelectedButton(buttonStr);
     onDataChange(butttonId, buttonNum, buttonStr);
+    console.log(butttonId,buttonStr,'传递的数据');
   };
   return (
     <div

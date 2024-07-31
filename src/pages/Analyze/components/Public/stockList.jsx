@@ -26,8 +26,9 @@ export default function left({ onDataChange, onInval }) {
       setFilterList(list);
     });
   };
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
+  const onChange = (value,options) => {
+    console.log(`selected ${value}`,options.label);
+    onDataChange(value,options.label);
   };
   
   const onSearch = (value) => {
@@ -36,11 +37,6 @@ export default function left({ onDataChange, onInval }) {
   useEffect(() => {
     sotckList();
   }, []);
-  // 点击切换股票数据
-  const handleButtonChange = (buttonStr,butttonId,buttonNum) => {
-    setSelectedButton(buttonStr);
-    onDataChange(butttonId, buttonNum, buttonStr);
-  };
   return (
     <div>
         <Select
