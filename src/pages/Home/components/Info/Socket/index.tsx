@@ -1,7 +1,7 @@
 
 import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useCallback, useEffect, useState } from 'react';
 import { MarketService } from '../../../service/';
-import { Button, Card, Carousel, Col, Drawer, Input, Row, Spin, Typography } from 'antd';
+import { Button, Card, Carousel, Col, Drawer, Input, Row, Skeleton, Space, Spin, Typography } from 'antd';
 import DefaultChart from './DefaultChart';
 import ReactMarkdown from 'react-markdown';
 
@@ -68,12 +68,8 @@ export default function StockTable() {
           style={{ width: 304 }}
         />
       </Col>
-      {isLoading ? (
-        <Col offset={8} span={8} style={{ height: '300px', }}>
-          <Spin size="large" />
-        </Col>
-      ) : (
-        Object.entries(data).map(([key, value], index) => (
+      <Skeleton loading={isLoading} round active >
+        {Object.entries(data).map(([key, value], index) => (
           <Col span={24} key={index}>
             <Card
               loading={isLoading}
@@ -105,9 +101,8 @@ export default function StockTable() {
               </div>
             </Card>
           </Col>
-        ))
-      )
-      }
+        ))}
+      </Skeleton>
     </Row >
   );
 }
