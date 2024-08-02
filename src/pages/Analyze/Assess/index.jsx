@@ -21,7 +21,7 @@ import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import Left from "../components/Public/left"
 import StockList from "../components/Public/stockList";
-import { Select, InputNumber, Button,Table } from 'antd'
+import { Select, InputNumber, Button,Table,message } from 'antd'
 echarts.use([
     ToolboxComponent,
     TooltipComponent,
@@ -111,18 +111,23 @@ const Factor = () => {
         }
 
         getHistoryFactor(data).then((res)=>{
-            const data = JSON.parse(res.data)[60]?.factors
-            const data1 = JSON.parse(res.data)[60]?.time
-            setFactorTime(data1)
-            setHistoryData(data)
-            let dataFactorkey = Object.keys(data)
-            let selectFcatorKeys = dataFactorkey.map((item)=>{
-                return{
-                    value:item,
-                    label:item
-                }
-            })
-            setFactorSelect(selectFcatorKeys)
+            if(res.code == 200){
+                const data = JSON.parse(res.data)[60]?.factors
+                const data1 = JSON.parse(res.data)[60]?.time
+                setFactorTime(data1)
+                setHistoryData(data)
+                let dataFactorkey = Object.keys(data)
+                let selectFcatorKeys = dataFactorkey.map((item)=>{
+                    return{
+                        value:item,
+                        label:item
+                    }
+                })
+                setFactorSelect(selectFcatorKeys)
+            }else{
+                message.error(res.message)
+            }
+          
             // setFactorKey(dataFactorkey[0])
             // setFactorValue(data[dataFactorkey[0]].raw)
         })
@@ -381,7 +386,7 @@ const Factor = () => {
             ]
         };
         chart = echarts.init(chartRef.current);
-        if(data1.length<=0){
+        if(data1?.length<=0){
             chart.showLoading();
         }
         chart.setOption(option);
@@ -464,18 +469,9 @@ const Factor = () => {
 
     return (
         <ProCard gutter={16} ghost wrap>
-            <ProCard
-                colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 3 }}
-                style={{ height: "100%", padding: 0 }}
-            >
-                <Left onDataChange={handleDataFromChild} onInval={handleOnInval}></Left>
-            </ProCard>
-
-            <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
-                <div>
-                    <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>
-                </div>
-                <div>
+            <ProCard  colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 24 }} direction="column" >
+                <div style={{display:'flex',marginBottom:10}} >
+                <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>&nbsp;&nbsp;
                     <Select
                         placeholder="因子"
                         style={{ width: 120 }}

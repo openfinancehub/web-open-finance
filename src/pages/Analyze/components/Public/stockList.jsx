@@ -5,8 +5,6 @@ export default function left({ onDataChange, onInval }) {
   const [sotckListData, setsotckList] = useState([]);
   const [selectedButton, setSelectedButton] = useState('');
   // 获取股票的初始值
-  // 数据备份用于过滤
-  const [filterData, setFilterList] = useState([]);
   const sotckList = () => {
     const data = {
       key: '8140ad230f687daede75a08855e8ae5ff40c3ba8'
@@ -23,11 +21,9 @@ export default function left({ onDataChange, onInval }) {
         }
       });
       setsotckList(list);
-      setFilterList(list);
     });
   };
   const onChange = (value,options) => {
-    console.log(`selected ${value}`,options.label);
     onDataChange(value,options.label);
   };
   
@@ -44,6 +40,7 @@ export default function left({ onDataChange, onInval }) {
           placeholder="Select a stock"
           optionFilterProp="label"
           defaultValue={selectedButton}
+          key={selectedButton}
           style={{width:200}}
           onChange={onChange}
           onSearch={onSearch}
