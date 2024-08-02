@@ -162,6 +162,12 @@ export default defineConfig({
           component: './Analyze/Assess'
         },
         {
+          path:'strategy',
+          name:'策略分析器',
+          icon:'FileSearchOutlined',
+          components:'./Analyze/Strategy',
+        },
+        {
           path:'screen',
           name:'筛选列表',
           icon:'OrderedListOutlined',
@@ -173,12 +179,7 @@ export default defineConfig({
           icon:'UngroupOutlined',
           components:'./Analyze/Factor'
         },
-        {
-          path:'strategy',
-          name:'策略分析器',
-          icon:'FileSearchOutlined',
-          components:'./Analyze/Strategy',
-        },
+       
         {
           path:'model',
           name:'模型',
@@ -233,16 +234,6 @@ export default defineConfig({
         }
       ]
     },
-    {
-      path: '/analyze/factordelite',
-      component: './Analyze/components/Delite/FactorDelite.tsx',
-      exact: true
-    },
-    {
-      path: '/analyze/strategy',
-      component: './Analyze/components/Delite/Strategy.tsx',
-      exact: true
-    }
   ],
   npmClient: 'yarn'
 });
