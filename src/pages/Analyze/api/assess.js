@@ -1,7 +1,7 @@
-import request from './request'
+import {requestone} from './request'
 
 export const getStockList = (data) => {
-  return request({
+  return requestone({
     url:"/sotcklist",
     method:"post",
     data
@@ -9,7 +9,7 @@ export const getStockList = (data) => {
 }
 
 export const getStockKline = (data) => {
-  return request({
+  return requestone({
     url:"/getstock_kline",
     method:"post",
     data
@@ -17,21 +17,21 @@ export const getStockKline = (data) => {
 }
 
 export const getHistoryFactor = (data) => {
-  return request({
+  return requestone({
     url:"/historyfactor",
     method:"post",
     data
   })
 }
 export const profileText = (data) => {
-  return request({
+  return requestone({
     url:"/factor_profile_test",
     method:"post",
     data
   })
 }
 export const profileTextResult = (data) => {
-  return request({
+  return requestone({
     url:"/get_factor_profile_test_result",
     method:"post",
     data

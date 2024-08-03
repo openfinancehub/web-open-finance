@@ -165,7 +165,7 @@ export default defineConfig({
           path:'strategy',
           name:'策略分析器',
           icon:'FileSearchOutlined',
-          components:'./Analyze/Strategy',
+          component:'./Analyze/Strategy',
         },
         {
           path:'screen',
@@ -173,18 +173,19 @@ export default defineConfig({
           icon:'OrderedListOutlined',
           component:'./Analyze/Screen'
         },
+ 
         {
           path:'factor',
           name:'量化因子',
           icon:'UngroupOutlined',
-          components:'./Analyze/Factor'
+          component:'./Analyze/Factor'
         },
        
         {
           path:'model',
           name:'模型',
           icon:'ClusterOutlined',
-          components:'./Analyze/Model',
+          component:'./Analyze/Model',
         },
        
       ],
