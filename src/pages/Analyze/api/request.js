@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 export  const requestone = axios.create({
-  baseURL:"http://8.138.96.163:8081/quant",
+  // baseURL:"http://8.138.96.163:8081/quant",
+  baseURL:"/quant",
   timeout:2000,
   headers:{
     "Content-Type":"application/json"
