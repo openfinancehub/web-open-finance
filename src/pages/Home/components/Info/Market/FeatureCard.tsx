@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Card, Carousel, Typography } from 'antd';
 import Risk from '../../News/Market/Risk';
 import './FeatureCard.css'; // 引入自定义样式文件
+import ReactMarkdown from 'react-markdown';
 
 interface Props {
     title: string,
@@ -67,7 +68,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ items, loading }) => {
                         }}
                         copyable
                     >
-                        {item.textContent}
+                        <ReactMarkdown>
+                            {item.textContent}
+                        </ReactMarkdown>
                     </Typography.Paragraph>
                 </Card>
             ))}
