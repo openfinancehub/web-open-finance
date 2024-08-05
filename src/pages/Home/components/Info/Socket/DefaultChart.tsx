@@ -1,31 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts/core';
-// import {
-//     TitleComponent,
-//     TooltipComponent,
-//     GridComponent,
-//     VisualMapComponent,
-//     DataZoomComponent,
-//     LegendComponent,
-//     ToolboxComponent
-// } from 'echarts/components';
-// import { LineChart, CustomChart } from 'echarts/charts';
-// import { UniversalTransition } from 'echarts/features';
-// import { CanvasRenderer } from 'echarts/renderers';
-
-// echarts.use([
-//     TitleComponent,
-//     TooltipComponent,
-//     GridComponent,
-//     VisualMapComponent,
-//     DataZoomComponent,
-//     LegendComponent,
-//     ToolboxComponent,
-//     LineChart,
-//     CustomChart,
-//     CanvasRenderer,
-//     UniversalTransition
-// ]);
 import {
     TitleComponent,
     TooltipComponent,
@@ -83,9 +57,7 @@ const DefaultChart = ({
         }
     }, [optionData]);
 
-    return <div ref={chartRef} style={{
-        width: width, height: height, margin: 'auto',
-    }} />;
+    return <div ref={chartRef} style={{ width: width, height: height, margin: 'auto', }} />;
 };
 
 export default DefaultChart;

@@ -60,18 +60,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ items, loading }) => {
                     title={item.echartsConf.name}
                     type="inner"
                 >
-                    <Risk legendData={item.echartsConf.name} dataZoom={item.dataZoom} seriesData={item.echartsConf} />
-                    <Typography.Paragraph
-                        ellipsis={{
-                            expandable: true,
-                            onExpand: (event) => event.altKey,
-                        }}
-                        copyable
-                    >
+                    <Card>
+                        <Risk legendData={item.echartsConf.name} dataZoom={item.dataZoom} seriesData={item.echartsConf} />
+                    </Card>
+                    <Card>
                         <ReactMarkdown>
                             {item.textContent}
                         </ReactMarkdown>
-                    </Typography.Paragraph>
+                    </Card>
                 </Card>
             ))}
         </Carousel>
