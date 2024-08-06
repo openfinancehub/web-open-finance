@@ -1,219 +1,109 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Card, Carousel, Col, Divider, Layout, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 import { MarketService } from '../../../service';
 import { ProCard } from '@ant-design/pro-components';
-import SearchCompany from '../../FinanceModels/SearchCompany';
-import FeatureCard from './FeatureCard'
-
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import { Typography, Divider } from 'antd';
 import Gauge from './Gauge';
+import FeatureCard from './FeatureCard';
+import ReactMarkdown from 'react-markdown';
+
 interface FeatureItem {
     title: string;
     data: any[][];
     text: string;
 }
+
 interface FetchDataResult {
     features?: FeatureItem[];
     summary?: any;
 }
 
+interface MarketContentProps {
+    fetchDataUrl: () => Promise<any>;
+    title: string;
+}
 
-// const MarketContent: React.FC = () => {
-//     return (
-//         <ProCard direction="column" wrap>
-//             <SentContent />
-//             <DangerContent />
-//         </ProCard >
-//     );
-// };
+function useFetchMarketData(url: () => Promise<any>): FetchDataResult {
+    const [features, setFeatures] = useState<FeatureItem[]>();
+    const [summary, setSummary] = useState<any>();
 
-export const SentContent: React.FC = () => {
-    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await url();
+            const { features = {}, summary = {} } = response.result || {};
 
-    const [sentList, setSentList] = useState<any[]>([]);
-    // 热度解读指数
-    const [sentSize, setSentSize] = useState<number>(0);
-    // 热度解读文本
-    const [sentText, setSentText] = useState<string>('');
+            const processedFeatures = Object.entries(features).reduce((acc, [indicators, dataValue]) => {
+                const { TIME, result, text } = dataValue;
+                const keys = Object.keys(TIME)[0];
 
-    // 在组件的state中添加一个refs对象来存储图表的ref
-    const [NavList, setNavList] = useState<any[]>([]);
+                const formattedData = typeof TIME[keys] === 'object' && !Array.isArray(TIME)
+                    ? TIME[keys].map((item: any, index: string | number) => [item, result[keys][index]])
+                    : [TIME, result];
 
-    const fetchDataAndProcess = async (url: () => Promise<any>,
-        setList: any,
-        setText: any, setSize: any) => {
-        const response = await url();
-        try {
-            const { features = [], summary = {} } = response.result || {};
-            let textsToAppend: string[] = [];
-            Object.keys(features).forEach(feature => {
-                const time = features[feature].TIME
-                const result = features[feature].result
-                const text = features[feature].text
+                acc.push({ title: indicators, data: formattedData, text });
+                return acc;
+            }, [] as FeatureItem[]);
 
-                textsToAppend.push(text);
-                const keys = Object.keys(time)[0];
-                if (typeof time[keys] === 'object' && !Array.isArray(time)) {
-                    const r = time[keys].map((item: any, index: string | number) => {
-                        return [item, result[keys][index]]
-                    });
-                    setList((prevState: any) => [...prevState, { title: feature, data: r, text: text }]);
-                } else {
-                    const r = [time, result];
-                    setList((prevState: any) => [...prevState, { title: feature, data: r, text: text }]);
-                }
-            });
-            setNavList((prevState: any[]) => [...prevState, ...textsToAppend]);
+            setFeatures(processedFeatures);
+            setSummary(summary);
+        };
 
-            const textContent = summary.text;
+        fetchData();
+    }, [url]);
+
+    return { features, summary };
+}
+
+const MarketContent: React.FC<MarketContentProps> = ({ fetchDataUrl, title }) => {
+    const { features, summary } = useFetchMarketData(fetchDataUrl);
+
+    const [gaugeValue, setGaugeValue] = useState<number>(0);
+
+    useEffect(() => {
+        if (summary) {
             const shangZhiZhenShu = summary['上证指数'];
-            const substring = shangZhiZhenShu.toString().substring(0, 4)
-            const floatNum = parseFloat(substring)
-            const res = parseFloat((floatNum / 100).toFixed(2))
-            setSize(res);
-            setText(textContent)
-            setLoading(false)
-        } catch (error) {
-            setLoading(false)
-            console.error(error)
+            const substring = shangZhiZhenShu.toString().substring(0, 4);
+            const floatNum = parseFloat(substring);
+            const res = parseFloat((floatNum / 100).toFixed(2));
+            // console.log(res, "res")
+            setGaugeValue(res);
         }
-    };
-
-    useEffect(() => {
-        fetchDataAndProcess(MarketService.getSentiment, setSentList, setSentText, setSentSize);
-    }, []);
-
-
-    // 初始化refs对象
-    useEffect(() => {
-        const newRefs: { [key: string]: React.RefObject<HTMLDivElement> } = {};
-        NavList.forEach(item => {
-            newRefs[item] = React.createRef();
-        });
-    }, [NavList]);
+    }, [summary]);
 
     return (
         <ProCard direction="column" style={{ marginBlockStart: 8 }} gutter={8} wrap>
-            <ProCard >
+            <ProCard>
                 <Typography>
-                    <blockquote style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'red', textAlign: 'left' }}>今日热度指数表</blockquote>
+                    <blockquote style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'red', textAlign: 'left' }}>{title}</blockquote>
                 </Typography>
                 <Divider />
             </ProCard>
-            <ProCard >
-                <ProCard >
-                    <Gauge size={sentSize} />
-                    <ReactMarkdown>{sentText}</ReactMarkdown>
-                </ProCard>
-                {/* <ProCard colSpan={{ xs: 20, sm: 16, md: 12, lg: 12, xl: 12 }}>
-                    <Gauge size={sentSize} />
-                </ProCard>
-                <ProCard >
-                    <ReactMarkdown>{sentText}</ReactMarkdown>
-                </ProCard> */}
-
+            <ProCard>
+                <div>
+                    <Gauge size={gaugeValue} />
+                    <ReactMarkdown>{summary?.text}</ReactMarkdown>
+                </div>
             </ProCard>
             <ProCard>
-                <FeatureCard
-                    items={sentList}
-                    loading={loading}
-                />
+                <FeatureCard items={features || []} />
             </ProCard>
-        </ProCard >
+        </ProCard>
+    );
+};
 
+export const SentContent: React.FC = () => {
+    return (
+        <MarketContent
+            fetchDataUrl={MarketService.getSentiment}
+            title="今日热度指数表"
+        />
     );
 };
 
 export const DangerContent: React.FC = () => {
-    const [loading, setLoading] = useState(true);
-
-    const [dangerList, setFeaturesList] = useState<any[]>([]);
-    // 危险指数
-    const [dangerSize, setDangerSize] = useState<number>(0);
-    // 危险指数文本
-    const [dangerText, setDangerText] = useState<string>('');
-
-    // 在组件的state中添加一个refs对象来存储图表的ref
-    const [NavList, setNavList] = useState<any[]>([]);
-
-    const fetchDataAndProcess = async (url: () => Promise<any>,
-        setList: any,
-        setText: any, setSize: any) => {
-        const response = await url();
-        try {
-            const { features = [], summary = {} } = response.result || {};
-            let textsToAppend: string[] = [];
-            Object.keys(features).forEach(feature => {
-                const time = features[feature].TIME
-                const result = features[feature].result
-                const text = features[feature].text
-
-                textsToAppend.push(text);
-                const keys = Object.keys(time)[0];
-                if (typeof time[keys] === 'object' && !Array.isArray(time)) {
-                    const r = time[keys].map((item: any, index: string | number) => {
-                        return [item, result[keys][index]]
-                    });
-                    setList((prevState: any) => [...prevState, { title: feature, data: r, text: text }]);
-                } else {
-                    const r = [time, result];
-                    setList((prevState: any) => [...prevState, { title: feature, data: r, text: text }]);
-                }
-            });
-            setNavList((prevState: any[]) => [...prevState, ...textsToAppend]);
-
-            const textContent = summary.text;
-            const shangZhiZhenShu = summary['上证指数'];
-            const substring = shangZhiZhenShu.toString().substring(0, 4)
-            const floatNum = parseFloat(substring)
-            const res = parseFloat((floatNum / 100).toFixed(2))
-            setSize(res);
-            setText(textContent)
-            setLoading(false)
-        } catch (error) {
-            setLoading(false)
-            console.error(error)
-        }
-    };
-
-    useEffect(() => {
-        fetchDataAndProcess(MarketService.getDanger, setFeaturesList, setDangerText, setDangerSize);
-    }, []);
-
-
-    // 初始化refs对象
-    useEffect(() => {
-        const newRefs: { [key: string]: React.RefObject<HTMLDivElement> } = {};
-        NavList.forEach(item => {
-            newRefs[item] = React.createRef();
-        });
-    }, [NavList]);
-
-
     return (
-        <ProCard direction="column" wrap>
-            <ProCard >
-                <Typography>
-                    <blockquote style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'red', textAlign: 'left' }}>危险指数</blockquote>
-                </Typography>
-                <Divider />
-            </ProCard>
-            <ProCard >
-                <ProCard >
-                    <Gauge size={dangerSize} />
-                    <ReactMarkdown>{dangerText}</ReactMarkdown>
-                </ProCard>
-            </ProCard>
-            <ProCard>
-                <FeatureCard
-                    items={dangerList}
-                    loading={loading}
-                />
-            </ProCard>
-
-        </ProCard >
-
+        <MarketContent
+            fetchDataUrl={MarketService.getDanger}
+            title="危险指数"
+        />
     );
 };
-
-// export default MarketContent;

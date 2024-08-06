@@ -11,12 +11,10 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Divider, Layout, Menu, } from 'antd';
-import { ProCard } from '@ant-design/pro-components';
-import SearchCompany from '../FinanceModels/SearchCompany';
-// import MarketContent from './Market/MarketContent';
 import { SentContent, DangerContent } from './Market/MarketContent';
-import Stocks from './Socket';
-import Events from './Events';
+import CompanyContent from './Company/CompanyContent';
+import EventContent from './Events/EventContent';
+import Test from './Industry/Test';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -43,18 +41,6 @@ const items: MenuProps['items'] = [
         key: '2',
         icon: React.createElement(VideoCameraOutlined),
         label: `事件`,
-        // children: [ // 添加子菜单项
-        //     {
-        //         key: '2-1',
-        //         icon: React.createElement(UploadOutlined),
-        //         label: `经济数据`,
-        //     },
-        //     {
-        //         key: '2-2',
-        //         icon: React.createElement(BarChartOutlined),
-        //         label: `重要事件`,
-        //     },
-        // ],
     },
     {
         key: '3',
@@ -63,7 +49,7 @@ const items: MenuProps['items'] = [
     },
     {
         key: '4',
-        icon: React.createElement(CloudOutlined),
+        icon: React.createElement(TeamOutlined),
         label: `行业`,
     },
     {
@@ -72,19 +58,6 @@ const items: MenuProps['items'] = [
         label: `个人`,
     },
 ];
-
-
-
-const SharedContentView: React.FC<{ content1Ref: React.RefObject<HTMLDivElement>, content2Ref: React.RefObject<HTMLDivElement> }> = memo(({ content1Ref, content2Ref }) => (
-    <div>
-        <div ref={content1Ref} style={{ height: '500px' }}>
-            内容1
-        </div>
-        <div ref={content2Ref} style={{ height: '500px' }}>
-            内容2
-        </div>
-    </div>
-));
 
 const MarketContentView: React.FC<{ content3Ref: React.RefObject<HTMLDivElement>, content4Ref: React.RefObject<HTMLDivElement> }> = memo(({ content3Ref, content4Ref }) => (
     <div>
@@ -99,8 +72,6 @@ const MarketContentView: React.FC<{ content3Ref: React.RefObject<HTMLDivElement>
 
 const CustomMenu: React.FC = () => {
     const [selectedKey, setSelectedKey] = React.useState('1-1');
-
-
 
     const content1Ref = useRef<HTMLDivElement>(null);
     const content2Ref = useRef<HTMLDivElement>(null);
@@ -125,7 +96,6 @@ const CustomMenu: React.FC = () => {
             <Sider
                 style={{ overflow: 'auto', height: `calc(100vh - 60px)`, background: 'white', position: 'fixed', left: 0, top: 60, bottom: 0 }}
             >
-                {/* <div className="demo-logo-vertical" /> */}
                 <Menu theme="light" mode="inline"
                     selectedKeys={[selectedKey]}
                     onClick={({ key }) => handleItemClick(key)}
@@ -144,13 +114,19 @@ const CustomMenu: React.FC = () => {
 
                     {['2', '2-1', '2-2'].includes(selectedKey) && (
                         <div style={{ padding: 24 }}>
-                            <Events />
+                            <EventContent />
                         </div>
                     )}
 
                     {selectedKey === '3' && (
                         <div style={{ padding: 24, textAlign: 'center' }}>
-                            <Stocks />
+                            <CompanyContent />
+                        </div>
+                    )}
+
+                    {selectedKey === '4' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>
+                            <Test />
                         </div>
                     )}
 

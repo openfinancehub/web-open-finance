@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MarketService } from '../../../service/';
+import { MarketService } from '../../../service';
 import { Card, Carousel, Col, Drawer, Input, Row, Skeleton, message } from 'antd';
 import DefaultChart from './DefaultChart';
 import ReactMarkdown from 'react-markdown';
@@ -27,7 +27,7 @@ interface DocData {
   source: string;
 }
 
-export default function StockTable() {
+export default function CompanyContent() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [company, setCompany] = useState<string>('贵州茅台');

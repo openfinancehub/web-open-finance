@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card, Carousel, Typography } from 'antd';
-import Risk from '../../News/Market/Risk';
+import Risk from './Risk';
 import './FeatureCard.css'; // 引入自定义样式文件
 import ReactMarkdown from 'react-markdown';
 
@@ -12,14 +12,12 @@ interface Props {
 
 interface FeatureCardProps {
     items: Props[];
-    loading?: boolean;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ items, loading }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ items }) => {
     // console.log(items)
 
     const mapToEchartsConfig = (list: Props[], zoomStart: number, zoomEnd: number): any[] => {
-        // console.log(list)
         return list.map((feature, index) => ({
             echartsConf: {
                 name: feature.title,
@@ -60,10 +58,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ items, loading }) => {
                     title={item.echartsConf.name}
                     type="inner"
                 >
-                    <Card>
+                    <Card style={{ width: '100%', margin: '16px 0 16px 0' }}>
                         <Risk legendData={item.echartsConf.name} dataZoom={item.dataZoom} seriesData={item.echartsConf} />
                     </Card>
-                    <Card>
+                    <Card style={{ width: '100%', margin: '16px 0 16px 0' }}>
                         <ReactMarkdown>
                             {item.textContent}
                         </ReactMarkdown>
