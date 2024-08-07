@@ -31,7 +31,6 @@ echarts.use([
 ]);
 
 export default function PublicStrategy(props: string) {
-  const size = 'large';
   const today = new Date();
   const date = today.getDate();
   const month = today.getMonth() + 1;
@@ -251,7 +250,6 @@ export default function PublicStrategy(props: string) {
   };
   useEffect(() => {
     strtegylist();
-    getQuantList();
   }, []);
   const backOrder = (e: any) => {
     setbackData(e.target.value);

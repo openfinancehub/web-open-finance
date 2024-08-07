@@ -1,11 +1,13 @@
 import { ProCard } from "@ant-design/pro-components";
-import { useRef, useState } from "react";
-import { Button, message, Space } from "antd";
+import { useEffect, useRef, useState } from "react";
+import { Button,Card,DatePicker,InputNumber,Modal,PageHeader,Radio,Select,Space,message } from "antd";
 import { getStrategyTest, getStrategyResult, getStrtegyList } from "../api/analysis";
 import { LineChart, RadarChart } from 'echarts/charts';
 import { LegendComponent, TitleComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import StockList from "../components/Public/stockList";
+import '../index.less'
 echarts.use([
   TitleComponent,
   LegendComponent,
@@ -14,9 +16,30 @@ echarts.use([
   LineChart
 ]);
 const Strategy = () => {
+  const size = 'large';
+  const today = new Date();
+  const date = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const todayDate = `${year}-${month}-${date}`;
   const radarRef = useRef(null);
   const lineRef = useRef(null);
   const [stopDemo,setStopDemo] = useState(0)
+  const [backData, setbackData] = useState(0);
+  const [listName, setListName] = useState();
+  const [selectedButton, setSelectedButton] = useState('');
+  const [listData, setListData] = useState([]);
+  const [detailsData, setDetailsData] = useState({});
+  const [dateData, setDateData] = useState(todayDate);
+  const [shopData, setShopData] = useState(1);
+  const [demoDays, setDemoDays] = useState(5);
+  const [minTime, setMinTime] = useState(5);
+  const [isdemoBtn, setIsdemoBtn] = useState(true);
+  const [demoEndData, setDemoEndData] = useState([]);
+  const [indexdetails, setindexDetails] = useState('');
+  const [stock,setStock] = useState("")
+  const firstKargs = [];
+  let synthesis = [];
   const GetStrategy = (uid,demoTime) => {
     const data = {
       uid:uid,
@@ -28,22 +51,165 @@ const Strategy = () => {
         setStopDemo(1)
         return demoTime
       }
-      if(res.code == 801){
+      if(res.code === 801){
         message.error(res.message)
       }
-      if(res.code == 500){
+      if(res.code === 500){
         message.error(res.message);
       }
-      if(res.code == 300 && demoTime <= 140){
+      if(res.code === 300 && demoTime <= 140){
         setTimeout(() => {
           GetStrategy(uid, list);
         }, 2000);
       }else{
-        
+        let destArr = [];
+        let raderArr = [];
+        let radervalue = [];
+        let linedata = [];
+        let lineDataTime = [];
+        let longAndshort = [];
+        res.data.result.forEach((item) => {
+          if (item.indicator_flag === 'True') {
+            destArr.push({
+              name: item.name,
+              desc: item.desc,
+              value: item.value.toFixed(4)
+            });
+            raderArr.push({ name: item.name, max: item.max });
+            radervalue.push(item.value);
+          }
+        });
+        if (!backData) {
+          res.data.raw_data.forEach((list) => {
+            linedata.push(Object.values(list)[0]);
+            lineDataTime.push(Object.keys(list)[0]);
+            for (let i = 0; i < res.data.decision_long.length; i++) {
+              if (res.data.decision_long[i] === Object.keys(list)[0]) {
+                longAndshort.push({
+                  coord: [Object.keys(list)[0], Object.values(list)[0]],
+                  itemStyle: { color: 'red' },
+                  label: {
+                    formatter: '买入'
+                  }
+                });
+                break;
+              }
+            }
+            for (let i = 0; i < res.data.decision_short.length; i++) {
+              if (res.data.decision_short[i] === Object.keys(list)[0]) {
+                longAndshort.push({
+                  coord: [Object.keys(list)[0], Object.values(list)[0]],
+                  itemStyle: { color: 'green' },
+                  label: {
+                    formatter: '卖出'
+                  }
+                });
+                break;
+              }
+            }
+          });
+        }
+        destArr.push();
+
+        const max = Math.max(...linedata);
+        const min = Math.min(...linedata);
+        setLinemax(max);
+        setLinemin(min);
+        setLineIdent(longAndshort);
+        setDemoEndData(destArr);
+        setRaderData(raderArr);
+        setRaderValue(radervalue);
+        setLineData(linedata);
+        setlineDataTime(lineDataTime);
+        setDetailsModelOpen(true);
+        setIsdemoBtn(true);
+        setIsModalOpen(false);
+        synthesis = [];
+        initBasicEchart();
+        initLineEchart();
       }
     })
   }
-
+  const handleStopTime = () => {
+    setTimeout(() => {
+      setStopDemo({ list: true });
+    }, 8000);
+  };
+  const strategy_test = (kargs) => {
+    const data = {
+      key: '8140ad230f687daede75a08855e8ae5ff40c3ba8',
+      setting: [
+        {
+          strategy_name: listName,
+          span: 60,
+          kargs: kargs
+        }
+      ],
+      configs:{
+        stock_id:stock,
+        user_id: '000001',
+        setting_mode: 'p',
+        analysis_flag: 0,
+        holding_cost: -1,
+        end_date: dateData,
+        cnt_ops: shopData,
+        test_days: demoDays,
+        mode: 'both',
+        scale: minTime
+      }
+    }
+    getStrategyTest(data).then((res)=>{
+      if(res.code === 200){
+        if(res.uid){
+          GetStrategy(res.uid,0)
+          handleStopTime();
+        }
+      }else{
+        message.error(res.message);
+        setIsdemoBtn(true);
+      }
+    })
+  }
+  const demoBtn = () => {
+    synthesis = [];
+    for (let i = 0; i < firstKargs.length; i++) {
+      if (firstKargs.length > 0) {
+        // 处理数组元素
+        synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`);
+        if (i !== 0 && firstKargs[i - 1].name !== firstKargs[i].name) {
+          synthesis.push(`${firstKargs[0].name}:${firstKargs[0].value}`);
+        }
+      }
+   
+    }
+    strategy_test(synthesis);
+    setIsdemoBtn(false);
+    setTimeout(() => {
+      setIsdemoBtn(true);
+    }, 60000);
+  }
+  const strtegylist = () => {
+    const data = {
+      uid:1,
+      key:"8140ad230f687daede75a08855e8ae5ff40c3ba8"
+    }
+    getStrtegyList(data).then((res)=>{
+      setListName(res.data.list[0]);
+      setSelectedButton(res.data.list[0]);
+      let options = res.data.list.map((item, index) => {
+        return {
+          value: item,
+          lable: item,
+          index: index
+        };
+      });
+      setListData(options);
+      setDetailsData(res.data.details);
+    })
+  }
+  const backOrder = (e) => {
+    setbackData(e.target.value);
+  };
   // 初始化折现图
   const initLineEchart = () => {
     const option = {
@@ -147,14 +313,47 @@ const Strategy = () => {
     const chart = echarts.init(radarRef.current);
     chart.setOption(option);
   };
+
+  const handleChangeValue = (value, option) => {
+    setListName(value);
+    setindexDetails(option.index);
+    setSelectedButton(value);
+  };
+  const demoDaysChange = (value) => {
+    setDemoDays(value);
+  };
+  const shopOrder = (value) => {
+    setShopData(value);
+  };
+  const minTimeChange = (value) => {
+    setMinTime(value);
+  };
+  const dateTime= (date, dateString) => {
+    setDateData(dateString);
+  };
+  const handleDataFromChild = (btnId,btnStr) => {
+    setStock(btnId)
+  }
+  const handleOnInval = (buttonId,buttonStr) => {
+    setStock(buttonId)
+  }
+
+  useEffect(()=>{
+    strtegylist()
+    handleOnInval()
+  },[])
+
   return (
     <div>
       <ProCard direction="column" >
-        <ProCard ghost wrap style={{ width: '100%' }}>
+        <ProCard ghost wrap style={{  width: '100%' }}>
           <ProCard
             bordered
-            style={{ textAlign: 'center', overflowY: 'scroll' }}
+            style={{height:'300px',   textAlign: 'center', overflowY: 'scroll' }}
             colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
+            <Space>
+            <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>&nbsp;&nbsp;
+            </Space>
             <Space wrap align="center">
               因子：
               <Select
@@ -189,7 +388,7 @@ const Strategy = () => {
             </div>
           </ProCard>
           <ProCard
-            style={{ textAlign: 'center' }}
+            style={{ height:"300px", textAlign: 'center' }}
             bordered
             colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
 
