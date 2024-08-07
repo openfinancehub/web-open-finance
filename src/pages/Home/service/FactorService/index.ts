@@ -8,11 +8,19 @@ const apiUrl = 'http://129.204.166.171:5002/api/info/';
 export class FactorService {
     public static getModels(factor: string): Promise<any> {
         const dataStr = {
-            ip: '127.0.0.1',
-            factor: factor,
-            model: 'author',
-            time: '',
-            extra: 'extra',
+            header: {
+                req_id: '1234',
+                req_src: 'source',
+                user: 'user',
+                token: 'token',
+            },
+            data: {
+                ip: '127.0.0.1',
+                factor: factor,
+                model: 'author',
+                time: '',
+                extra: 'extra',
+            }
         };
         return PostRequest(`${apiUrl}` + 'models', dataStr);
     }
@@ -20,11 +28,19 @@ export class FactorService {
     // 获取py代码
     public static getCode(factor: string, model: string): Promise<any> {
         const dataStr = {
-            ip: '127.0.0.1',
-            factor: model,
-            model: 'author',
-            time: '',
-            extra: 'extra',
+            header: {
+                req_id: '1234',
+                req_src: 'source',
+                user: 'user',
+                token: 'token',
+            },
+            data: {
+                ip: '127.0.0.1',
+                factor: model,
+                model: 'author',
+                time: '',
+                extra: 'extra',
+            }
         };
 
         return PostRequest(`${apiUrl}` + 'getCode', dataStr);
@@ -32,13 +48,21 @@ export class FactorService {
     // 更新models
     public static updateCode(factor: string, model: string, code: string, text: string, extra: string): Promise<any> {
         const dataStr = {
-            ip: '127.0.0.1',
-            factor,
-            model,
-            code,
-            text,
-            time: '',
-            extra,
+            header: {
+                req_id: '1234',
+                req_src: 'source',
+                user: 'user',
+                token: 'token',
+            },
+            data: {
+                ip: '127.0.0.1',
+                factor,
+                model,
+                code,
+                text,
+                time: '',
+                extra,
+            }
         };
 
         return PostRequest(`${apiUrl}` + 'updateCode', dataStr);
@@ -47,12 +71,21 @@ export class FactorService {
     // model图形界面展示
     public static getEval(factor: string, model: string, inputValue: string): Promise<any> {
         let dataStr = {
-            ip: '127.0.0.1',
-            factor: model,
-            model: "default",
-            input: inputValue,
-            time: '',
-            extra: 'extra',
+            header: {
+                req_id: '1234',
+                req_src: 'source',
+                user: 'user',
+                token: 'token',
+            },
+            data: {
+                ip: '127.0.0.1',
+                factor: model,
+                model: "default",
+                input: inputValue,
+                time: '',
+                extra: 'extra',
+            }
+
         };
         return PostRequest(`${apiUrl}` + 'eval', dataStr);
     };

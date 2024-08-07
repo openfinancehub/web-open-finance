@@ -110,18 +110,18 @@ export default () => {
       loading={isLoading}
       columns={mergedColumns}
       dataSource={data}
-      scroll={{ x: 2000 }}
+      scroll={{ x: 1000 }}
       options={false}
       search={false}
       pagination={{
         pageSize: 10,
       }}
-      expandable={{
-        columnWidth: 17,
-        expandedRowRender: (record) => (
-          extendedRender(record)
-        ),
-      }}
+      // expandable={{
+      //   columnWidth: 17,
+      //   expandedRowRender: (record) => (
+      //     extendedRender(record)
+      //   ),
+      // }}
       rowKey="key"
     />
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Card, Col, Divider, Layout, Typography } from 'antd';
+import { Avatar, Card, Carousel, Col, Divider, Layout, Typography } from 'antd';
 import { MarketService } from '../../../service';
 import { ProCard } from '@ant-design/pro-components';
 import SearchCompany from '../../FinanceModels/SearchCompany';
@@ -18,15 +18,14 @@ interface FetchDataResult {
 }
 
 
-const MarketContent: React.FC = () => {
-
-    return (
-        <ProCard direction="column" wrap>
-            <SentContent />
-            <DangerContent />
-        </ProCard >
-    );
-};
+// const MarketContent: React.FC = () => {
+//     return (
+//         <ProCard direction="column" wrap>
+//             <SentContent />
+//             <DangerContent />
+//         </ProCard >
+//     );
+// };
 
 export const SentContent: React.FC = () => {
     const [loading, setLoading] = useState(true);
@@ -39,7 +38,6 @@ export const SentContent: React.FC = () => {
 
     // 在组件的state中添加一个refs对象来存储图表的ref
     const [NavList, setNavList] = useState<any[]>([]);
-    const [chartRefs, setChartRefs] = useState<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
 
     const fetchDataAndProcess = async (url: () => Promise<any>,
         setList: any,
@@ -81,31 +79,6 @@ export const SentContent: React.FC = () => {
         }
     };
 
-    // 抽取图表所需要的数据
-    const mapToEchartsConfig = (list: FeatureItem[], zoomStart: number, zoomEnd: number): any[] => {
-        return list.map((feature, index) => ({
-            echartsConf: {
-                name: feature.title,
-                type: 'line',
-                stack: 'Total',
-                data: feature.data
-            },
-            dataZoom: [
-                {
-                    type: 'inside',
-                    start: feature.data.length < 20 ? 0 : zoomStart,
-                    end: feature.data.length < 20 ? 100 : zoomEnd,
-                    zoomLock: true,
-                },
-                {
-                    start: zoomStart,
-                    end: zoomEnd,
-                }
-            ],
-            textContent: feature.text
-        }));
-    };
-
     useEffect(() => {
         fetchDataAndProcess(MarketService.getSentiment, setSentList, setSentText, setSentSize);
     }, []);
@@ -117,13 +90,10 @@ export const SentContent: React.FC = () => {
         NavList.forEach(item => {
             newRefs[item] = React.createRef();
         });
-        setChartRefs(newRefs);
     }, [NavList]);
 
-    const sentData = useMemo(() => mapToEchartsConfig(sentList, 80, 100), [sentList]);
-
     return (
-        <ProCard direction="column" wrap>
+        <ProCard direction="column" style={{ marginBlockStart: 8 }} gutter={8} wrap>
             <ProCard >
                 <Typography>
                     <blockquote style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'red', textAlign: 'left' }}>今日热度指数表</blockquote>
@@ -133,26 +103,21 @@ export const SentContent: React.FC = () => {
             <ProCard >
                 <ProCard >
                     <Gauge size={sentSize} />
+                    <ReactMarkdown>{sentText}</ReactMarkdown>
+                </ProCard>
+                {/* <ProCard colSpan={{ xs: 20, sm: 16, md: 12, lg: 12, xl: 12 }}>
+                    <Gauge size={sentSize} />
                 </ProCard>
                 <ProCard >
                     <ReactMarkdown>{sentText}</ReactMarkdown>
-                </ProCard>
+                </ProCard> */}
+
             </ProCard>
-            {/* <ProCard >
-                <ReactMarkdown>{sentText}</ReactMarkdown>
-            </ProCard> */}
-            <ProCard headerBordered >
-                {sentData.map((item, index) => (
-                    <div key={index}>
-                        <FeatureCard
-                            key={index}
-                            item={item}
-                            loading={loading}
-                            refCallback={chartRefs[item.textContent]}
-                        />
-                        <br /><br /><br />
-                    </div>
-                ))}
+            <ProCard>
+                <FeatureCard
+                    items={sentList}
+                    loading={loading}
+                />
             </ProCard>
         </ProCard >
 
@@ -170,9 +135,6 @@ export const DangerContent: React.FC = () => {
 
     // 在组件的state中添加一个refs对象来存储图表的ref
     const [NavList, setNavList] = useState<any[]>([]);
-    const [chartRefs, setChartRefs] = useState<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
-
-    const [pText, setPText] = useState(''); // 新增的状态变量
 
     const fetchDataAndProcess = async (url: () => Promise<any>,
         setList: any,
@@ -207,44 +169,11 @@ export const DangerContent: React.FC = () => {
             const res = parseFloat((floatNum / 100).toFixed(2))
             setSize(res);
             setText(textContent)
-            // const match = textContent.match(/总结：(.*)/);
-            // if (match) {
-            //     const summary = match[1];
-            //     console.log(summary)
-            //     setPText(summary); // 更新摘要状态
-            // } else {
-            //     setPText('');
-            // }
             setLoading(false)
         } catch (error) {
             setLoading(false)
             console.error(error)
         }
-    };
-
-    // 抽取图表所需要的数据
-    const mapToEchartsConfig = (list: FeatureItem[], zoomStart: number, zoomEnd: number): any[] => {
-        return list.map((feature, index) => ({
-            echartsConf: {
-                name: feature.title,
-                type: 'line',
-                stack: 'Total',
-                data: feature.data
-            },
-            dataZoom: [
-                {
-                    type: 'inside',
-                    start: feature.data.length < 20 ? 0 : zoomStart,
-                    end: feature.data.length < 20 ? 100 : zoomEnd,
-                    zoomLock: true,
-                },
-                {
-                    start: zoomStart,
-                    end: zoomEnd,
-                }
-            ],
-            textContent: feature.text
-        }));
     };
 
     useEffect(() => {
@@ -258,10 +187,8 @@ export const DangerContent: React.FC = () => {
         NavList.forEach(item => {
             newRefs[item] = React.createRef();
         });
-        setChartRefs(newRefs);
     }, [NavList]);
 
-    const seriesData = useMemo(() => mapToEchartsConfig(dangerList, 80, 100), [dangerList]);
 
     return (
         <ProCard direction="column" wrap>
@@ -274,30 +201,19 @@ export const DangerContent: React.FC = () => {
             <ProCard >
                 <ProCard >
                     <Gauge size={dangerSize} />
-                </ProCard>
-                <ProCard >
                     <ReactMarkdown>{dangerText}</ReactMarkdown>
                 </ProCard>
             </ProCard>
-            {/* <ProCard >
-                <ReactMarkdown>{pText}</ReactMarkdown>
-            </ProCard> */}
-            <ProCard >
-                {seriesData.map((item, index) => (
-                    <div key={index}>
-                        <FeatureCard
-                            key={index}
-                            item={item}
-                            loading={loading}
-                            refCallback={chartRefs[item.textContent]}
-                        />
-                        <br /><br /><br />
-                    </div>
-                ))}
+            <ProCard>
+                <FeatureCard
+                    items={dangerList}
+                    loading={loading}
+                />
             </ProCard>
+
         </ProCard >
 
     );
 };
 
-export default MarketContent;
+// export default MarketContent;

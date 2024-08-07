@@ -1,98 +1,46 @@
-import type { ProColumns } from '@ant-design/pro-components';
-import { ProTable } from '@ant-design/pro-components';
-import { useEffect, useState } from 'react';
+
+import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useCallback, useEffect, useState } from 'react';
 import { MarketService } from '../../../service/';
-import { Button } from 'antd';
+import { Button, Card, Carousel, Col, Drawer, Input, Row, Skeleton, Space, Spin, Typography } from 'antd';
+import DefaultChart from './DefaultChart';
+import ReactMarkdown from 'react-markdown';
 
-interface StockData {
-  key: string;
-  // number?: number; // 明确定义number属性
-  [key: string]: string | number; // 允许其他数值类型的属性
+const { Search } = Input;
+interface StockAnalysis {
+  [section: string]: SectionData;
 }
 
-// 排序逻辑
-const numberSorter = (a: StockData, b: StockData) => {
-  const numA = (a.number ?? 0) as number;
-  const numB = (b.number ?? 0) as number;
-
-  if (numA < 0 && numB >= 0) return -1;
-  if (numA >= 0 && numB < 0) return 1;
-  return numA - numB;
-};
-
-function createNewColumns(features: Record<string, any>) {
-  return Object.entries(features).map(([titleName, featureObj]) => ({
-    title: titleName,
-    dataIndex: titleName,
-    key: titleName,
-    width: 80,
-    sorter: numberSorter,
-  }));
+interface SectionData {
+  indicator: string[];
+  charts: ChartData[];
+  docs: DocData[];
+}
+interface ChartData {
+  result: string;
+  chart: any;
 }
 
-function generateTargetData(features: Record<string, any>, summary: Record<string, number>): StockData[] {
-  const stockNames = Object.values(features)[0].TIME;
-
-  return Object.entries(stockNames).map(([stockName]) => {
-    const stockData: StockData = { key: stockName };
-
-    const summaryValue = summary[stockName];
-    if (summaryValue !== undefined) {
-      stockData['number'] = summaryValue.toFixed(2);
-    }
-
-    Object.entries(features).forEach(([featureName, featureObj]) => {
-      const value = featureObj.result[stockName];
-      stockData[featureName] = value !== undefined && value !== null ? parseFloat(value.toFixed(3)) : 0;
-    });
-
-    return stockData;
-  });
+interface DocData {
+  title: string;
+  doc: string;
+  source: string;
 }
-
-const EnhancedRender = ({ record }: { record: StockData }) => (
-  <div>
-    <p>{record.key} 的内容</p>
-  </div>
-);
-const extendedRender = (record: StockData) => <EnhancedRender record={record} />;
 
 export default function StockTable() {
-  const initialColumns: ProColumns<StockData>[] = [
-    {
-      title: '股票名称',
-      width: 60,
-      fixed: 'left',
-      dataIndex: 'key',
-      render: (text, record) => <a>{record.key}</a>,
-    },
-    {
-      title: '推荐指数',
-      width: 80,
-      sorter: numberSorter,
-      dataIndex: 'number',
-      render: (text, record) => <a>{record.number}</a>,
-    },
-  ];
 
-  const [data, setData] = useState<StockData[]>([]);
-  const [originalData, setOriginalData] = useState<StockData[]>([]);
-  const [columns, setColumns] = useState<ProColumns<StockData>[]>(initialColumns);
   const [isLoading, setIsLoading] = useState(true);
+  const [company, setCompany] = useState<string>('贵州茅台');
+  const [data, setData] = useState<StockAnalysis>({});
 
-  const fetchData = async () => {
+  const fetchStockData = async (value: string) => {
     try {
       setIsLoading(true);
-      const response = await MarketService.getStock();
-      const { features = [], summary = {} } = response.result || {};
+      const response = await MarketService.getStockData(value);
 
-      const newColumns = createNewColumns(features);
-      setColumns([...initialColumns, ...newColumns]);
-
-      const targetData = generateTargetData(features, summary);
-      console.log('Generated Data:', targetData);
-      setData(targetData);
-      setOriginalData(targetData);
+      if (response && Object.keys(response).length > 0) {
+        setData(response);
+        console.log(data, 'data');
+      }
     } catch (error) {
       console.error('Fetch data error:', error);
     } finally {
@@ -100,83 +48,61 @@ export default function StockTable() {
     }
   };
 
-  const handleSearch = (params: any) => {
-    const filteredData = originalData.filter(item => item.key.includes(params));
-    setData(filteredData);
-  };
-
-  const exportExcel = (params: any) => {
-    console.log(params, 'params');
-    // 当params同时包含current和pageSize，且没有其他额外属性时，执行setData(originalData)
-    if ('current' in params && 'pageSize' in params && Object.keys(params).length === 2) {
-      setData(originalData);
-    }
-    // 当params同时包含current和pageSize，以及有其他任意数据时，执行过滤并setData(filteredData)
-    else if ('current' in params && 'pageSize' in params) {
-      const filteredData = originalData.filter(item => item.key.includes(params.key));
-      setData(filteredData);
-    }
-    // 如果params不包含current和pageSize，则进行过滤操作
-    else {
-      const filteredData = originalData.filter(item => item.key.includes(params));
-      setData(filteredData);
-    }
-    // return filteredData
-  };
+  const onSearch = (value: string) => {
+    setCompany(value)
+    console.log(value);
+  }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchStockData(company);
+  }, [company]);
 
   return (
-    <ProTable
-      loading={isLoading}
-      columns={columns}
-      dataSource={data}
-      // params={params}
-      request={(params) => {
-        return exportExcel(params)
-      }}
-      scroll={{ x: 2000 }}
-      // options={{
-      //   search: {
-      //     title: '股票名称',
-      //     placeholder: '请输入股票名称',
-      //     onSearch: handleSearch,
-      //   },
-      // }}
-      search={{
-        labelWidth: 100,
-        span: 12,
-        optionRender: ({ searchText, resetText }, { form }, dom) => [
-          <Button
-            key="searchText"
-            type="primary"
-            onClick={() => {
-              form?.submit();
-            }}
-          >
-            {searchText}
-          </Button>,
-          <Button
-            key="resetText"
-            onClick={() => {
-              form?.resetFields();
-            }}
-          >
-            {resetText}
-          </Button>
-        ]
-      }}
-      pagination={{
-        pageSize: 10,
-      }
-      }
-      expandable={{
-        columnWidth: 17,
-        expandedRowRender: extendedRender,
-      }}
-      rowKey="key"
-    />
+    <Row gutter={[16, 16]}>
+      <Col offset={16} span={8}>
+        <Search
+          placeholder={`当前搜索公司为:` + company}
+          allowClear
+          enterButton="Search"
+          onSearch={onSearch}
+          style={{ width: 304 }}
+        />
+      </Col>
+      <Skeleton loading={isLoading} round active >
+        {Object.entries(data).map(([key, value], index) => (
+          <Col span={24} key={index}>
+            <Card
+              loading={isLoading}
+              headStyle={{ textAlign: 'left' }}
+              title={<h2>{key}</h2>}
+            >
+              <Carousel key={`charts` + index} arrows dotPosition="bottom" infinite={false} dots>
+                {value.charts.map((chartData) => (
+                  <div key={`chartData` + index}>
+                    <DefaultChart optionData={chartData.chart} width={'90%'} height={'300px'} />
+                    <Typography.Paragraph
+                      ellipsis={{
+                        expandable: true,
+                        onExpand: (event) => event.altKey,
+                      }}
+                      copyable
+                    >
+                      {chartData.result}
+                    </Typography.Paragraph>
+                  </div>
+                ))}
+              </Carousel>
+              <div key={`docs` + index}>
+                {value.docs.map((docData) => (
+                  <ReactMarkdown key={`ReactMarkdown` + index}>
+                    {`docs中的文本` + docData.doc}
+                  </ReactMarkdown>
+                ))}
+              </div>
+            </Card>
+          </Col>
+        ))}
+      </Skeleton>
+    </Row >
   );
 }

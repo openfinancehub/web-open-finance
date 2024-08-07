@@ -16,6 +16,7 @@ import SearchCompany from '../FinanceModels/SearchCompany';
 // import MarketContent from './Market/MarketContent';
 import { SentContent, DangerContent } from './Market/MarketContent';
 import Stocks from './Socket';
+import Events from './Events';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -42,26 +43,31 @@ const items: MenuProps['items'] = [
         key: '2',
         icon: React.createElement(VideoCameraOutlined),
         label: `事件`,
-        children: [ // 添加子菜单项
-            {
-                key: '2-1',
-                icon: React.createElement(UploadOutlined),
-                label: `经济数据`,
-            },
-            {
-                key: '2-2',
-                icon: React.createElement(BarChartOutlined),
-                label: `重要事件`,
-            },
-        ],
+        // children: [ // 添加子菜单项
+        //     {
+        //         key: '2-1',
+        //         icon: React.createElement(UploadOutlined),
+        //         label: `经济数据`,
+        //     },
+        //     {
+        //         key: '2-2',
+        //         icon: React.createElement(BarChartOutlined),
+        //         label: `重要事件`,
+        //     },
+        // ],
     },
     {
         key: '3',
         icon: React.createElement(CloudOutlined),
-        label: `股票`,
+        label: `公司`,
     },
     {
         key: '4',
+        icon: React.createElement(CloudOutlined),
+        label: `行业`,
+    },
+    {
+        key: '5',
         icon: React.createElement(UserOutlined),
         label: `个人`,
     },
@@ -136,12 +142,9 @@ const CustomMenu: React.FC = () => {
                         </div>
                     )}
 
-                    {['2-1', '2-2'].includes(selectedKey) && (
+                    {['2', '2-1', '2-2'].includes(selectedKey) && (
                         <div style={{ padding: 24 }}>
-                            <SharedContentView
-                                content1Ref={content1Ref}
-                                content2Ref={content2Ref}
-                            />
+                            <Events />
                         </div>
                     )}
 
@@ -151,7 +154,7 @@ const CustomMenu: React.FC = () => {
                         </div>
                     )}
 
-                    {!['1', '1-1', '1-2', '2', '2-1', '2-2', '3', '4'].includes(selectedKey) && (
+                    {!['1', '1-1', '1-2', '2', '2-1', '2-2', '3', '4', '5'].includes(selectedKey) && (
                         <div style={{ padding: 24, textAlign: 'center' }}>No content matched</div>
                     )}
                 </Content>
