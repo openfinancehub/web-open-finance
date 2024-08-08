@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ProCard } from '@ant-design/pro-components';
 import { PoweroffOutlined } from '@ant-design/icons';
+import { getStockKline,getHistoryFactor,profileText,profileTextResult } from "../api/assess";
 import { request } from 'umi';
 import './style.less'
 import * as echarts from 'echarts/core';
@@ -18,9 +19,9 @@ import {
 } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import Left from "../Public/left"
-import { Select, InputNumber, Button,Table } from 'antd'
-import { method } from 'lodash';
+import Left from "../components/Public/left"
+import StockList from "../components/Public/stockList";
+import { Select, InputNumber, Button,Table,message } from 'antd'
 echarts.use([
     ToolboxComponent,
     TooltipComponent,
@@ -42,7 +43,7 @@ const Factor = () => {
     const upColor = '#00da3c';
     const downColor = '#ec0000';
     const chartRef = useRef(null);
-    let   chart: any
+    let chart = null
     const [factorData, setFactorData] = useState([])
     const [historyData, setHistoryData] = useState({})
     const [lineTimeData, setLineTimeData] = useState([])
@@ -67,8 +68,8 @@ const Factor = () => {
     // 对表格数据进行筛选的方法
     function filterTableData(allTableData,targerSelectli,ratedisSelectLi){
         // if(allTableData.length>0){
-            allTableData.filter((item:any) => item.name === targerSelectli) 
-            .map((item:any) =>
+            allTableData.filter((item) => item.name === targerSelectli) 
+            .map((item) =>
                 item.measures.forEach(element => {
                     if(element.name === ratedisSelectLi){
                         let list = JSON.parse(element.value)
@@ -78,74 +79,68 @@ const Factor = () => {
         // }
     }
     // k线的接口
-    const getstock_kline = (stock_id: string) => {
+    const getstock_kline = (stock_id) => {
         const data = {
             stock_id: stock_id,
             days: Day,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://8.138.96.163:8081/quant/getstock_kline', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(data)
-        }).then((res) => {
+
+        getStockKline(data).then((res)=>{
             setFactorData(res.data)
-            let list:any = []
-            res.data.forEach((item:any) => {
+            let list = []
+            if(!res.data){
+                return
+            }
+            res.data.forEach((item) => {
                 list.push(item.time)
             })
             setLineTimeData(list)
-            chart.hideLoading();
-            chart.refresh()
-        }).catch(err => { console.log(err) })
+            if(chart){
+                chart.hideLoading();
+            }
+        })
+
     };
     // 折线的接口
-    const historyfactor = (stock_id: string) => {
+    const historyfactor = (stock_id) => {
         const data = {
             stock_id: stock_id,
             days: Day,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://8.138.96.163:8081/quant/historyfactor', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(data)
-        }).then((res) => {
-            const data = JSON.parse(res.data)[60].factors
-            const data1 = JSON.parse(res.data)[60].time
-            setFactorTime(data1)
-            setHistoryData(data)
-            let dataFactorkey = Object.keys(data)
-            let selectFcatorKeys:any = dataFactorkey.map((item)=>{
-                return{
-                    value:item,
-                    label:item
-                }
-            })
-            setFactorSelect(selectFcatorKeys)
+
+        getHistoryFactor(data).then((res)=>{
+            if(res.code == 200){
+                const data = JSON.parse(res.data)[60]?.factors
+                const data1 = JSON.parse(res.data)[60]?.time
+                setFactorTime(data1)
+                setHistoryData(data)
+                let dataFactorkey = Object.keys(data)
+                let selectFcatorKeys = dataFactorkey.map((item)=>{
+                    return{
+                        value:item,
+                        label:item
+                    }
+                })
+                setFactorSelect(selectFcatorKeys)
+            }else{
+                message.error(res.message)
+            }
+          
             // setFactorKey(dataFactorkey[0])
             // setFactorValue(data[dataFactorkey[0]].raw)
-        }).catch(err => {
-            console.log(err)
         })
+
+       
     };
     // 拿到uid后
-    const beforGetUid = (uid:number,time:number) =>{
+    const beforGetUid = (uid,time) =>{
         const data = {
             uid:uid,    
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://8.138.96.163:8081/quant/get_factor_profile_test_result', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(data)
-        }).then((res) => {
+        profileTextResult(data).then((res)=>{
             let list = time + 1
             if (res.code === 300) {
                 if(time<=20){
@@ -156,17 +151,17 @@ const Factor = () => {
                     setEndSeek(false)
                 }
             }else{
-                let targetSelectData = res.data.factors.map( (item:any) =>( {value:item.name,lable:item.name}))
+                let targetSelectData = res.data.factors.map( (item) =>( {value:item.name,lable:item.name}))
                 let firstTargetLi = res.data.factors[0].name
                 setTargetSelect(targetSelectData)
                 setAllTabledata(res.data.factors)
                 filterTableData(res.data.factors,firstTargetLi,ratedisSelectLi)
                 setEndSeek(false)
             }
-        }).catch(err => { console.log(err) })
+        })
     }
     // 提交测试数据的接口
-    const subInterface = (stock_id:string) =>{
+    const subInterface = (stock_id) =>{
         const data = {
             stock_id: stock_id,
             user_id:"0001",
@@ -176,29 +171,23 @@ const Factor = () => {
             step,
             key: "8140ad230f687daede75a08855e8ae5ff40c3ba8"
         }
-        request('http://8.138.96.163:8081/quant/factor_profile_test', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(data)
-        }).then((res) => {
-           beforGetUid(res.uid,1)
-        }).catch(err => { console.log(err) })
+        profileText(data).then((res)=>{
+            beforGetUid(res.uid,1)
+        })
     }
 
     // 切换股票
-    const handleDataFromChild = (butttonId: string, buttonNum: string,buttonStr:string) => {
+    const handleDataFromChild = (butttonId,buttonStr) => {
         getstock_kline(butttonId)
         historyfactor(butttonId)
         setStockid(butttonId)
         setStockName(buttonStr)
     }
     // 刚进页面时调用
-    const handleOnInval = (buttonNum: string,buttonName:string) => {
-        getstock_kline(buttonNum)
-        historyfactor(buttonNum)
-        setStockid(buttonNum)
+    const handleOnInval = (buttonId,buttonName) => {
+        getstock_kline(buttonId)
+        historyfactor(buttonId)
+        setStockid(buttonId)
         setStockName(buttonName)
     }
     // 判断因子日期与k线日期是否一致
@@ -292,12 +281,6 @@ const Factor = () => {
                     right: '0%',
                     height: '60%'
                 },
-                // {
-                //     left: '0%',
-                //     right: '0%',
-                //     top: '70%',
-                //     height: '16%'   
-                // }
             ],
             xAxis: [
                 {
@@ -403,7 +386,7 @@ const Factor = () => {
             ]
         };
         chart = echarts.init(chartRef.current);
-        if(data1.length<=0){
+        if(data1?.length<=0){
             chart.showLoading();
         }
         chart.setOption(option);
@@ -452,20 +435,20 @@ const Factor = () => {
     ];
 
 
-    const handleFactorChange = (value:any) =>{
+    const handleFactorChange = (value) =>{
         setFactorKey(value)
         setFactorValue(historyData[value].raw)
     } 
-    const handleScale = (value:any) => {
+    const handleScale = (value) => {
         setScale(value)
     }
-    const handleStep = (value:any) =>{
+    const handleStep = (value) =>{
         setStep(value)
     }
-    const handleDataSpan = (value:any) => {
+    const handleDataSpan = (value) => {
         setDataSpan(value)
     }
-    const handleTargetSpan = (value:any) =>{
+    const handleTargetSpan = (value) =>{
         setTargerSpan(value)
     }
     const subBtn = () =>{
@@ -474,11 +457,11 @@ const Factor = () => {
         setSeekbtnText('重新测试')
 
     }
-    const handleTargerChange = (value:any) =>{
+    const handleTargerChange = (value) =>{
         setTargetSelectLi(value)
         filterTableData(allTabledata,value,ratedisSelectLi)
     }
-    const handleRatedisChange = (value:any) => {
+    const handleRatedisChange = (value) => {
         setRatedisSelectLi(value)
         filterTableData(allTabledata,targetSelectLi,value)
     }
@@ -486,15 +469,9 @@ const Factor = () => {
 
     return (
         <ProCard gutter={16} ghost wrap>
-            <ProCard
-                colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 3 }}
-                style={{ height: "100%", padding: 0 }}
-            >
-                <Left onDataChange={handleDataFromChild} onInval={handleOnInval}></Left>
-            </ProCard>
-
-            <ProCard gutter={[0, 13]} colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 21 }} direction="column" >
-                <div>
+            <ProCard  colSpan={{ xs: 24, sm: 24, md: 20, lg: 20, xl: 24 }} direction="column" >
+                <div style={{display:'flex',marginBottom:10}} >
+                <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>&nbsp;&nbsp;
                     <Select
                         placeholder="因子"
                         style={{ width: 120 }}

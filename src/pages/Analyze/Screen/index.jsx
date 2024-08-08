@@ -34,7 +34,7 @@ const Screen = () => {
 
       let modeDataLabel = Object.keys(res.result.mode[0]) 
       let modeDataValue = Object.values(res.result.mode[0])
-      const modeData:any = modeDataLabel.map((item,index)=>{
+      const modeData = modeDataLabel.map((item,index)=>{
         return{
           label:item,
           value:modeDataValue[index]
@@ -45,13 +45,13 @@ const Screen = () => {
     });
   };
 
-  const postFetch = (option:any) => {
+  const postFetch = (option) => {
     const data = {
       factor: facotrLi,
       mode: modeLi,
       val: inputValue
     };
-    request('/quent-api/fetch', {
+    request('quent-api/fetch', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ const Screen = () => {
     }).then(res => {
       message.success(res.msg);
       const resData = res.result;
-      const arr: any = [];
+      const arr = [];
       const title = Object.keys(resData);
       const firstTitle = title[0];
       const row = Object.keys(resData[firstTitle].TIME);
@@ -73,7 +73,7 @@ const Screen = () => {
           dataIndex: item,
           key: item,
           sorter: {
-            compare: (a:any, b:any) => {
+            compare: (a, b) => {
               console.log(a[item],b[item],'数据展示');
               
               return  a[item] - b[item]
@@ -103,7 +103,7 @@ const Screen = () => {
     getFactor();
   }, []);
 
-  function handleQuery(values: any) {
+  function handleQuery(values) {
     console.log();
     if (values.data.length == 0) {
       message.warning('请添加查询条件');

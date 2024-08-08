@@ -1,5 +1,6 @@
 import { ProCard } from '@ant-design/pro-components';
 import type { DatePickerProps } from 'antd';
+import { getFactorList } from "../api/indexApi";
 import {
   Button,
   Card,
@@ -18,7 +19,9 @@ import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { useEffect, useRef, useState } from 'react';
 import { request } from 'umi';
-
+import { FundOutlined } from '@ant-design/icons';
+import ModelAnaly from "./ModelAnaly";
+import StrategyCard from "./StrategyCard";
 echarts.use([
   TitleComponent,
   LegendComponent,
@@ -28,7 +31,6 @@ echarts.use([
 ]);
 
 export default function PublicStrategy(props: string) {
-  const size = 'large';
   const today = new Date();
   const date = today.getDate();
   const month = today.getMonth() + 1;
@@ -56,7 +58,6 @@ export default function PublicStrategy(props: string) {
   const [selectedButton, setSelectedButton] = useState('');
   const [raderValue, setRaderValue] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cardList, setCardList] = useState([]);
   const [detailsModalOpen, setDetailsModelOpen] = useState(false);
   const [quantSelectData, setSelectData] = useState([]);
   const [minTime, setMinTime] = useState(5);
@@ -93,131 +94,6 @@ export default function PublicStrategy(props: string) {
       .catch(err => {
         console.log(err);
       });
-  };
-  // 初始化饼状图
-  const initBasicEchart = () => {
-    const option = {
-      title: {
-        text: 'Basic Radar Chart'
-      },
-      radar: {
-        indicator: raderData
-      },
-      tooltip: {
-        trigger: 'item'
-      },
-      series: [
-        {
-          name: 'Budget vs spending',
-          type: 'radar',
-          data: [
-            {
-              value: raderValue,
-              name: 'Allocated Budget'
-            }
-          ]
-        }
-      ]
-    };
-    const chart = echarts.init(radarRef.current);
-    chart.setOption(option);
-  };
-  // 初始化折现图
-  const initLineEchart = () => {
-    const option = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'cross'
-        },
-        formatter: function (params) {
-          let v1 =
-            '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:blue;"></span>';
-          let v2 =
-            '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:red;"></span>';
-          let v3 =
-            '<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:green;"></span>';
-          if (params[1] && params[1].data !== '') {
-            return v2 + '买入 :' + params[0].data;
-          } else if (params[1] && params[2].data !== '') {
-            return v3 + '卖出 :' + params[0].data;
-          } else {
-            return v1 + '股票 :' + params[0].data;
-          }
-        }
-      },
-      xAxis: {
-        type: 'category',
-        data: lineDataTime
-      },
-      yAxis: {
-        type: 'value',
-        min: lineMin,
-        max: lineMax
-      },
-      // 控制缩略轴
-      dataZoom: [
-        {
-          type: 'inside',
-          start: 0,
-          end: 50
-        },
-        {
-          show: true,
-          type: 'slider',
-          top: '90%',
-          start: 0,
-          end: 50
-        }
-      ],
-      series: [
-        {
-          data: lineData,
-          type: 'line',
-          symbolSize: 10,
-          symbol: 'circle',
-          markPoint: {
-            label: {
-              show: true,
-              position: 'top'
-            },
-            data: lineIdent
-          },
-          lineStyle: {
-            color: '#5470C6',
-            width: 3
-          },
-          itemStyle: {
-            borderWidth: 3,
-            color: 'blue'
-          }
-        }
-      ]
-    };
-    const chart = echarts.init(lineRef.current);
-    chart.setOption(option);
-  };
-  // 量化因子
-  const getQuantList = () => {
-    request('http://129.204.166.171:5009/api/v1/quantfactors/', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res => {
-      setSelectData(res);
-    });
-  };
-  // 分析员
-  const getAgentsList = () => {
-    request('http://129.204.166.171:5009/api/v1/agents/', {
-      method: 'GET',
-      header: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res => {
-      setCardList(res);
-    });
   };
   const GetStrategy = (uid: number, demoTime: number) => {
     const data = {
@@ -311,9 +187,11 @@ export default function PublicStrategy(props: string) {
           setDetailsModelOpen(true);
           setIsdemoBtn(true);
           setIsModalOpen(false);
-          initBasicEchart();
-          initLineEchart();
           synthesis = [];
+          setTimeout(() => {
+            initBasicEchart();
+            initLineEchart();
+          }, 300);
         }
       })
       .catch(err => {
@@ -372,8 +250,6 @@ export default function PublicStrategy(props: string) {
   };
   useEffect(() => {
     strtegylist();
-    getQuantList();
-    getAgentsList();
   }, []);
   const backOrder = (e: any) => {
     setbackData(e.target.value);
@@ -433,24 +309,26 @@ export default function PublicStrategy(props: string) {
     setDetailsModelOpen(false);
   };
   return (
-    <div style={{ height: '100%' }}>
-      <PageHeader title="Agents">
-        <div className="cardList">
-          {cardList.map((item, index) => {
+    <div style={{ height: '88vh', }}>
+    <PageHeader title="因子" >
+    </PageHeader>
+    <div style={{ height: '14vh', overflow: "auto", paddingBottom:'0.5vh',paddingTop:'0.5vh'  }} >
+    <div className="cardList" >
+          {quantSelectData.map((item, index) => {
             return (
               <Card
-                key={index}
-                title={item?.name}
+                key={index} 
                 hoverable
                 style={{ width: '300px' }}
                 onClick={handleOpen}>
-                <p>{item?.description}</p>
+                <FundOutlined /> <p>{item?.name}</p>
               </Card>
             );
           })}
-        </div>
-      </PageHeader>
-
+    </div>
+    </div>
+    <ModelAnaly></ModelAnaly>
+    <StrategyCard></StrategyCard>
       <Modal
         title="策略分析"
         open={isModalOpen}
@@ -499,23 +377,7 @@ export default function PublicStrategy(props: string) {
             style={{ textAlign: 'center' }}
             bordered
             colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
-            <div className="numberSele" style={{ textAlign: 'left' }}>
-              <Space wrap>
-                量化因子：
-                <Select
-                  placeholder="请选择要分析的因子"
-                  style={{
-                    width: 200,
-                    textAlign: 'center'
-                  }}
-                  options={quantSelectData}
-                  fieldNames={{
-                    label: 'name',
-                    value: 'id'
-                  }}
-                />
-              </Space>
-            </div>
+     
             <div className="numberSele">
               <InputNumber
                 size={size}
@@ -601,6 +463,7 @@ export default function PublicStrategy(props: string) {
         title="分析详情"
         open={detailsModalOpen}
         width={1300}
+        onCancel={handleCancelDetails}
         onOk={handleCancelDetails}>
         <ProCard style={{ height: 260 }}>
           <ProCard
@@ -633,7 +496,7 @@ export default function PublicStrategy(props: string) {
           </ProCard>
         </ProCard>
         <ProCard
-          style={{ height: 300, width: '90%' }}
+          style={{ height: 300, width: '100%' }}
           colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
           <div ref={lineRef} style={{ height: '100%' }}></div>
         </ProCard>
