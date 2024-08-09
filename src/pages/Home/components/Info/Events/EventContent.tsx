@@ -12,9 +12,6 @@ const EventContent: React.FC = () => {
             <ProCard >
                 <CalendarList />
             </ProCard>
-            {/* <ProCard >
-                <EventTest />
-            </ProCard> */}
 
         </ProCard >
     )

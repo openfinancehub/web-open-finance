@@ -29,6 +29,10 @@ function useFetchMarketData(url: () => Promise<any>): FetchDataResult {
     useEffect(() => {
         const fetchData = async () => {
             const response = await url();
+            if (!response) {
+                console.error('Error: Response is undefined');
+                return;
+            }
             const { features = {}, summary = {} } = response.result || {};
 
             const processedFeatures = Object.entries(features).reduce((acc, [indicators, dataValue]) => {
@@ -49,6 +53,7 @@ function useFetchMarketData(url: () => Promise<any>): FetchDataResult {
 
         fetchData();
     }, [url]);
+
 
     return { features, summary };
 }
