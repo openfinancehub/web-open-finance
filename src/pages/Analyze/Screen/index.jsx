@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { PageHeader, Card,Modal,Form,Input } from "antd";
 import { FundOutlined } from '@ant-design/icons';
 import '../index.less'
-import ToolDialog from "../components/Public/ToolDialog";
+import { store } from '@/pages/Store/store'
+import { Provider } from 'react-redux'
+import ScreenDialog from "../components/Public/ScreenDialog";
 const Screen = () => {
   const [modelData, setModelData] = useState([])
   const [showDialog, setShowDialog] = useState(false)
@@ -18,7 +20,7 @@ const Screen = () => {
       title:"Edit Tool",
       type:"EDIT",
       cancelButtonName: 'Cancel',
-      confirmButtonName: 'Save',
+      confirmButtonName: '分析',
       data:item
     }
     setShowDialog(true)
@@ -32,6 +34,7 @@ const Screen = () => {
   }, [])
   return (
     <div>
+      <Provider store={store} >
       <PageHeader title="模型" >
         <div className="cardList" >
           {modelData.map((item, index) => {
@@ -49,36 +52,13 @@ const Screen = () => {
           }
         </div>
       </PageHeader>
-      <ToolDialog
+      <ScreenDialog
             show={showDialog}
             dialogProps={dialogProps}
             onCancel={() => setShowDialog(false)}
             onConfirm={onConfirm}
       />
-
-      {/* <Modal
-        title="详情"
-        open={detailsModalOpen}
-        onOk={handleOk}
-        width={1000}
-        onCancel={handleCancel}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={initValue}
-        >
-          <Form.Item label="Tool Name" name="name" >
-            <Input placeholder="Tool Name" />
-          </Form.Item>
-          <Form.Item label="Tool description" name="description" >
-            <Input placeholder="Tool description" ></Input>
-          </Form.Item>
-          <Form.Item label="Tool Icon Source"  >
-          <Input placeholder="Tool Icon Source" ></Input>
-          </Form.Item>
-        </Form>
-      </Modal> */}
+      </Provider>
     </div>
   )
 }

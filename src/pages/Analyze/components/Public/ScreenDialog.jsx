@@ -26,17 +26,14 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
     )
     const columns = useMemo(
         () => [
-            { field: 'property', headerName: 'Property', editable: true, flex: 1 },
+            { field: 'feature_name', headerName: 'FeatureName', editable: true, flex: 1 },
+           
+            { field: 'operator', headerName: 'Operator', editable: true, flex: 1 },
             {
-                field: 'type',
-                headerName: 'Type',
-                type: 'singleSelect',
-                valueOptions: ['string', 'float', 'boolean', 'int'],
+                field: 'val',
+                headerName: 'Val',
                 editable: true,
-                width: 120
             },
-            { field: 'value', headerName: 'Value', editable: true, flex: 1 },
-            { field: 'required', headerName: 'Required', type: 'boolean', editable: true, width: 80 },
             {
                 field: 'actions',
                 type: 'actions',
@@ -73,15 +70,13 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
     const addNewRow = () => {
         setTimeout(() => {
             setToolSchema((prevRows) => {
-                // let allRows = [...cloneDeep(prevRows)]
-                let allRows = []
+                let allRows = [...cloneDeep(prevRows)]
                 const lastRowId = allRows.length ? allRows[allRows.length - 1].id + 1 : 1
                 allRows.push({
                     id: lastRowId,
-                    property: '',
-                    description: '',
-                    type: '',
-                    required: false
+                    feature_name:'',
+                    operator: '',
+                    val: '',
                 })
                 return allRows
             })
@@ -135,7 +130,10 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
             }
         }
     }
-
+    const saveTool = () => {
+        console.log("调用策略分析的接口");
+        console.log(JSON.stringify(toolSchema));
+    }
     return (
         <Dialog
             fullWidth
@@ -240,15 +238,11 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
                         Use Template
                     </StyledButton>
                 )}
-                {dialogProps.type !== 'TEMPLATE' && (
-                    <StyledButton
-                        disabled={!(toolName && toolDesc)}
-                        variant='contained'
+                    <StyledButton variant='contained'
                         onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewTool() : saveTool())}
                     >
                         {dialogProps.confirmButtonName}
                     </StyledButton>
-                )}
             </DialogActions>
         </Dialog>
     )
