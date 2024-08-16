@@ -223,9 +223,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                 delete toolData.updatedDate
                 let dataStr = JSON.stringify(toolData, null, 2)
                 let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
-
                 let exportFileDefaultName = `${toolName}-CustomTool.json`
-
                 let linkElement = document.createElement('a')
                 linkElement.setAttribute('href', dataUri)
                 linkElement.setAttribute('download', exportFileDefaultName)
@@ -388,8 +386,6 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             }
         }
     }
-    console.log("enter dialog show: ", show)
-    
     const component = show ? (
         <Dialog
             fullWidth

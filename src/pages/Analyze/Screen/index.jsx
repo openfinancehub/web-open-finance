@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { PageHeader, Card,Modal,Form,Input } from "antd";
 import { FundOutlined } from '@ant-design/icons';
 import '../index.less'
-import TagDialog from "../../../components/dialog/TagDialog";
+import ToolDialog from "../components/Public/ToolDialog";
 const Screen = () => {
   const [modelData, setModelData] = useState([])
   const [showDialog, setShowDialog] = useState(false)
@@ -14,8 +14,15 @@ const Screen = () => {
     })
   }
   const handleOpen = (item) => {
+    const dialogProp = {
+      title:"Edit Tool",
+      type:"EDIT",
+      cancelButtonName: 'Cancel',
+      confirmButtonName: 'Save',
+      data:item
+    }
     setShowDialog(true)
-    setDialogProps(item)
+    setDialogProps(dialogProp)
   }
   const onConfirm = () => {
     setShowDialog(false)
@@ -42,11 +49,11 @@ const Screen = () => {
           }
         </div>
       </PageHeader>
-      <TagDialog
-            isOpen={showDialog}
+      <ToolDialog
+            show={showDialog}
             dialogProps={dialogProps}
-            onClose={() => setShowDialog(false)}
-            onSubmit={onConfirm}
+            onCancel={() => setShowDialog(false)}
+            onConfirm={onConfirm}
       />
 
       {/* <Modal
