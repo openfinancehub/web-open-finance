@@ -1,20 +1,22 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import {
+    AlibabaOutlined,
     AppstoreOutlined,
     BarChartOutlined,
-    CloudOutlined,
-    ShopOutlined,
-    TeamOutlined,
+    PicLeftOutlined,
+    ReadOutlined,
+    SpotifyOutlined,
     UploadOutlined,
     UserOutlined,
-    VideoCameraOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Divider, Layout, Menu, } from 'antd';
 import { SentContent, DangerContent } from './Market/MarketContent';
 import CompanyContent from './Company/CompanyContent';
 import EventContent from './Events/EventContent';
+import MacroContent from './Macro/MacroContent';
 import Test from './Industry/Test';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -39,21 +41,27 @@ const items: MenuProps['items'] = [
     },
     {
         key: '2',
-        icon: React.createElement(VideoCameraOutlined),
-        label: `事件`,
+        icon: React.createElement(AlibabaOutlined),
+        label: `宏观`,
     },
     {
         key: '3',
-        icon: React.createElement(CloudOutlined),
-        label: `公司`,
+        icon: React.createElement(PicLeftOutlined),
+        label: `事件`,
     },
     {
         key: '4',
-        icon: React.createElement(TeamOutlined),
-        label: `行业`,
+        icon: React.createElement(ReadOutlined),
+        label: `公司`,
     },
     {
         key: '5',
+        icon: React.createElement(SpotifyOutlined),
+        label: `行业`,
+    },
+
+    {
+        key: '6',
         icon: React.createElement(UserOutlined),
         label: `个人`,
     },
@@ -112,19 +120,26 @@ const CustomMenu: React.FC = () => {
                         </div>
                     )}
 
-                    {['2', '2-1', '2-2'].includes(selectedKey) && (
+                    {selectedKey === '2' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>
+                            <MacroContent />
+                        </div>
+
+                    )}
+
+                    {selectedKey === '3' && (
                         <div style={{ padding: 24 }}>
                             <EventContent />
                         </div>
                     )}
 
-                    {selectedKey === '3' && (
+                    {selectedKey === '4' && (
                         <div style={{ padding: 24, textAlign: 'center' }}>
                             <CompanyContent />
                         </div>
                     )}
 
-                    {selectedKey === '4' && (
+                    {selectedKey === '5' && (
                         <div style={{ padding: 24, textAlign: 'center' }}>
                             <Test />
                         </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MarketService } from '../../../service';
 import { Card, Carousel, Col, Drawer, Input, Row, Skeleton, message } from 'antd';
-import DefaultChart from './DefaultChart';
+import DefaultChart from '../Public/DefaultChart';
 import ReactMarkdown from 'react-markdown';
 
 const { Search } = Input;

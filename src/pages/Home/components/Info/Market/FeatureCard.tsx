@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
-import { Card, Carousel, Typography } from 'antd';
+import { Card, Carousel, Divider, Typography } from 'antd';
 import Risk from './Risk';
 import './FeatureCard.css'; // 引入自定义样式文件
 import ReactMarkdown from 'react-markdown';
+
+const { Title, Paragraph, Text, Link } = Typography;
 
 interface Props {
     title: string,
@@ -58,17 +60,18 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ items }) => {
                     title={item.echartsConf.name}
                     type="inner"
                 >
-                    <Card style={{ width: '100%', margin: '16px 0 16px 0' }}>
+                    <Card style={{ margin: '16px 0 16px 0' }}>
                         <Risk legendData={item.echartsConf.name} dataZoom={item.dataZoom} seriesData={item.echartsConf} />
                     </Card>
-                    <Card style={{ width: '100%', margin: '16px 0 16px 0' }}>
+                    <Card style={{ margin: '16px 0 16px 0' }}>
                         <ReactMarkdown>
                             {item.textContent}
                         </ReactMarkdown>
                     </Card>
                 </Card>
-            ))}
-        </Carousel>
+            ))
+            }
+        </Carousel >
     );
 };
 

@@ -1,7 +1,7 @@
 import {
     America, China, Britain, Japan, Australia, Germany, Singapore, Brazil, Korea,
     France, Eurobond, Switzerland, Italy, Canada, Russia, HongKong, Taiwan, Sweden, Israel
-} from './Image';
+} from '../../News/Events/Image';
 
 export interface economicType {
     actual: string,
@@ -22,7 +22,7 @@ export interface economicType {
     time_status: string,
     unit: string,
     video_url: string,
-    vip_resource: string,
+    vip_resource: [],
 }
 
 export interface eventType {
@@ -37,7 +37,7 @@ export interface eventType {
     people: string,
     region: string,
     star: number,
-    vip_resource: string,
+    vip_resource: [],
 }
 
 export const countryFlags = {

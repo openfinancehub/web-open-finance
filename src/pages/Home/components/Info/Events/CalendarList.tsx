@@ -1,17 +1,35 @@
-import type { BadgeProps } from 'antd';
-import { Alert, Avatar, Badge, Calendar, Col, Image, List, Modal, Rate, Row } from 'antd';
+import type { BadgeProps, MenuProps } from 'antd';
+import { Alert, Avatar, Badge, Typography, Calendar, Col, List, Menu, Modal, Rate, Row, Skeleton } from 'antd';
 import type { Moment } from 'moment';
 import moment from 'moment';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { MarketService } from '../../../service/';
 import { economicType, eventType, countryFlags } from './data.d';
-import ReactMarkdown from 'react-markdown';
+import { AntDesignOutlined, DollarCircleOutlined } from '@ant-design/icons';
+const { Title, Paragraph, Text, Link } = Typography;
 
-interface dataType {
-  economic: economicType[],
-  event: eventType[],
-  future_economic: {},
-  future_event: {},
+const colors = [
+  'pink', 'red', 'yellow', 'orange', 'cyan', 'green', 'blue', 'purple', 'geekblue', 'magenta',
+];
+
+const items: MenuProps['items'] = [
+  {
+    label: '经济数据',
+    key: 'economic',
+    icon: <DollarCircleOutlined />,
+  },
+  {
+    label: '重大事件',
+    key: 'event',
+    icon: <AntDesignOutlined />,
+  },
+
+];
+
+type EventOrEconomicItem = eventType | economicType;
+
+interface CalendarListProps {
+  // Define any additional props here.
 }
 interface BaseEventType {
   DATE: string;
@@ -19,66 +37,57 @@ interface BaseEventType {
   type: 'event' | 'data';
 }
 
-
-const colors = [
-  'pink', 'red', 'yellow', 'orange', 'cyan', 'green', 'blue', 'purple', 'geekblue', 'magenta',
-];
-
-const CalendarList: React.FC = () => {
-
-  const [dateValue, setDateValue] = useState(() => moment(new Date()));
-  const [titleValue, setTitleValue] = useState<string>('');
-  const [titleId, setTitleId] = useState<string>('');
-  const [eventList, setEventList] = useState<dataType>({
-    economic: [], event: [], future_economic: {}, future_event: {},
-  });
-
+const CalendarList: React.FC<CalendarListProps> = () => {
+  const [dateValue, setDateValue] = useState<Moment>(() => moment());
   const [briefEventList, setBriefEventList] = useState<BaseEventType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showBar, setShowBar] = useState<'economic' | 'event'>('economic');
 
-  const getBriefList = async (time: Moment) => {
+  const [eventList, setEventList] = useState<{
+    economic: economicType[];
+    event: eventType[];
+  }>({ economic: [], event: [] });
+
+  const countryFlagsMemo = useMemo(() => countryFlags, [countryFlags]);
+
+  const getBriefList = useCallback(async (time: Moment) => {
     setIsLoading(true);
     try {
       const response = await MarketService.getBriefEvent(time);
-
       if (!response || !response.data) {
         console.warn("Invalid response data", response);
         return;
       }
       setBriefEventList(response.data);
-      console.log(briefEventList);
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     getBriefList(dateValue);
-  }, [dateValue]);
+  }, [getBriefList, dateValue]);
 
-  const handleOpen = (content: string, type: string) => {
-    setTitleId(type + `@` + content);
-    setTitleValue(content);
+  const handleOpen = useCallback((content: string, type: string) => {
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const filterEventsByDate = (targetDate: Moment) => {
+  const filterEventsByDate = useCallback((targetDate: Moment) => {
     return briefEventList.filter(item => {
       const pubTime = moment(item.DATE, 'YYYY-MM-DD');
       return pubTime.isSame(targetDate, 'day');
     });
-  };
+  }, [briefEventList]);
 
-  const getMonthData = (value: Moment) => {
+  const getMonthData = useCallback((value: Moment) => {
     const filteredEconomicList = filterEventsByDate(value);
     return filteredEconomicList.length;
-  };
-
-  const monthCellRender = (value: Moment) => {
+  }, [filterEventsByDate]);
+  // 年度数据展示
+  const monthCellRender = useCallback((value: Moment) => {
     const num = getMonthData(value);
     return num ? (
       <div>
@@ -86,9 +95,9 @@ const CalendarList: React.FC = () => {
         <span>当前月份重大事件</span>
       </div>
     ) : null;
-  };
-
-  const dateCellRender = (value: Moment) => {
+  }, [getMonthData]);
+  // 月度数据展示
+  const dateCellRender = useCallback((value: Moment) => {
     const listData = filterEventsByDate(value);
     return (
       <div>
@@ -108,9 +117,9 @@ const CalendarList: React.FC = () => {
         })}
       </div>
     );
-  };
+  }, [filterEventsByDate, handleOpen]);
 
-  const parseEventData = (item: any) => {
+  const parseEventData = (item: BaseEventType) => {
     try {
       return JSON.parse(item.data);
     } catch (error) {
@@ -119,26 +128,86 @@ const CalendarList: React.FC = () => {
     }
   };
 
-  const getEventDetails = (titleId: string): Record<string, string> => {
-    const match = briefEventList.find(item => {
-      const dataObj = parseEventData(item);
-      const matchKey = item.type + '@' + (item.type === 'event' ? dataObj.event_content : dataObj.name);
-      return matchKey === titleId;
-    });
-    return match ? parseEventData(match) : {};
-  };
-
-  const onSelect = (newValue: Moment) => {
+  const onSelect = useCallback(async (newValue: Moment) => {
     setDateValue(newValue);
-  };
+    await getEventList(newValue);
+  }, []);
 
-  const onPanelChange = (newValue: Moment) => {
+  const onPanelChange = useCallback((newValue: Moment) => {
     setDateValue(newValue);
+  }, []);
+  // 获取事件接口数据
+  const getEventList = useCallback(async (time: Moment) => {
+    setIsLoading(true);
+    try {
+      const response = await MarketService.getEvents(time);
+      if (!response || !response.data) {
+        console.warn("Invalid response data", response);
+        return;
+      }
+      setEventList(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const renderItem = useCallback(
+    (item: EventOrEconomicItem, type: 'economic' | 'event') => (
+      <List.Item
+      // actions={item.vip_resource && item.vip_resource.length > 0 && (
+      //   <a href={item.vip_resource[0].link}>{item.vip_resource[0].title}</a>
+      // )}
+      >
+        <Skeleton avatar title={false} loading={isLoading} active>
+          <Col span={6} >
+            <List.Item.Meta
+              avatar={<Avatar src={countryFlagsMemo[item.country]} />}
+              title={
+                <div>
+                  {item.country}{' '}
+                  <Rate allowHalf disabled defaultValue={item.star} />
+                </div>
+              }
+              description={type === 'economic' ? moment(item.pub_time).utc().format('YYYY-MM-DD HH:mm:ss') : moment(item.event_time).utc().format('YYYY-MM-DD HH:mm:ss')}
+            />
+          </Col>
+          <Col span={12}>
+            <div>
+              {type === 'economic' ? item.name : item.event_content}&nbsp;
+              {type === 'economic' ? (
+                <span >
+                  <Text type="warning">{item.previous}</Text>&nbsp;{item.unit ?? ''}
+                </span>
+              ) : ''}
+            </div>
+          </Col>
+
+          <Col span={2}>
+            <div>
+              {type === 'economic' ? item.vip_resource?.map(item => (
+                <a href={item.link}>{item.title}</a>
+              )) : item.vip_resource?.map(item => (
+                <a href={item.link}>{item.title}</a>
+              ))}
+            </div>
+          </Col>
+
+        </Skeleton>
+      </List.Item >
+    ),
+    [isLoading, countryFlagsMemo]
+  );
+
+  const setModalBar: MenuProps['onClick'] = e => {
+    console.log('click ', e);
+    setShowBar(e.key);
   };
 
   return (
     <div>
-      <Alert message={`当前选择查看日期: ${dateValue?.format('YYYY-MM-DD')}`} />
+      <Alert message={`当前选择查看日期: ${dateValue.format('YYYY-MM-DD')}`} />
       <Calendar
         dateCellRender={dateCellRender}
         monthCellRender={monthCellRender}
@@ -146,31 +215,34 @@ const CalendarList: React.FC = () => {
         onPanelChange={onPanelChange}
       />
       <Modal
-        title={titleValue}
+        title={<Menu onClick={setModalBar} selectedKeys={[showBar]} mode="horizontal" items={items} />}
         centered
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         width={1000}
       >
-        {Object.entries(useMemo(() => getEventDetails(titleId), [titleId])).map(([key, value], index) => (
-          <Row key={index} gutter={[0, 0]}>
-            <Col >
-              {key === 'country' ? value : ''}
-            </Col>
-            <Col>
-              {key === 'event_time' || key === 'pub_time'
-                ? moment(value).format('YYYY-MM-DD HH:mm:ss')
-                : ''}
-            </Col>
-            <Col>
-              {key === 'star' && <Rate disabled allowHalf defaultValue={Number(value)} />}
-            </Col>
-            <Col>
-              {key === 'event_content' || key === 'name' ? value : ''}
-            </Col>
-          </Row>
-        ))}
+        {showBar === 'economic' ? (
+          <List
+            loading={isLoading}
+            itemLayout="horizontal"
+            pagination={{
+              pageSize: 5,
+            }}
+            dataSource={eventList.economic}
+            renderItem={item => renderItem(item, 'economic')}
+          />
+        ) : (
+          <List
+            loading={isLoading}
+            itemLayout="horizontal"
+            pagination={{
+              pageSize: 5,
+            }}
+            dataSource={eventList.event}
+            renderItem={item => renderItem(item, 'event')}
+          />
+        )}
       </Modal>
     </div>
   );

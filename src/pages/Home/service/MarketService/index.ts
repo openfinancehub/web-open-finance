@@ -58,17 +58,19 @@ export class MarketService {
         return PostRequest(`${apiPushUrl}` + 'market/brief_event', dataStr);
     };
 
-
-    // // 获取公司推荐
-    // public static getStock(): Promise<any> {
-    //     return GETRequest(`${apiPushUrl}` + 'market/stock')
-    // };
-
     // 获取公司推荐
     public static getStockData(company: string): Promise<any> {
         const dataStr = {
             company: company,
         };
         return PostRequest(`${apiPushUrl}` + 'company/data', dataStr);
+    };
+
+    // 获取宏观
+    public static getMacroData(country: string): Promise<any> {
+        const dataStr = {
+            country: country,
+        };
+        return PostRequest(`${apiPushUrl}` + 'macro/data', dataStr);
     };
 }
