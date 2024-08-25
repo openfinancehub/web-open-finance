@@ -131,8 +131,7 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
         }
     }
     const saveTool = () => {
-        console.log("调用策略分析的接口");
-        console.log(JSON.stringify(toolSchema));
+        onConfirm(toolSchema)
     }
     return (
         <Dialog

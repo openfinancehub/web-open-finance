@@ -112,18 +112,23 @@ const Factor = () => {
 
         getHistoryFactor(data).then((res)=>{
             if(res.code == 200){
-                const data = JSON.parse(res.data)[60]?.factors
-                const data1 = JSON.parse(res.data)[60]?.time
-                setFactorTime(data1)
-                setHistoryData(data)
-                let dataFactorkey = Object.keys(data)
-                let selectFcatorKeys = dataFactorkey.map((item)=>{
-                    return{
-                        value:item,
-                        label:item
-                    }
-                })
-                setFactorSelect(selectFcatorKeys)
+                try {
+                    const data = JSON.parse(res.data)[60]?.factors
+                    const data1 = JSON.parse(res.data)[60]?.time
+                    setFactorTime(data1)
+                    setHistoryData(data)
+                    let dataFactorkey = Object.keys(data)
+                    let selectFcatorKeys = dataFactorkey.map((item)=>{
+                        return{
+                            value:item,
+                            label:item
+                        }
+                    })
+                    setFactorSelect(selectFcatorKeys)
+                } catch (error) {
+                    console.log(error);
+                }
+
             }else{
                 message.error(res.message)
             }

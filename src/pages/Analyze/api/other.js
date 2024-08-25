@@ -20,3 +20,11 @@ export const getStrategyList = () =>{
       method:"get"
     })
   }
+
+  export const getStrategySeek = (data) => {
+    return requesttwo({
+      url:"/factor/fetch",
+      method:"post",
+      data
+    })
+  }

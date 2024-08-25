@@ -17,6 +17,7 @@ requestone.interceptors.response.use(res => {
 
 export const requesttwo = axios.create({
   baseURL:"http://129.204.166.171:5003/api/v1",
+  timeout:20000,
   headers:{
     'Content-type': 'application/json'
   }
