@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { ProCard } from '@ant-design/pro-components';
 import { PoweroffOutlined } from '@ant-design/icons';
 import { getStockKline,getHistoryFactor,profileText,profileTextResult } from "../api/assess";
-import { request } from 'umi';
 import './style.less'
 import * as echarts from 'echarts/core';
 import {
@@ -19,7 +18,6 @@ import {
 } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import Left from "../components/Public/left"
 import StockList from "../components/Public/stockList";
 import { Select, InputNumber, Button,Table,message } from 'antd'
 echarts.use([

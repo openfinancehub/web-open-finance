@@ -1,6 +1,6 @@
 import { ProCard } from "@ant-design/pro-components";
 import { useEffect, useRef, useState } from "react";
-import { Button,Card,DatePicker,InputNumber,Modal,PageHeader,Radio,Select,Space,message } from "antd";
+import { Button,DatePicker,InputNumber,Radio,Select,Space,message } from "antd";
 import { getStrategyTest, getStrategyResult, getStrtegyList } from "../api/analysis";
 import { LineChart, RadarChart } from 'echarts/charts';
 import { LegendComponent, TitleComponent } from 'echarts/components';
@@ -117,7 +117,6 @@ const Strategy = () => {
           });
         }
         destArr.push();
-
         const max = Math.max(...linedata);
         const min = Math.min(...linedata);
         setLinemax(max);
@@ -357,10 +356,9 @@ const Strategy = () => {
             style={{height:'300px',   textAlign: 'center', overflowY: 'scroll' }}
             colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
             <Space>
-            <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>&nbsp;&nbsp;
+              <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>&nbsp;&nbsp;
             </Space>
             <Space wrap align="center">
-              因子：
               <Select
                 value={selectedButton}
                 style={{
@@ -477,11 +475,8 @@ const Strategy = () => {
             )}
           </ProCard>
         </ProCard>
-        <ProCard style={{ height: 260 }}>
-          <ProCard
-            style={{ height: '100%' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}
-            bordered>
+        <ProCard ghost  style={{ height: 260 }} bordered >
+          <ProCard style={{ height: '100%' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 11 }}>
             <div className="demoResult">
               <div>测试结果：</div>
               <br></br>
@@ -499,16 +494,11 @@ const Strategy = () => {
               })}
             </div>
           </ProCard>
-          <ProCard
-            style={{ height: '100%' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}
-            bordered>
+          <ProCard style={{ height: '100%' }} >
             <div ref={radarRef} style={{ width: '100%', height: '100%' }}></div>
           </ProCard>
         </ProCard>
-        <ProCard
-          style={{ height: 300, width: '100%' }}
-          colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 12 }}>
+        <ProCard style={{ height: 300, width: '100%' }}>
           <div ref={lineRef} style={{ height: '100%' }}></div>
         </ProCard>
       </ProCard>
