@@ -38,6 +38,13 @@ const Strategy = () => {
   const [demoEndData, setDemoEndData] = useState([]);
   const [indexdetails, setindexDetails] = useState('');
   const [stock,setStock] = useState("")
+  const [lineMax, setLinemax] = useState();
+  const [lineMin, setLinemin] = useState();
+  const [lineIdent, setLineIdent] = useState([]);
+  const [raderData, setRaderData] = useState([{ name: '', max: '' }]);
+  const [raderValue, setRaderValue] = useState([]);
+  const [lineData, setLineData] = useState();
+  const [lineDataTime, setlineDataTime] = useState();
   const firstKargs = [];
   let synthesis = [];
   const GetStrategy = (uid,demoTime) => {
@@ -121,9 +128,7 @@ const Strategy = () => {
         setRaderValue(radervalue);
         setLineData(linedata);
         setlineDataTime(lineDataTime);
-        setDetailsModelOpen(true);
         setIsdemoBtn(true);
-        setIsModalOpen(false);
         synthesis = [];
         initBasicEchart();
         initLineEchart();
