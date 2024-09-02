@@ -16,6 +16,7 @@ import CompanyContent from './Company/CompanyContent';
 import EventContent from './Events/EventContent';
 import MacroContent from './Macro/MacroContent';
 import Test from './Industry/Test';
+import FactorsGraph from './Public/FactorsGraph';
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -59,9 +60,14 @@ const items: MenuProps['items'] = [
         icon: React.createElement(SpotifyOutlined),
         label: `行业`,
     },
+    // {
+    //     key: '6',
+    //     icon: React.createElement(UserOutlined),
+    //     label: `因子`,
+    // },
 
     {
-        key: '6',
+        key: '7',
         icon: React.createElement(UserOutlined),
         label: `个人`,
     },
@@ -145,7 +151,13 @@ const CustomMenu: React.FC = () => {
                         </div>
                     )}
 
-                    {!['1', '1-1', '1-2', '2', '2-1', '2-2', '3', '4', '5'].includes(selectedKey) && (
+                    {selectedKey === '6' && (
+                        <div style={{ padding: 24, textAlign: 'center' }}>
+                            <FactorsGraph />
+                        </div>
+                    )}
+
+                    {!['1', '1-1', '1-2', '2', '2-1', '2-2', '3', '4', '5', '6'].includes(selectedKey) && (
                         <div style={{ padding: 24, textAlign: 'center' }}>No content matched</div>
                     )}
                 </Content>

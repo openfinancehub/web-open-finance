@@ -29,6 +29,9 @@ const useWebSocket = (url: string): WebSocketHook => {
       const response = JSON.parse(event.data || '{}');
       let content = response.output?.answer;
       // content = content.replace(/\n/g, '<br>');
+      let ref = response.output?.ref;
+      content = content.replace(/\[ref (\d+)\]/g, (match: string, number: string) => `[查看pdf${number}](${ref[`${number}`].url}#page=${ref.page}) `);
+      // console.log(response.output?.ref)
       let chart = response.output?.chart;
       if (typeof chart === 'object' && Object.keys(chart).length === 0) {
         chart = null;
@@ -39,10 +42,10 @@ const useWebSocket = (url: string): WebSocketHook => {
       } else {
         table = createTable(table);
       }
-      
+
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
-        return [...tempList, { sender: 'bot', content, chart, table}];
+        return [...tempList, { sender: 'bot', content, chart, table }];
       });
     };
 
@@ -91,8 +94,8 @@ const useWebSocket = (url: string): WebSocketHook => {
           task: info.task,
           // id + username + token的后六位
           session_id
-            
-            // currentUser.token.substr(currentUser.token.length - 4)
+
+          // currentUser.token.substr(currentUser.token.length - 4)
         }
       };
       socket.send(JSON.stringify(data));

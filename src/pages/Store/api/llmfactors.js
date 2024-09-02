@@ -10,10 +10,13 @@ const updateLlmfactor = (id, body) => client.put(`/llmfactors/${id}`, body)
 
 const deleteLlmfactor = (id) => client.delete(`/llmfactors/${id}`)
 
+const getGraph = () => client.get(`/llmfactors/graph`)
+
 export default {
     getAllLlmfactors,
     getSpecificLlmfactor,
     createNewLlmfactor,
     updateLlmfactor,
-    deleteLlmfactor
+    deleteLlmfactor,
+    getGraph
 }
