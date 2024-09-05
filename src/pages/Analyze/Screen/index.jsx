@@ -1,4 +1,4 @@
-import { getStrategyList, getStrategySeek } from "../api/other";
+import { getStrategyList, getStrategySeek,deleteStrategy } from "../api/other";
 import { useState, useEffect } from "react";
 import { ProCard } from '@ant-design/pro-components';
 import { PageHeader, Card, Modal, Form, Input, Table, message } from "antd";
@@ -25,7 +25,7 @@ const Screen = () => {
       title: "Edit Tool",
       type: "EDIT",
       cancelButtonName: 'Cancel',
-      confirmButtonName: '分析',
+      confirmButtonName: '保存',
       data: item
     }
     setShowDialog(true)
@@ -86,6 +86,13 @@ const Screen = () => {
   const tableListClose = () => {
     setIsModalOpen(false)
   }
+  const onDelete = (item) => {
+    deleteStrategy(item).then((res)=>{
+      setShowDialog(false)
+      message.success("删除成功");
+      handleModelList()
+    })
+  }
   useEffect(() => {
     handleModelList()
   }, [])
@@ -114,6 +121,7 @@ const Screen = () => {
           dialogProps={dialogProps}
           onCancel={() => setShowDialog(false)}
           onConfirm={onConfirm}
+          onDelete={onDelete}
         />
 
         <Modal title="分析结果" width={1200} bodyStyle={{ height: 500 }} open={isModalOpen} onOk={tableListClose} onCancel={tableListClose} >

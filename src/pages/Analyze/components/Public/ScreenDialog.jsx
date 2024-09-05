@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledButton } from '@/components//button/StyledButton'
 import { generateRandomGradient, formatDataGridRows } from '@/pages/Store/utils/genericHelper'
 import { useState,useEffect,useMemo,useCallback } from "react";
-const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
+const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete}) => {
     
     const [toolName, setToolName] = useState('')
     const [toolDesc, setToolDesc] = useState('')
@@ -83,55 +83,14 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
         })
     }
 
-    const deleteTool = async () => {
-        const confirmPayload = {
-            title: `Delete Tool`,
-            description: `Delete tool ${toolName}?`,
-            confirmButtonName: 'Delete',
-            cancelButtonName: 'Cancel'
-        }
-        const isConfirmed = await confirm(confirmPayload)
-
-        if (isConfirmed) {
-            try {
-                const delResp = await quantfactorsApi.deleteTool(toolId)
-                if (delResp.data) {
-                    enqueueSnackbar({
-                        message: 'Tool deleted',
-                        options: {
-                            key: new Date().getTime() + Math.random(),
-                            variant: 'success',
-                            action: (key) => (
-                                <Button style={{ color: 'white' }} onClick={() => closeSnackbar(key)}>
-                                    <IconX />
-                                </Button>
-                            )
-                        }
-                    })
-                    onConfirm()
-                }
-            } catch (error) {
-                enqueueSnackbar({
-                    message: `Failed to delete Tool: ${
-                        typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                    }`,
-                    options: {
-                        key: new Date().getTime() + Math.random(),
-                        variant: 'error',
-                        persist: true,
-                        action: (key) => (
-                            <Button style={{ color: 'white' }} onClick={() => closeSnackbar(key)}>
-                                <IconX />
-                            </Button>
-                        )
-                    }
-                })
-                onCancel()
-            }
-        }
+    const deleteTool = () => {
+        onDelete(dialogProps.data.id)
     }
     const saveTool = () => {
         onConfirm(toolSchema)
+    }
+    const saveChange = () => {
+
     }
     return (
         <Dialog
@@ -144,9 +103,7 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     {dialogProps.title}
                     {dialogProps.type === 'EDIT' && (
-                        <Button variant='outlined' onClick={() => exportTool()} startIcon={<IconFileDownload />}>
-                            Export
-                        </Button>
+                        <StyledButton variant='outlined' onClick={() => saveTool()}>分析</StyledButton>
                     )}
                 </Box>
             </DialogTitle>
@@ -229,7 +186,7 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
             <DialogActions sx={{ p: 3 }}>
                 {dialogProps.type === 'EDIT' && (
                     <StyledButton color='error' variant='contained' onClick={() => deleteTool()}>
-                        Delete
+                        删除
                     </StyledButton>
                 )}
                 {dialogProps.type === 'TEMPLATE' && (
@@ -237,9 +194,7 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
                         Use Template
                     </StyledButton>
                 )}
-                    <StyledButton variant='contained'
-                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewTool() : saveTool())}
-                    >
+                    <StyledButton variant='contained'onClick={() => saveChange() }>
                         {dialogProps.confirmButtonName}
                     </StyledButton>
             </DialogActions>

@@ -13,8 +13,6 @@ const Factor = () => {
   const handleModelList = () => {
     getFactorList().then((res) => {
       setModelData(res.data)
-      console.log(res.data,'因子数据');
-      
     })
   }
   const handleOpen = (item) => {

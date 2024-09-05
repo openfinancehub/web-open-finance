@@ -349,15 +349,9 @@ const Strategy = () => {
 
   return (
     <div>
-      <ProCard direction="column" >
-        <ProCard ghost wrap style={{  width: '100%' }}>
-          <ProCard
-            bordered
-            style={{height:'300px',   textAlign: 'center', overflowY: 'scroll' }}
-            colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
-            <Space>
-              <StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList>&nbsp;&nbsp;
-            </Space>
+        <ProCard ghost wrap style={{  width: '100%' }} bordered >
+          <ProCard style={{height:'300px',   textAlign: 'center', overflowY: 'scroll' }} colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 10 }}>
+            <Space className="ml-7" ><StockList onDataChange={handleDataFromChild} onInval={handleOnInval} ></StockList></Space>
             <Space wrap align="center">
               <Select
                 value={selectedButton}
@@ -392,7 +386,6 @@ const Strategy = () => {
           </ProCard>
           <ProCard
             style={{ height:"300px", textAlign: 'center' }}
-            bordered
             colSpan={{ xs: 24, sm: 24, md: 4, lg: 4, xl: 14 }}>
 
             <div className="numberSele">
@@ -501,7 +494,6 @@ const Strategy = () => {
         <ProCard style={{ height: 300, width: '100%' }}>
           <div ref={lineRef} style={{ height: '100%' }}></div>
         </ProCard>
-      </ProCard>
     </div>
   )
 }

@@ -96,7 +96,6 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
             cancelButtonName: 'Cancel'
         }
         const isConfirmed = await confirm(confirmPayload)
-
         if (isConfirmed) {
             try {
                 const delResp = await quantfactorsApi.deleteTool(toolId)
@@ -232,7 +231,7 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
             <DialogActions sx={{ p: 3 }}>
                 {dialogProps.type === 'EDIT' && (
                     <StyledButton color='error' variant='contained' onClick={() => deleteTool()}>
-                        Delete
+                        删除
                     </StyledButton>
                 )}
                 {dialogProps.type === 'TEMPLATE' && (
