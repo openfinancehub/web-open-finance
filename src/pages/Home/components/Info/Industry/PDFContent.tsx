@@ -16,7 +16,7 @@ const PDFContent: React.FC<PDFProps> = ({ url }) => {
 
     return (
         <div >
-            <iframe
+            <iframe 
                 key={url}
                 src={url}
                 title="PDF Viewer"

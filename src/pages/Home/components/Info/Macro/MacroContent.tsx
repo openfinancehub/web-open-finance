@@ -88,12 +88,12 @@ export default function MacroContent() {
                         <Card
                             loading={isLoading}
                             key={key}
-                            style={{ margin: '16px 0 16px 0' }}
+                            style={{ margin: '8px 0 8px 0' }}
                             headStyle={{ textAlign: 'left' }}
                             title={<h2>{key}</h2>}
                         >
                             {indicator.length > 0 && (
-                                <Card style={{ textAlign: 'left', marginBottom: 16 }} key={`indicator` + index}>
+                                <Card style={{ textAlign: 'left', marginBottom: 8 }} key={`indicator` + index}>
                                     {indicator.map((item, index) => (
                                         <ReactMarkdown key={`指标-${index}`}>
                                             {`指标 ${index}: ${item}`}

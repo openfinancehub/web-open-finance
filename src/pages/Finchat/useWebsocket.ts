@@ -12,7 +12,7 @@ const useWebSocket = (url: string): WebSocketHook => {
   const {
     initialState: { currentUser }
   } = useModel('@@initialState');
-  console.log(currentUser);
+  // console.log(currentUser);
 
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<any[]>([]);
@@ -30,8 +30,10 @@ const useWebSocket = (url: string): WebSocketHook => {
       let content = response.output?.answer;
       // content = content.replace(/\n/g, '<br>');
       let ref = response.output?.ref;
-      content = content.replace(/\[ref (\d+)\]/g, (match: string, number: string) => `[查看pdf${number}](${ref[`${number}`].url}#page=${ref.page}) `);
-      // console.log(response.output?.ref)
+      // console.log(content, 'content')
+      if (typeof ref === 'object' && Object.keys(ref).length === 0) {
+        ref = null;
+      }
       let chart = response.output?.chart;
       if (typeof chart === 'object' && Object.keys(chart).length === 0) {
         chart = null;
@@ -45,7 +47,7 @@ const useWebSocket = (url: string): WebSocketHook => {
 
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
-        return [...tempList, { sender: 'bot', content, chart, table }];
+        return [...tempList, { sender: 'bot', content, chart, table, ref, }];
       });
     };
 
