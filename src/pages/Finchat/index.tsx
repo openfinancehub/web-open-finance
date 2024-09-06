@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import ReactEcharts from 'echarts-for-react';
-import { Button, Card, Input, message as Message, Popover, Avatar, Typography, Tooltip, Table, Row, Col } from 'antd';
+import { Button, Card, Input, message as Message, Popover, Typography, Tooltip, Table, Row, Col, Avatar } from 'antd';
 import { ToolOutlined, FileSearchOutlined, AreaChartOutlined } from '@ant-design/icons';
 
 import FlexRow from './components/FlexRow';
@@ -27,6 +27,8 @@ import styles from './index.less';
 import useWebSocket from './useWebsocket';
 
 import rehypeRaw from 'rehype-raw';
+import { ProCard } from '@ant-design/pro-components';
+// import Avatar from '@mui/material/Avatar';
 
 const { Search } = Input;
 const { Text } = Typography;
@@ -47,8 +49,7 @@ const Finchat = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [selectedSessionId, setSelectedSessionId] = useState<any>(null);
   const [initCompanyList, setInitCompanyList] = useState<any[]>([]);
-  const [showPDF, setShowPDF] = useState(false)
-  const [pdfURL, setPdfURL] = useState<string>()
+  const [pdfURL, setPdfURL] = useState<string>('')
   // ws://129.204.166.171:5004
   const { message, sendWebSocketMessage, clearMessage } = useWebSocket(
     'ws://129.204.166.171:5004'
@@ -171,22 +172,33 @@ const Finchat = () => {
   )
   const disabled = !(selectedTask || selectedCom || selectedRole);
 
-  let clickCount = 0;
-  const onShowPDF = (itemRef) => {
-    clickCount++;
-    setShowPDF(clickCount % 2 === 1);
-    console.log(messageList)
-    // 更新指定索引的对话项的showPDF和pdfURL
-    // const updatedMessageList = [...messageList];
-    // updatedMessageList[index] = {
-    //   ...updatedMessageList[index],
-    //   showPDF: true,
-    //   ref: itemRef.url + '#page=' + itemRef.page
-    // };
-    // setMessageList(updatedMessageList);
-    setPdfURL(itemRef.url + '#page=' + itemRef.page)
-    // console.log(pdfURL)
-  }
+  const onShowPDF = (itemRef, index) => {
+    console.log(messageList, 'messageList')
+    // 创建messageList的新副本
+    const updatedMessageList = [...messageList];
+
+    const newUrl = itemRef.url + "#page" + itemRef.page;
+    // 更新指定索引的showPDF.isShow属性
+    // if (pdfURL === newUrl) {
+    //   updatedMessageList[index].showPDF.isShow = '';
+    //   setPdfURL('');
+    // }
+    updatedMessageList[index].showPDF.isShow = newUrl;
+    setPdfURL(newUrl);
+
+    // 更新messageList状态
+    setMessageList(updatedMessageList);
+  };
+  const closeShowPDF = (index) => {
+    // 创建messageList的新副本
+    const updatedMessageList = [...messageList];
+    console.log(updatedMessageList, 'updatedMessageList')
+    // 更新指定索引的showPDF.isShow属性
+    updatedMessageList[index].showPDF.isShow = '';
+    // 设置新的messageList状态
+    setMessageList(updatedMessageList);
+    setPdfURL('');
+  };
 
   return (
     <div className={styles.wrapFinchat}>
@@ -304,58 +316,52 @@ const Finchat = () => {
                       scroll={{ x: 'max-content' }}
                     />
                   )}
-                  <Row>
-                    <Col span={showPDF ? 12 : 24}>
-                      <Card bordered={false}>
-                        <MemoizedReactMarkdown rehypePlugins={[rehypeRaw]}
-                          components={{
-                            span(props) {
-                              const { node, children, ...rest } = props
-                              const number = parseInt(node.children[0].value, 10);
-                              return <Tooltip
-                                key={index + 'Tooltip'}
-                                placement="top"
-                                color="#FAFAFB"
-                                title={
-                                  <div  >
-                                    <Row style={{ color: 'black' }} >
-                                      <Col span={24}>
-                                        {item.ref[number].title}
-                                      </Col>
-                                    </Row>
-                                    <Row style={{ color: 'black' }} onClick={() => onShowPDF(item.ref[number])}>
-                                      <Col span={12}>
-                                        <a>查看源pdf</a>
-                                      </Col>
-                                      <Col span={4} offset={2}>
-                                        <ApiFilled />
-                                      </Col>
-                                    </Row>
-                                  </div>
-                                }
-                              >
-                                <Avatar size="small" style={{ backgroundColor: '#4DB7D5', margin: '0 5px 0 5px' }}>{number}</Avatar>
-                              </Tooltip>
-                            }
-                          }}>
-                          {item.content && item.content.replace(/\[ref (\d+)\]/g, (match: string, number: string) =>
-                            ` <span> ${number}</span>`
-                          )}
-                        </MemoizedReactMarkdown>
-                      </Card>
-                    </Col>
-                    <Col span={12}>
-                      {/* {item.showPDF && (
+                  <ProCard>
+                    <ProCard bordered={false}  >
+                      <MemoizedReactMarkdown rehypePlugins={[rehypeRaw]}
+                        components={{
+                          span(props) {
+                            const { node, children, ...rest } = props
+                            const number = parseInt(node.children[0].value, 10);
+                            return <Tooltip
+                              key={index + 'Tooltip'}
+                              placement="top"
+                              color="#FAFAFB"
+                              title={
+                                <div  >
+                                  <Row style={{ color: 'black' }} >
+                                    <Col span={24}>
+                                      {item.showPDF.ref[number].title}
+                                    </Col>
+                                  </Row>
+                                  <Row style={{ color: 'black' }} onClick={() => onShowPDF(item.showPDF.ref[number], index)}>
+                                    <Col span={18}>
+                                      <a>查看源pdf</a>
+                                    </Col>
+                                    <Col span={4} offset={2}>
+                                      <ApiFilled />
+                                    </Col>
+                                  </Row>
+                                </div>
+                              }
+                            >
+                              <Avatar size={15} style={{ backgroundColor: '#4DB7D5', fontSize: '10px', margin: '0 3px 0 3px' }}>
+                                {number}
+                              </Avatar>
+                            </Tooltip>
+                          }
+                        }}>
+                        {item.content && item.content.replace(/\[ref (\d+)\]/g, (match: string, number: string) =>
+                          `<span>${number}</span>`
+                        )}
+                      </MemoizedReactMarkdown>
+                    </ProCard>
+                    {item.showPDF.isShow ? (
+                      <ProCard bordered={true} style={{ height: "100%" }} extra={<Button onClick={() => closeShowPDF(index)}>X</Button>}>
                         <embed key={pdfURL} src={pdfURL} width="100%" height="100%" />
-                      )} */}
-                      {showPDF ? (
-                        <embed key={pdfURL} src={pdfURL}
-                          width="100%"
-                          height="100%" />
-                      ) : null}
-                    </Col>
-                  </Row>
-
+                      </ProCard>
+                    ) : null}
+                  </ProCard>
                   <span className={styles.tag}>
                     <AndroidOutlined style={{ fontSize: '18px' }} />
                   </span>

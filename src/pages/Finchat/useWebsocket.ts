@@ -47,7 +47,7 @@ const useWebSocket = (url: string): WebSocketHook => {
 
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
-        return [...tempList, { sender: 'bot', content, chart, table, ref, }];
+        return [...tempList, { sender: 'bot', content, chart, table, showPDF: { ref, isShow: '' }, }];
       });
     };
 
