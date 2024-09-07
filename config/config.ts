@@ -158,38 +158,38 @@ export default defineConfig({
     {
       name: '量化',
       path: '/analyze',
-      
+      component:"./Analyze",
       routes:[
         {
           path: 'assess',
-          name: '推荐因子',
-          icon:'ProfileOutlined',
+          // name: '推荐因子',
+          // icon:'ProfileOutlined',
           component: './Analyze/Assess'
         },
         {
           path:'strategy',
-          name:'策略分析器',
-          icon:'FileSearchOutlined',
+          // name:'策略分析器',
+          // icon:'FileSearchOutlined',
           component:'./Analyze/Strategy',
         },
         {
           path:'screen',
-          name:'筛选列表',
-          icon:'OrderedListOutlined',
+          // name:'筛选列表',
+          // icon:'OrderedListOutlined',
           component:'./Analyze/Screen'
         },
  
         {
           path:'factor',
-          name:'量化因子',
-          icon:'UngroupOutlined',
+          // name:'量化因子',
+          // icon:'UngroupOutlined',
           component:'./Analyze/Factor'
         },
        
         {
           path:'model',
-          name:'模型',
-          icon:'ClusterOutlined',
+          // name:'模型',
+          // icon:'ClusterOutlined',
           component:'./Analyze/Model',
         },
        
