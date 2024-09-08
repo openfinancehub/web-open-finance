@@ -10,6 +10,7 @@ import { gridSpacing } from '@/pages/Store/store/constant'
 import ToolEmptySVG from '@/components/assets/images/tools_empty.svg'
 import { StyledButton } from '@/components//button/StyledButton'
 import ToolDialog from './ToolDialog'
+import GraphDialog from './GraphDialog'
 
 // API
 import llmfactorsApi from '@/pages/Store/api/llmfactors'
@@ -18,7 +19,7 @@ import llmfactorsApi from '@/pages/Store/api/llmfactors'
 import useApi from '@/pages/Store/hooks/useApi'
 
 // icons
-import { IconPlus, IconFileUpload } from '@tabler/icons-react'
+import { IconPlus, IconFileUpload, IconAlignBoxLeftStretch } from '@tabler/icons-react'
 import ViewHeader from '@/components/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
@@ -26,10 +27,12 @@ import ErrorBoundary from '@/pages/Store/ErrorBoundary'
 
 const Tools = () => {
     const getAllLlmfactorsApi = useApi(llmfactorsApi.getAllLlmfactors)
+    const getGraphApi = useApi(llmfactorsApi.getGraph)
 
     const [isLoading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [showDialog, setShowDialog] = useState(false)
+    const [showGraph, setShowGraph] = useState(false)
     const [dialogProps, setDialogProps] = useState({})
 
     const inputRef = useRef(null)
@@ -66,6 +69,17 @@ const Tools = () => {
         reader.readAsText(file)
     }
 
+    const showFactor = () => {
+        console.log(getGraphApi, 'getGraphApi')
+        const dialogProp = {
+            title: 'llmfactors 数据',
+            type: 'SHOW',
+            data: getGraphApi.data
+        }
+        setDialogProps(dialogProp)
+        setShowGraph(true)
+    }
+
     const addNew = () => {
         const dialogProp = {
             title: 'Add New Tool',
@@ -96,7 +110,7 @@ const Tools = () => {
 
     useEffect(() => {
         getAllLlmfactorsApi.request()
-
+        getGraphApi.request()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -120,6 +134,16 @@ const Tools = () => {
                 ) : (
                     <Stack flexDirection='column' sx={{ gap: 3 }}>
                         <ViewHeader title='LlmFactor'>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Button
+                                    variant='outlined'
+                                    onClick={showFactor}
+                                    startIcon={<IconAlignBoxLeftStretch />}
+                                    sx={{ borderRadius: 2, height: 40 }}
+                                >
+                                    llmfactors
+                                </Button>
+                            </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Button
                                     variant='outlined'
@@ -185,6 +209,12 @@ const Tools = () => {
                 onConfirm={onConfirm}
                 setError={setError}
             ></ToolDialog>
+            <GraphDialog
+                show={showGraph}
+                dialogProps={dialogProps}
+                onCancel={() => setShowGraph(false)}
+                setError={setError}
+            ></GraphDialog>
         </>
     )
 }

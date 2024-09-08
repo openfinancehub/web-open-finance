@@ -48,7 +48,7 @@ const DefaultChart = ({
 }) => {
     const chartRef = useRef(null);
     const option = optionData;
-    // console.log(optionData, 'optionData')
+    console.log(optionData, 'optionData')
 
     useEffect(() => {
         if (chartRef.current) {

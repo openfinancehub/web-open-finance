@@ -12,7 +12,7 @@ const useWebSocket = (url: string): WebSocketHook => {
   const {
     initialState: { currentUser }
   } = useModel('@@initialState');
-  console.log(currentUser);
+  // console.log(currentUser);
 
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<any[]>([]);
@@ -29,6 +29,11 @@ const useWebSocket = (url: string): WebSocketHook => {
       const response = JSON.parse(event.data || '{}');
       let content = response.output?.answer;
       // content = content.replace(/\n/g, '<br>');
+      let ref = response.output?.ref;
+      // console.log(content, 'content')
+      if (typeof ref === 'object' && Object.keys(ref).length === 0) {
+        ref = null;
+      }
       let chart = response.output?.chart;
       if (typeof chart === 'object' && Object.keys(chart).length === 0) {
         chart = null;
@@ -39,10 +44,10 @@ const useWebSocket = (url: string): WebSocketHook => {
       } else {
         table = createTable(table);
       }
-      
+
       setMessage(pre => {
         const tempList = [...pre].map(item => ({ ...item, flag: false }));
-        return [...tempList, { sender: 'bot', content, chart, table}];
+        return [...tempList, { sender: 'bot', content, chart, table, showPDF: { ref, isShow: '' }, }];
       });
     };
 
@@ -91,8 +96,8 @@ const useWebSocket = (url: string): WebSocketHook => {
           task: info.task,
           // id + username + token的后六位
           session_id
-            
-            // currentUser.token.substr(currentUser.token.length - 4)
+
+          // currentUser.token.substr(currentUser.token.length - 4)
         }
       };
       socket.send(JSON.stringify(data));
