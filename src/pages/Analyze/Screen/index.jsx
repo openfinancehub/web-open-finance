@@ -1,14 +1,18 @@
-import { getStrategyList, getStrategySeek,deleteStrategy } from "../api/other";
+import { getStrategyList, getStrategySeek,deleteStrategy,putStratrgy,addStratrgy } from "../api/other";
 import { useState, useEffect } from "react";
 import { ProCard } from '@ant-design/pro-components';
-import { PageHeader, Card, Modal, Form, Input, Table, message } from "antd";
+import { PlusOutlined } from '@ant-design/icons';
+import { PageHeader, Card, Modal, Table, message,Button } from "antd";
 import { FundOutlined } from '@ant-design/icons';
 import '../index.less'
 import { store } from '@/pages/Store/store'
 import { Provider } from 'react-redux'
 import ToolDialog from "../components/Public/ScreenDialog";
+import AddScreenDialog from "../components/Public/AddScreenDialog";
 const Screen = () => {
   const [modelData, setModelData] = useState([])
+  const [addDialogProps,setAddDialogProps] = useState({})
+  const [showAddDialog,setAddDialog] = useState(false)
   const [showDialog, setShowDialog] = useState(false)
   const [dialogProps, setDialogProps] = useState({})
   // 分析结果弹窗
@@ -44,7 +48,7 @@ const Screen = () => {
       data: option
     }
     getStrategySeek(data).then((res) => {
-      message.success(res.msg);
+      message.success("查询成功");
       const resData = res.data.result;
       const arr = [];
       const title = Object.keys(resData);
@@ -58,7 +62,6 @@ const Screen = () => {
           key: item,
           sorter: {
             compare: (a, b) => {
-              console.log(a[item], b[item], '数据展示');
               return a[item] - b[item]
             },
           },
@@ -86,12 +89,38 @@ const Screen = () => {
   const tableListClose = () => {
     setIsModalOpen(false)
   }
+  const onSaveData = (data) => {
+    putStratrgy(data).then((res)=>{
+      message.success("保存成功")
+    })
+    setShowDialog(false)
+    handleModelList()
+  }
   const onDelete = (item) => {
     deleteStrategy(item).then((res)=>{
       setShowDialog(false)
       message.success("删除成功");
-      handleModelList()
     })
+    setShowDialog(false)
+    handleModelList()
+  }
+  const createCard = () => {
+    const dialogProp = {
+      title:"Add New Tool",
+      type:"ADD",
+      cancelButtonName: 'Cancel',
+      confirmButtonName: '新增',
+      data:{}
+    }
+  setAddDialogProps(dialogProp)
+  setAddDialog(true)
+  }
+  const startAddCard = (data) => {
+    addStratrgy(data).then((res)=>{
+      message.success("创建成功")
+    })
+    setAddDialog(false)
+    handleModelList()
   }
   useEffect(() => {
     handleModelList()
@@ -99,7 +128,8 @@ const Screen = () => {
   return (
     <div>
       <Provider store={store} >
-        <PageHeader title="模型" >
+        <PageHeader title="筛选列表" >
+          <div style={{marginBottom:"20px"}} ><Button type="primary" onClick={createCard}  icon={<PlusOutlined />}>新增</Button></div>
           <div className="cardList" >
             {modelData.map((item, index) => {
               return (
@@ -122,8 +152,15 @@ const Screen = () => {
           onCancel={() => setShowDialog(false)}
           onConfirm={onConfirm}
           onDelete={onDelete}
+          saveData={onSaveData}
         />
-
+        <AddScreenDialog
+             show={showAddDialog}
+             dialogProps={addDialogProps}
+             onCancel={() => setAddDialog(false)}
+             onConfirm={()=> setAddDialog(false)}
+             saveData={startAddCard}
+        ></AddScreenDialog>
         <Modal title="分析结果" width={1200} bodyStyle={{ height: 500 }} open={isModalOpen} onOk={tableListClose} onCancel={tableListClose} >
           <ProCard bordered style={{ width: '100%',height:'100%', overflow: 'auto' }}>
             <Table dataSource={dataSource} columns={columns} />

@@ -1,16 +1,16 @@
 import { Box, Button, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Stack, OutlinedInput } from '@mui/material'
 import { IconX, IconFileDownload, IconPlus } from '@tabler/icons-react'
+import { useDispatch, useSelector } from 'react-redux'
 import { TooltipWithParser } from '@/components/tooltip/TooltipWithParser'
 import { Grid } from '@/components//grid/Grid'
-import { useDispatch, useSelector } from 'react-redux'
 import { CodeEditor } from '@/components//editor/CodeEditor'
 import { cloneDeep } from 'lodash'
 import { GridActionsCellItem } from '@mui/x-data-grid'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { StyledButton } from '@/components//button/StyledButton'
 import { generateRandomGradient, formatDataGridRows } from '@/pages/Store/utils/genericHelper'
-import { useState,useEffect,useMemo,useCallback } from "react";
-const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }) => {
+import { useState, useEffect, useMemo, useCallback } from "react";
+const ToolDialog = ({ show, dialogProps, onCancel, onConfirm, onDelete,saveData }) => {
     const customization = useSelector((state) => state.customization)   
     const [toolName, setToolName] = useState('')
     const [toolDesc, setToolDesc] = useState('')
@@ -27,17 +27,14 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
     )
     const columns = useMemo(
         () => [
-            { field: 'property', headerName: 'Property', editable: true, flex: 1 },
+            { field: 'feature_name', headerName: 'FeatureName', editable: true, flex: 1 },
+
+            { field: 'operator', headerName: 'Operator', editable: true, flex: 1 },
             {
-                field: 'type',
-                headerName: 'Type',
-                type: 'singleSelect',
-                valueOptions: ['string', 'float', 'boolean', 'int'],
+                field: 'val',
+                headerName: 'Val',
                 editable: true,
-                width: 120
             },
-            { field: 'value', headerName: 'Value', editable: true, flex: 1 },
-            { field: 'required', headerName: 'Required', type: 'boolean', editable: true, width: 80 },
             {
                 field: 'actions',
                 type: 'actions',
@@ -61,83 +58,40 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
             })
         })
     }
-    useEffect(()=>{
-        if(dialogProps.type==='EDIT' && dialogProps.data ){
+    useEffect(() => {
+        if (dialogProps.type === 'EDIT' && dialogProps.data) {
             setToolName(dialogProps.data.name)
             setToolDesc(dialogProps.data.description)
             setToolIcon(dialogProps.data.iconSrc)
             setToolSchema(formatDataGridRows(dialogProps.data.schema))
-        }   
-     
-    },[dialogProps])
+        }
+
+    }, [dialogProps])
 
     const addNewRow = () => {
         setTimeout(() => {
             setToolSchema((prevRows) => {
-                // let allRows = [...cloneDeep(prevRows)]
-                let allRows = []
+                let allRows = [...cloneDeep(prevRows)]
                 const lastRowId = allRows.length ? allRows[allRows.length - 1].id + 1 : 1
                 allRows.push({
                     id: lastRowId,
-                    property: '',
-                    description: '',
-                    type: '',
-                    required: false
+                    feature_name: '',
+                    operator: '',
+                    val: '',
                 })
                 return allRows
             })
         })
     }
 
-    const deleteTool = async () => {
-        const confirmPayload = {
-            title: `Delete Tool`,
-            description: `Delete tool ${toolName}?`,
-            confirmButtonName: 'Delete',
-            cancelButtonName: 'Cancel'
-        }
-        const isConfirmed = await confirm(confirmPayload)
-        if (isConfirmed) {
-            try {
-                const delResp = await quantfactorsApi.deleteTool(toolId)
-                if (delResp.data) {
-                    enqueueSnackbar({
-                        message: 'Tool deleted',
-                        options: {
-                            key: new Date().getTime() + Math.random(),
-                            variant: 'success',
-                            action: (key) => (
-                                <Button style={{ color: 'white' }} onClick={() => closeSnackbar(key)}>
-                                    <IconX />
-                                </Button>
-                            )
-                        }
-                    })
-                    onConfirm()
-                }
-            } catch (error) {
-                enqueueSnackbar({
-                    message: `Failed to delete Tool: ${
-                        typeof error.response.data === 'object' ? error.response.data.message : error.response.data
-                    }`,
-                    options: {
-                        key: new Date().getTime() + Math.random(),
-                        variant: 'error',
-                        persist: true,
-                        action: (key) => (
-                            <Button style={{ color: 'white' }} onClick={() => closeSnackbar(key)}>
-                                <IconX />
-                            </Button>
-                        )
-                    }
-                })
-                onCancel()
-            }
-        }
+    const deleteTool = () => {
+        onDelete(dialogProps.data.id)
     }
-    const saveTool = ()=>{
+    const saveTool = () => {
+        onConfirm(toolSchema)
+    }
+    const saveChange = () => {
         const data = {
-            id:dialogProps.data.id,
             name:toolName,
             description:toolDesc,
             iconSrc:toolIcon,
@@ -145,6 +99,12 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
             func:toolFunc
         }
         saveData(data)
+        setToolName("")
+        setToolDesc("")
+        setToolIcon("")
+        setToolSchema([])
+        setToolFunc("")
+       
     }
     return (
         <Dialog
@@ -156,15 +116,13 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
             <DialogTitle sx={{ fontSize: '1rem', p: 3, pb: 0 }} id='alert-dialog-title'>
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                     {dialogProps.title}
-                    {/* {dialogProps.type === 'EDIT' && (
-                        <Button variant='outlined' onClick={() => exportTool()} startIcon={<IconFileDownload />}>
-                            Export
-                        </Button>
-                    )} */}
+                    {dialogProps.type === 'EDIT' && (
+                        <StyledButton variant='outlined' onClick={() => saveTool()}>分析</StyledButton>
+                    )}
                 </Box>
             </DialogTitle>
             <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: '75vh', position: 'relative', px: 3, pb: 3 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>  
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
                     <Box>
                         <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
                             <Typography variant='overline'>
@@ -236,7 +194,8 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
                         </Stack>
                         <Grid columns={columns} rows={toolSchema} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
                         <Typography variant='overline'>Javascript Function</Typography>
                         <TooltipWithParser title='Function to execute when tool is being used. You can use properties specified in Input Schema as variables. For example, if the property is <code>userid</code>, you can use as <code>$userid</code>. Return value must be a string. You can also override the code from API by following this <a target="_blank" href="https://docs.flowiseai.com/tools/custom-tool#override-function-from-api">guide</a>' />
@@ -263,12 +222,11 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
                     theme={customization.isDarkMode ? 'dark' : 'light'}
                     lang={'js'}
                     onValueChange={(code) => setToolFunc(code)}
-                />      
-                </Box>
+                />
             </DialogContent>
             <DialogActions sx={{ p: 3 }}>
                 {dialogProps.type === 'EDIT' && (
-                    <StyledButton color='error' variant='contained' onClick={() => onDelete(dialogProps.data.id)}>
+                    <StyledButton color='error' variant='contained' onClick={() => deleteTool()}>
                         删除
                     </StyledButton>
                 )}
@@ -277,11 +235,11 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
                         Use Template
                     </StyledButton>
                 )}
-                {dialogProps.type !== 'TEMPLATE' && (
+                 {dialogProps.type !== 'TEMPLATE' && (
                     <StyledButton
                         disabled={!(toolName && toolDesc)}
                         variant='contained'
-                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewTool() : saveTool())}
+                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? saveChange() : saveChange())}
                     >
                         {dialogProps.confirmButtonName}
                     </StyledButton>

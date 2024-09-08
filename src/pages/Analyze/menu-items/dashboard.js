@@ -44,7 +44,6 @@ const dashboard = {
           url: '/Analyze/Screen',
           icon: icons.IconUsersGroup,
           breadcrumbs: true,
-          isBeta: true
       },
       {
           id: 'Factor',

@@ -1,15 +1,18 @@
-import { getFactorList } from "../api/other";
+import { getFactorList,changeFactor,deleteFactor,addFactor } from "../api/other";
 import { useState, useEffect } from "react";
-import { PageHeader, Card,Modal,Form,Input } from "antd";
-import { FundOutlined } from '@ant-design/icons';
+import { PageHeader, Card, message,Button } from "antd";
+import { FundOutlined,PlusOutlined } from '@ant-design/icons';
 import { store } from '@/pages/Store/store'
 import '../index.less'
 import { Provider } from 'react-redux'
 import ToolDialog from "../components/Public/ToolDialog";
+import AddDialog from "../components/Public/AddDialog";
 const Factor = () => {
   const [modelData, setModelData] = useState([])
   const [showDialog, setShowDialog] = useState(false)
   const [dialogProps, setDialogProps] = useState({})
+  const [addDialogProps,setAddDialogProps] = useState({})
+  const [showAddDialog,setAddDialog] = useState(false)
   const handleModelList = () => {
     getFactorList().then((res) => {
       setModelData(res.data)
@@ -20,14 +23,43 @@ const Factor = () => {
       title:"Edit Tool",
       type:"EDIT",
       cancelButtonName: 'Cancel',
-      confirmButtonName: 'Save',
+      confirmButtonName: '保存',
       data:item
     }
     setDialogProps(dialogProp)
     setShowDialog(true)
   }
-  const onConfirm = () => {
+  const onSaveData = (data) => {
+    changeFactor(data).then((res)=>{
+      message.success("修改成功")
+    })
     setShowDialog(false)
+    handleModelList()
+  }
+  const onDelete = (id) => {
+    deleteFactor(id).then((res)=>{
+      message.success("删除成功")
+    })
+    setShowDialog(false)
+    handleModelList()
+  }
+  const createCard = () => {
+      const dialogProp = {
+        title:"Add New Tool",
+        type:"ADD",
+        cancelButtonName: 'Cancel',
+        confirmButtonName: '新增',
+        data:{}
+      }
+    setAddDialogProps(dialogProp)
+    setAddDialog(true)
+  }
+  const startAddCard = (data) => {
+    addFactor(data).then((res)=>{
+      message.success("创建成功")
+    })
+    setAddDialog(false)
+    handleModelList()
   }
   useEffect(() => {
     handleModelList()
@@ -36,6 +68,7 @@ const Factor = () => {
     <div>
       <Provider store={store} >
       <PageHeader title="量化因子" >
+      <div style={{marginBottom:"20px"}} ><Button type="primary" onClick={createCard}  icon={<PlusOutlined />}>新增</Button></div>
         <div className="cardList" >
           {modelData.map((item, index) => {
             return (
@@ -56,10 +89,17 @@ const Factor = () => {
           show={showDialog}
           dialogProps={dialogProps}
           onCancel={() => setShowDialog(false)}
-          onConfirm={onConfirm}
-      >
-
-      </ToolDialog>
+          onConfirm={()=>setShowDialog(false)}
+          onDelete={onDelete}
+          saveData={onSaveData}
+      />
+        <AddDialog
+         show={showAddDialog}
+         dialogProps={addDialogProps}
+         onCancel={() => setAddDialog(false)}
+         onConfirm={()=> setAddDialog(false)}
+         saveData={startAddCard}
+        />
       </Provider>
     </div>
   )

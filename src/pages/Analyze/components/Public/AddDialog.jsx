@@ -145,6 +145,11 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
             func:toolFunc
         }
         saveData(data)
+        setToolName('')
+        setToolDesc('')
+        setToolIcon('')
+        setToolSchema([])
+        setToolFunc('')
     }
     return (
         <Dialog
@@ -281,7 +286,7 @@ const ToolDialog = ({ show, dialogProps, onCancel, onConfirm,onDelete,saveData }
                     <StyledButton
                         disabled={!(toolName && toolDesc)}
                         variant='contained'
-                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewTool() : saveTool())}
+                        onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? saveTool() : saveTool())}
                     >
                         {dialogProps.confirmButtonName}
                     </StyledButton>

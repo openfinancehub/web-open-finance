@@ -126,7 +126,10 @@ const Strategy = () => {
         setRaderData(raderArr);
         setRaderValue(radervalue);
         setLineData(linedata);
-        setlineDataTime(lineDataTime);
+        
+        setTimeout(()=>{
+          setlineDataTime(lineDataTime);
+        })
         setIsdemoBtn(true);
         synthesis = [];
         initBasicEchart();
@@ -287,7 +290,11 @@ const Strategy = () => {
       ]
     };
     const chart = echarts.init(lineRef.current);
+    try {
     chart.setOption(option);
+    } catch (error) {
+      
+    }
   };
   // 初始化饼状图
   const initBasicEchart = () => {
